@@ -1,0 +1,7 @@
+{
+	"name": "dojo2-todo-mvc",
+	"globalDependencies": {
+		"symbol-shim": "github:dojo/typings/custom/symbol-shim/symbol-shim.d.ts#7a57f05e95f03c4e3b4617f09d429b323f7ddc46"
+	}
+}
+
