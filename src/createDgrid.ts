@@ -56,8 +56,6 @@ const createDgrid: DgridFactory = createWidgetBase
 					this.setState({ externalState, sortedColumn: { [columnId]: descending } });
 				};
 
-				console.log(sortedColumn);
-
 				return [
 					w('dgrid-header', { registry, columns, sortData, sortedColumn }),
 					w('dgrid-body', { registry, columns, externalState })

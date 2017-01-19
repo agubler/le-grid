@@ -1,7 +1,7 @@
-import createObservableStoreMixin, { createObservableStore } from '@dojo/stores/store/mixins/createObservableStoreMixin';
-import createQueryStoreMixin, { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
+import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
 import FactoryRegistry from '@dojo/widgets/FactoryRegistry';
+import createWidgetBase from '@dojo/widgets/createWidgetBase';
 
 import createDgrid from './createDgrid';
 
@@ -27,10 +27,12 @@ function createData(count: number): any[] {
 	}
 
 	return data;
-}
+};
+
+const data = createData(3);
 
 const externalState = createQueryStore({
-	data: createData(15)
+	data
 });
 
 const columns = [
@@ -65,6 +67,35 @@ const dgrid = createDgrid.mixin(createProjectorMixin)({
 		columns
 	}
 });
+
+dgrid.append().then(() => {
+// 	setInterval(function() {
+// 		externalState.patch({ id: '4', location: locations[Math.floor(Math.random() * locations.length)] });
+
+// 	}, 1000);
+});
+
+function onclick() {
+	const id = String(Math.floor(Math.random() * data.length + 1));
+	// console.log(Math.floor(Math.random() * data.length + 1));
+	// console.log(id);
+	// externalState.patch({ id, location: locations[Math.floor(Math.random() * locations.length)] });
+	externalState.patch({ id: '1', location: locations[Math.floor(Math.random() * locations.length)] });
+	externalState.fetch().then((data) => {
+		console.log('feth', data);
+	});
+}
+
+const button = createWidgetBase.mixin(createProjectorMixin).override({
+	tagName: 'button',
+	nodeAttributes: [
+		function(): any {
+			return { innerHTML: 'Click Me', style: 'background-color: red; height: 100px; width: 100px', onclick };
+		}
+	]
+})();
+
+button.append();
 
 dgrid.append().then(() => {
 // 	setInterval(function() {
