@@ -30,5 +30,4 @@ const createDgridBody: DgridBodyFactory = createWidgetBase
 	}
 });
 
-
 export default createDgridBody;

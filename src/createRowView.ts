@@ -2,7 +2,7 @@ import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widgets/mixins/registryMixin';
-import { v, w } from '@dojo/widgets/d';
+import { w } from '@dojo/widgets/d';
 
 import { Column } from './createDgrid';
 

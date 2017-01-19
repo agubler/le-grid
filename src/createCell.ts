@@ -1,10 +1,9 @@
 import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import { v } from '@dojo/widgets/d';
 
 export interface DgridCellProperties extends WidgetProperties {
 	data: string;
- }
+}
 
 export type DgridCell = Widget<DgridCellProperties>
 
