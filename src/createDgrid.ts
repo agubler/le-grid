@@ -1,11 +1,11 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetProperties, WidgetFactory, DNode, PropertiesChangeEvent } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widgets/mixins/registryMixin';
 import { includes } from '@dojo/shim/array';
 import createSort from '@dojo/stores/query/createSort';
-import { w, registry } from '@dojo/widgets/d';
+import { w } from '@dojo/widgets/d';
 import { QueryTransformMixin } from '@dojo/stores/store/mixins/createQueryTransformMixin';
+import FactoryRegistry from '@dojo/widgets/FactoryRegistry';
 
 import createBody from './createBody';
 import createRow from './createRow';
@@ -14,6 +14,7 @@ import createCell from './createCell';
 import createHeader from './createHeader';
 import createHeaderCell from './createHeaderCell';
 
+const registry = new FactoryRegistry();
 registry.define('dgrid-body', createBody);
 registry.define('dgrid-row', createRow);
 registry.define('dgrid-row-view', createRowView);
@@ -33,12 +34,12 @@ export interface SortDetails {
 	[index: string]: boolean;
 }
 
-export interface DgridProperties extends WidgetProperties, RegistryMixinProperties {
+export interface DgridProperties extends WidgetProperties {
 	columns: Column[];
 	externalState: QueryTransformMixin<{}, any>;
 }
 
-export type Dgrid = Widget<DgridProperties> & RegistryMixin & {
+export type Dgrid = Widget<DgridProperties> & {
 	onRequestSort?(columnId: string, descending: boolean): void;
 }
 
@@ -52,9 +53,9 @@ interface InternalState {
 const internalStateMap = new WeakMap<Dgrid, InternalState>();
 
 const createDgrid: DgridFactory = createWidgetBase
-	.mixin(registryMixin)
 	.mixin({
 		mixin: {
+			registry,
 			classes: ['dgrid-widgets', 'dgrid', 'dgrid-grid'],
 			nodeAttributes: [
 				function(this: Dgrid): VNodeProperties {
@@ -70,12 +71,12 @@ const createDgrid: DgridFactory = createWidgetBase
 				this.invalidate();
 			},
 			getChildrenNodes(this: Dgrid): DNode[] {
-				const { properties: { columns } } = this;
+				const { properties: { columns }, registry } = this;
 				const { sortDetails, externalState } = internalStateMap.get(this);
 
 				return [
-					w('dgrid-header', { onRequestSort: this.onRequestSort.bind(this), sortDetails, columns }),
-					w('dgrid-body', { externalState, columns })
+					w('dgrid-header', { registry, onRequestSort: this.onRequestSort.bind(this), sortDetails, columns }),
+					w('dgrid-body', { registry, externalState, columns })
 				];
 			}
 		},

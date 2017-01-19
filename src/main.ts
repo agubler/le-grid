@@ -1,6 +1,5 @@
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
-import FactoryRegistry from '@dojo/widgets/FactoryRegistry';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 
 import createDgrid from './createDgrid';
@@ -73,7 +72,6 @@ const columns = [
 const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
 		externalState,
-		registry: new FactoryRegistry(),
 		columns
 	}
 });

@@ -28,11 +28,11 @@ const createDgridRow: DgridRowFactory = createWidgetBase
 				}
 			],
 			getChildrenNodes(this: DgridRow): DNode[] {
-				const { properties: { item, columns } } = this;
+				const { properties: { item, columns, registry } } = this;
 
 				return [
 					v('table.dgrid-row-table', { styles: { 'background-color': item.color } }, [
-						w('dgrid-row-view', { columns, item } )
+						w('dgrid-row-view', { registry, columns, item } )
 					])
 				];
 			}
