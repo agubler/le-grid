@@ -2,7 +2,9 @@ import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/in
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import { v } from '@dojo/widgets/d';
 
-export interface DgridCellProperties extends WidgetProperties { }
+export interface DgridCellProperties extends WidgetProperties {
+	data: string;
+ }
 
 export type DgridCell = Widget<DgridCellProperties>
 
@@ -15,9 +17,7 @@ const createDgridCell: DgridCellFactory = createWidgetBase
 			classes: [ 'dgrid-cell' ],
 			getChildrenNodes(this: DgridCell): DNode[] {
 				const { properties: { data } } = this;
-				return [
-					data ? data.toString() : null
-				];
+				return [ data ? data.toString() : null ];
 			}
 		}
 	});

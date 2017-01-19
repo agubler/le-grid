@@ -1,15 +1,18 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import registryMixin, { RegistryMixinProperties } from '@dojo/widgets/mixins/registryMixin';
-import externalState, { ExternalStateProperties } from '@dojo/widgets/mixins/externalState';
+import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widgets/mixins/registryMixin';
+import externalState, { ExternalStateMixin, ExternalStateProperties } from '@dojo/widgets/mixins/externalState';
 import { v, w } from '@dojo/widgets/d';
 
+import { Column } from './createDgrid';
+
 export interface DgridRowProperties extends ExternalStateProperties, WidgetProperties, RegistryMixinProperties {
-	id: string;
+	item: any;
+	column: Column;
 }
 
-export type DgridRow = Widget<DgridRowProperties>
+export type DgridRow = Widget<DgridRowProperties> & ExternalStateMixin & RegistryMixin
 
 export interface DgridRowFactory extends WidgetFactory<DgridRow, DgridRowProperties> { }
 
@@ -20,20 +23,16 @@ const createDgridRow: DgridRowFactory = createWidgetBase
 		mixin: {
 			classes: [ 'dgrid-row' ],
 			nodeAttributes: [
-				function(): VNodeProperties {
-					return {
-						role: 'row'
-					};
+				function(this: DgridRow): VNodeProperties {
+					return { role: 'row' };
 				}
 			],
 			getChildrenNodes(this: DgridRow): DNode[] {
 				const { properties: { item, columns } } = this;
 
 				return [
-					v('table.dgrid-row-table', [
-						v('tr', columns.map((column: { id: string }) => {
-							return w('dgrid-cell', { id: column.id, data: item[column.id] });
-						}))
+					v('table.dgrid-row-table', { styles: { 'background-color': item.color } }, [
+						w('dgrid-row-view', { columns, item } )
 					])
 				];
 			}

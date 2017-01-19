@@ -14,6 +14,15 @@ const locations = [
 	'070-mark-63'
 ];
 
+const secondLocations = [
+	'Fun Fair',
+	'Bus Stop',
+	'Las Vegas',
+	'New York, New York',
+	'Farm',
+	'Scotland'
+];
+
 function createData(count: number): any[] {
 	const data: any[] = [];
 
@@ -22,14 +31,15 @@ function createData(count: number): any[] {
 			id: String(i + 1),
 			age: Math.floor(Math.random() * 100) + 1,
 			gender: String.fromCharCode(Math.floor(Math.random() * 25) + 65),
-			location: locations[Math.floor(Math.random() * locations.length)]
+			location: locations[Math.floor(Math.random() * locations.length)],
+			color: 'transparent'
 		});
 	}
 
 	return data;
 };
 
-const data = createData(3);
+const data = createData(250);
 
 const externalState = createQueryStore({
 	data
@@ -68,24 +78,6 @@ const dgrid = createDgrid.mixin(createProjectorMixin)({
 	}
 });
 
-dgrid.append().then(() => {
-// 	setInterval(function() {
-// 		externalState.patch({ id: '4', location: locations[Math.floor(Math.random() * locations.length)] });
-
-// 	}, 1000);
-});
-
-function onclick() {
-	const id = String(Math.floor(Math.random() * data.length + 1));
-	// console.log(Math.floor(Math.random() * data.length + 1));
-	// console.log(id);
-	// externalState.patch({ id, location: locations[Math.floor(Math.random() * locations.length)] });
-	externalState.patch({ id: '1', location: locations[Math.floor(Math.random() * locations.length)] });
-	externalState.fetch().then((data) => {
-		console.log('feth', data);
-	});
-}
-
 const button = createWidgetBase.mixin(createProjectorMixin).override({
 	tagName: 'button',
 	nodeAttributes: [
@@ -97,9 +89,17 @@ const button = createWidgetBase.mixin(createProjectorMixin).override({
 
 button.append();
 
-dgrid.append().then(() => {
-// 	setInterval(function() {
-// 		externalState.patch({ id: '4', location: locations[Math.floor(Math.random() * locations.length)] });
+function onclick() {
+	const id = String(Math.floor(Math.random() * data.length + 1));
+	externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)] });
+}
 
-// 	}, 1000);
+dgrid.append().then(() => {
+	setInterval(function() {
+		const id = String(Math.floor(Math.random() * data.length + 1));
+		externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)], color: 'aqua' });
+		setTimeout(() => {
+			externalState.patch({ id, color: 'transparent' });
+		}, 250);
+	}, 500);
 });
