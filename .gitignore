@@ -6,7 +6,12 @@
 /bower_components
 /dist
 /html-report
-/node_modules
+!node_modules
+node_modules/*
+!node_modules/@dojo
+node_modules/@dojo/*
+!node_modules/@dojo/stores/
+!node_modules/@dojo/widgets/
 /typings
 .baseDir.ts
 .tscache
