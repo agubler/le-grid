@@ -12,10 +12,7 @@ const locations = [
 	'Early Bird Supper',
 	'On the Lam',
 	'Lost',
-	'070-mark-63'
-];
-
-const secondLocations = [
+	'070-mark-63',
 	'Fun Fair',
 	'Bus Stop',
 	'Las Vegas',
@@ -122,12 +119,15 @@ paginatedGrid.append();
 dgrid.append();
 
 setInterval(function() {
-	const id = data[Math.floor(Math.random() * data.length + 1)].id;
-	externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)], color: 'aqua' });
-	setTimeout(() => {
-		externalState.patch({ id, color: 'transparent' });
-	}, 250);
-}, 500);
+	const record = data[Math.floor(Math.random() * data.length + 1)];
+	if (record) {
+		const id = record.id;
+		externalState.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
+		setTimeout(() => {
+			externalState.patch({ id, color: 'transparent' });
+		}, 500);
+	}
+}, 50);
 
 const interval = setInterval(function() {
 	const newData = createData(20);
