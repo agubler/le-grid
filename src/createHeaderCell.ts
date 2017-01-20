@@ -2,6 +2,7 @@ import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties }  from '@dojo/widgets/mixins/registryMixin';
+import { assign } from '@dojo/core/lang';
 import { v } from '@dojo/widgets/d';
 
 import { Column, SortDetails } from './createDgrid';
@@ -33,14 +34,16 @@ const createDgridHeader: DgridHeaderFactory = createWidgetBase
 			},
 			nodeAttributes: [
 				function(this: DgridHeader, attributes: VNodeProperties): VNodeProperties {
-					const { id, sortDetails } = <DgridHeaderProperties> this.properties;
+					const { id, sortDetails, column } = <DgridHeaderProperties> this.properties;
 
 					const classes = sortDetails ? {
 						'dgrid-sort-up': sortDetails.descending,
 						'dgrid-sort-down': !sortDetails.descending
 					} : {};
 
-					return { classes, onclick: this.onSortRequest, role: 'columnheader' };
+					const onclick = column.sortable ? { onclick: this.onSortRequest } : {};
+
+					return assign({ classes, role: 'columnheader' }, onclick);
 				}
 			],
 			getChildrenNodes(this: DgridHeader): DNode[] {
