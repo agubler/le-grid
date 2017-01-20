@@ -80,15 +80,15 @@ const columns = [
 	}
 ];
 
-const properties = {
-	externalState,
-	pagination: {
-		itemsPerPage: 25
-	},
-	columns
-};
-
-const paginatedGrid = createDgrid.mixin(createProjectorMixin)({ properties });
+const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
+	properties: {
+		externalState,
+		pagination: {
+			itemsPerPage: 25
+		},
+		columns
+	}
+});
 
 const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
@@ -100,23 +100,27 @@ const dgrid = createDgrid.mixin(createProjectorMixin)({
 let cellToggle = true;
 
 function onclick() {
-	(<any> properties).customCell = cellToggle ? createCustomCell : false;
 	cellToggle = !cellToggle;
-	paginatedGrid.setProperties(properties);
+	const props = {
+		externalState,
+		columns,
+		customCell: cellToggle ? createCustomCell : false
+	};
+	dgrid.setProperties(props);
 }
 
 const button = createWidgetBase.mixin(createProjectorMixin).override({
 	tagName: 'button',
 	nodeAttributes: [
 		function(): any {
-			return { innerHTML: 'Click Me', style: 'background-color: red; height: 30px; width: 100%', onclick };
+			return { innerHTML: 'Use custom cell', classes: { button: true }, onclick };
 		}
 	]
 })();
 
 button.append();
-paginatedGrid.append();
 dgrid.append();
+paginatedGrid.append();
 
 setInterval(function() {
 	const record = data[Math.floor(Math.random() * data.length + 1)];
