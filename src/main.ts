@@ -2,6 +2,7 @@ import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransform
 import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import uuid from '@dojo/core/uuid';
+import createCustomCell from './createCustomCell';
 
 import createDgrid from './createDgrid';
 
@@ -82,15 +83,15 @@ const columns = [
 	}
 ];
 
-const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
-	properties: {
-		externalState,
-		pagination: {
-			itemsPerPage: 25
-		},
-		columns
-	}
-});
+const properties = {
+	externalState,
+	pagination: {
+		itemsPerPage: 25
+	},
+	columns
+};
+
+const paginatedGrid = createDgrid.mixin(createProjectorMixin)({ properties });
 
 const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
@@ -99,9 +100,12 @@ const dgrid = createDgrid.mixin(createProjectorMixin)({
 	}
 });
 
+let cellToggle = true;
+
 function onclick() {
-	const id = String(Math.floor(Math.random() * data.length + 1));
-	externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)] });
+	(<any> properties).customCell = cellToggle ? createCustomCell : false;
+	cellToggle = !cellToggle;
+	paginatedGrid.setProperties(properties);
 }
 
 const button = createWidgetBase.mixin(createProjectorMixin).override({
