@@ -50,23 +50,35 @@ const columns = [
 		id: 'age',
 		field: 'age',
 		label: 'Age',
-		sortable: true
+		sortable: true,
+		renderer: function (value: string) {
+			return value + ' years old';
+		}
 	},
 	{
 		id: 'gender',
 		field: 'gender',
 		label: 'Gender',
-		sortable: true
+		sortable: true,
+		renderer: function (value: string) {
+			return 'is a ' + value;
+		}
 	},
 	{
 		id: 'location',
 		field: 'location',
-		label: 'Location'
+		label: 'Location',
+		renderer: function (value: string) {
+			return 'located at ' + value;
+		}
 	},
 	{
 		id: 'delete',
 		field: '',
-		label: ''
+		label: '',
+		renderer: function (value: string) {
+			return '🗑';
+		}
 	}
 ];
 

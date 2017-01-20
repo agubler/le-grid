@@ -31,6 +31,7 @@ export interface Column {
 	field?: string;
 	sortable?: boolean;
 	color?: string;
+	renderer?: (value: string) => string;
 }
 
 export interface SortDetails {

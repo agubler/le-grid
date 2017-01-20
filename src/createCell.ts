@@ -17,8 +17,9 @@ const createDgridCell: DgridCellFactory = createWidgetBase
 			tagName: 'td',
 			classes: [ 'dgrid-cell' ],
 			getChildrenNodes(this: DgridCell): DNode[] {
-				const { properties: { data } } = this;
-				return [ data ? data.toString() : null ];
+				const { properties: { data, renderer } } = this;
+				const value = renderer ? renderer(data) : data;
+				return [ value ? value.toString() : null ];
 			}
 		}
 	});

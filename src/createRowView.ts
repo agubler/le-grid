@@ -8,7 +8,7 @@ import { Column } from './createDgrid';
 
 export interface DgridRowViewProperties extends WidgetProperties, RegistryMixinProperties {
 	item: any;
-	column: Column;
+	columns: Column[];
 }
 
 export interface DgridRowViewMixin extends WidgetMixin<DgridRowViewProperties>, RegistryMixin { }
@@ -29,10 +29,10 @@ const createDgridRowView: DgridRowViewFactory = createWidgetBase
 				}
 			],
 			getChildrenNodes(this: DgridRowView): DNode[] {
-				const { properties: { item, columns } } = this;
+				const { properties: { item, columns = [] } } = this;
 
-				return columns.map((column: { id: string }) => {
-					return w('dgrid-cell', { id: column.id, data: item[column.id] });
+				return columns.map(({ id, renderer }) => {
+					return w('dgrid-cell', { id, data: item[id], renderer });
 				});
 			}
 		}
