@@ -1,20 +1,23 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import registryMixin, { RegistryMixinProperties }  from '@dojo/widgets/mixins/registryMixin';
+import registryMixin, { RegistryMixin, RegistryMixinProperties }  from '@dojo/widgets/mixins/registryMixin';
 import { v } from '@dojo/widgets/d';
 
 import { Column, SortDetails } from './createDgrid';
 
 export interface DgridHeaderProperties extends WidgetProperties, RegistryMixinProperties {
-	onRequestSort(columnId: string, descending: boolean): void;
+	onSortRequest(columnId: string, descending: boolean): void;
 	sortDetails: SortDetails;
 	column: Column;
+	id: string;
 }
 
-export type DgridHeader = Widget<DgridHeaderProperties> & {
-	onRequestSort(event: any): void;
+export interface DgridHeaderMixin extends WidgetMixin<DgridHeaderProperties>, RegistryMixin {
+	onSortRequest(event: any): void;
 }
+
+export type DgridHeader = Widget<DgridHeaderProperties> & DgridHeaderMixin
 
 export interface DgridHeaderFactory extends WidgetFactory<DgridHeader, DgridHeaderProperties> { }
 
@@ -24,30 +27,27 @@ const createDgridHeader: DgridHeaderFactory = createWidgetBase
 		mixin: {
 			tagName: 'th',
 			classes: ['dgrid-cell'],
-			onRequestSort(this: DgridHeader, event: MouseEvent): void {
-				this.properties.onRequestSort && this.properties.onRequestSort(this.properties.id, !this.properties.sortDetails[this.properties.id]);
+			onSortRequest(this: DgridHeader, event: MouseEvent): void {
+				const { id, sortDetails: { descending = false } = { } } = <DgridHeaderProperties> this.properties;
+				this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);
 			},
 			nodeAttributes: [
-				function(this: DgridHeader): VNodeProperties {
-					const { properties: { id, sortDetails} } = this;
-					const sorted = sortDetails[id] !== null && sortDetails[id] !== undefined;
+				function(this: DgridHeader, attributes: VNodeProperties): VNodeProperties {
+					const { id, sortDetails } = <DgridHeaderProperties> this.properties;
 
-					return {
-						classes: {
-							'dgrid-sort-up': sorted && sortDetails[id] === false,
-							'dgrid-sort-down': sorted && sortDetails[id] === true
-						},
-						onclick: this.onRequestSort,
-						role: 'columnheader'
-					};
+					const classes = sortDetails ? {
+						'dgrid-sort-up': sortDetails.descending,
+						'dgrid-sort-down': !sortDetails.descending
+					} : {};
+
+					return { classes, onclick: this.onSortRequest, role: 'columnheader' };
 				}
 			],
 			getChildrenNodes(this: DgridHeader): DNode[] {
-				const { properties: { id, column, sortDetails } } = this;
-				const sorted = sortDetails[id] !== null && sortDetails[id] !== undefined;
+				const { id, column, sortDetails } = <DgridHeaderProperties> this.properties;
 				return [
 					v('span', [ column.label ]),
-					sorted ? v('div.dgrid-sort-arrow.ui-icon', { role: 'presentation' }) : null
+					sortDetails && sortDetails.columnId === id ? v('div.dgrid-sort-arrow.ui-icon', { role: 'presentation' }) : null
 				];
 			}
 		}

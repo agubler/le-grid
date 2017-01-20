@@ -1,18 +1,22 @@
 {
-	"version": "2.1.4",
+	"version": "2.0.2",
 	"compilerOptions": {
 		"declaration": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
 		"module": "umd",
+		"moduleResolution": "node",
 		"noImplicitAny": true,
-		"outDir": "_build",
+		"noImplicitThis": true,
+		"outDir": "_build/",
 		"removeComments": false,
 		"sourceMap": true,
-		"target": "es5",
-		"moduleResolution": "node"
+		"strictNullChecks": true,
+		"target": "es5"
 	},
 	"include": [
-		"./typings/index.d.ts",
 		"./src/**/*.ts",
-		"./tests/**/*.ts"
+		"./tests/**/*.ts",
+		"./typings/index.d.ts"
 	]
 }

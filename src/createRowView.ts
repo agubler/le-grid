@@ -1,5 +1,5 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widgets/mixins/registryMixin';
 import { w } from '@dojo/widgets/d';
@@ -11,7 +11,9 @@ export interface DgridRowViewProperties extends WidgetProperties, RegistryMixinP
 	column: Column;
 }
 
-export type DgridRowView = Widget<DgridRowViewProperties> & RegistryMixin;
+export interface DgridRowViewMixin extends WidgetMixin<DgridRowViewProperties>, RegistryMixin { }
+
+export type DgridRowView = Widget<DgridRowViewProperties>
 
 export interface DgridRowViewFactory extends WidgetFactory<DgridRowView, DgridRowViewProperties> { }
 

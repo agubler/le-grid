@@ -1,6 +1,7 @@
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import uuid from '@dojo/core/uuid';
 
 import createDgrid from './createDgrid';
 
@@ -27,7 +28,7 @@ function createData(count: number): any[] {
 
 	for (let i = 0; i < count; i++) {
 		data.push({
-			id: String(i + 1),
+			id: uuid(),
 			age: Math.floor(Math.random() * 100) + 1,
 			gender: String.fromCharCode(Math.floor(Math.random() * 25) + 65),
 			location: locations[Math.floor(Math.random() * locations.length)],
@@ -38,10 +39,10 @@ function createData(count: number): any[] {
 	return data;
 };
 
-const data = createData(250);
+let data = createData(55);
 
 const externalState = createQueryStore({
-	data
+	data: [...data]
 });
 
 const columns = [
@@ -72,32 +73,48 @@ const columns = [
 const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
 		externalState,
+		pagination: {
+			itemsPerPage: 25
+		},
 		columns
 	}
 });
 
-const button = createWidgetBase.mixin(createProjectorMixin).override({
-	tagName: 'button',
-	nodeAttributes: [
-		function(): any {
-			return { innerHTML: 'Click Me', style: 'background-color: red; height: 100px; width: 100px', onclick };
-		}
-	]
-})();
-
-button.append();
+const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
+	properties: {
+		externalState,
+		columns
+	}
+});
 
 function onclick() {
 	const id = String(Math.floor(Math.random() * data.length + 1));
 	externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)] });
 }
 
-dgrid.append().then(() => {
-	setInterval(function() {
-		const id = String(Math.floor(Math.random() * data.length + 1));
-		externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)], color: 'aqua' });
-		setTimeout(() => {
-			externalState.patch({ id, color: 'transparent' });
-		}, 250);
-	}, 500);
-});
+const button = createWidgetBase.mixin(createProjectorMixin).override({
+	tagName: 'button',
+	nodeAttributes: [
+		function(): any {
+			return { innerHTML: 'Click Me', style: 'background-color: red; height: 30px; width: 100%', onclick };
+		}
+	]
+})();
+
+button.append();
+dgrid.append();
+paginatedGrid.append();
+
+setInterval(function() {
+	const id = data[Math.floor(Math.random() * data.length + 1)].id;
+	externalState.patch({ id, location: secondLocations[Math.floor(Math.random() * secondLocations.length)], color: 'aqua' });
+	setTimeout(() => {
+		externalState.patch({ id, color: 'transparent' });
+	}, 250);
+}, 500);
+
+setInterval(function() {
+	const newData = createData(20);
+	data = [...data, ...newData];
+	externalState.put(newData);
+}, 2000);

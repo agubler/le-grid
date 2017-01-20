@@ -1,5 +1,5 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widgets/mixins/registryMixin';
 import externalState, { ExternalStateMixin, ExternalStateProperties } from '@dojo/widgets/mixins/externalState';
@@ -12,9 +12,11 @@ export interface DgridRowProperties extends ExternalStateProperties, WidgetPrope
 	column: Column;
 }
 
-export type DgridRow = Widget<DgridRowProperties> & ExternalStateMixin & RegistryMixin
+export interface DgridRowMixin extends WidgetMixin<DgridRowProperties>, ExternalStateMixin, RegistryMixin { }
 
-export interface DgridRowFactory extends WidgetFactory<DgridRow, DgridRowProperties> { }
+export type DgridRow = Widget<DgridRowProperties>
+
+export interface DgridRowFactory extends WidgetFactory<DgridRowMixin, DgridRowProperties> { }
 
 const createDgridRow: DgridRowFactory = createWidgetBase
 	.mixin(registryMixin)
