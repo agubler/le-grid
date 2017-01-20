@@ -100,12 +100,12 @@ const dgrid = createDgrid.mixin(createProjectorMixin)({
 let cellToggle = true;
 
 function onclick() {
-	cellToggle = !cellToggle;
 	const props = {
 		externalState,
 		columns,
 		customCell: cellToggle ? createCustomCell : false
 	};
+	cellToggle = !cellToggle;
 	dgrid.setProperties(props);
 }
 
