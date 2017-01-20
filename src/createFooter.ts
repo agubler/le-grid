@@ -62,7 +62,7 @@ const createDgridFooter: DgridFooterFactory = createWidgetBase
 						]),
 						v('span.dgrid-next.dgrid-page-link', { onclick: this.onClick, page: String(pageNumber + 1), classes: { 'dgrid-page-disabled': ((pageNumber * dataRangeCount) >= totalCount) } }, [ '>' ])
 					])
-				]) : v('div.dgrid-status', [ `${totalCount} results` ]),
+				]) : v('div.dgrid-status', [ `${totalCount} results` ])
 			];
 		}
 	}
