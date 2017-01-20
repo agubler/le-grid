@@ -39,7 +39,7 @@ function createData(count: number): any[] {
 	return data;
 };
 
-let data = createData(55);
+let data = createData(250);
 
 const externalState = createQueryStore({
 	data: [...data]
@@ -70,7 +70,7 @@ const columns = [
 	}
 ];
 
-const dgrid = createDgrid.mixin(createProjectorMixin)({
+const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
 		externalState,
 		pagination: {
@@ -80,7 +80,7 @@ const dgrid = createDgrid.mixin(createProjectorMixin)({
 	}
 });
 
-const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
+const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
 		externalState,
 		columns
@@ -102,8 +102,8 @@ const button = createWidgetBase.mixin(createProjectorMixin).override({
 })();
 
 button.append();
-dgrid.append();
 paginatedGrid.append();
+dgrid.append();
 
 setInterval(function() {
 	const id = data[Math.floor(Math.random() * data.length + 1)].id;
@@ -113,8 +113,11 @@ setInterval(function() {
 	}, 250);
 }, 500);
 
-setInterval(function() {
+const interval = setInterval(function() {
 	const newData = createData(20);
 	data = [...data, ...newData];
 	externalState.put(newData);
+	if (data.length > 500) {
+		clearInterval(interval);
+	}
 }, 2000);

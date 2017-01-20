@@ -97,12 +97,10 @@ const createDgrid: DgridFactory = createWidgetBase
 
 				if (pagination) {
 					const { paginationDetails: { dataRangeStart, dataRangeCount } = defaultPaginationDetails } = internalState;
-
 					internalState.externalState = internalState.externalState.range(dataRangeStart, dataRangeCount);
 				}
 
 				internalState.sortDetails = { columnId, descending };
-
 				this.invalidate();
 			},
 			onPaginationRequest(this: Dgrid, pageNumber: string): void {
