@@ -1,28 +1,14 @@
-import { Widget, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import { VNodeProperties } from '@dojo/interfaces/vdom';
+import createCell, { DgridCell, DgridCellFactory } from './createCell';
 
-export interface DgridCellProperties extends WidgetProperties {
-	data: string;
-}
-
-export type DgridCell = Widget<DgridCellProperties>
-
-export interface DgridCellFactory extends WidgetFactory<DgridCell, DgridCellProperties> { }
-
-const createDgridCell: DgridCellFactory = createWidgetBase
+const createDgridCell: DgridCellFactory = createCell
 	.mixin({
 		mixin: {
-			tagName: 'td',
-			classes: [ 'dgrid-cell'],
 			nodeAttributes: [
-				function(): any {
+				function(this: DgridCell, attributes: VNodeProperties): VNodeProperties {
 					return { classes: { 'custom-cell': !!Math.round(Math.random()) } };
 				}
-			],
-			getChildrenNodes(this: DgridCell): DNode[] {
-				const { properties: { data } } = this;
-				return [ data ? data.toString() : null ];
-			}
+			]
 		}
 	});
 
