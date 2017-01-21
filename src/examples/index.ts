@@ -1,5 +1,5 @@
 (<any> require).config({
-	baseUrl: '../../',
+	baseUrl: '../../../',
 	packages: [
 		{ name: 'src', location: '_build/src' },
 		{ name: '@dojo', location: 'node_modules/@dojo' },
