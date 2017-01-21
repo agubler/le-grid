@@ -22,7 +22,7 @@ const createDgridBody: DgridBodyFactory = createWidgetBase
 	mixin: {
 		classes: [ 'dgrid-scroller' ],
 		getChildrenNodes(this: DgridBody): DNode[] {
-			const { state: { afterAll: items }, properties: { externalState, columns, registry } } = this;
+			const { state: { afterAll: items = [] } = {}, properties: { externalState, columns, registry } } = this;
 
 			return [ v('div.dgrid-content', items.map((item: any) => {
 					return w('dgrid-row', { id: item.id, item, columns, externalState, registry });

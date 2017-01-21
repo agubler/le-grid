@@ -67,7 +67,7 @@ registerSuite({
 	},
 	'render with no items'() {
 		const externalState = createQueryStore({
-				data: []
+				data: undefined
 		});
 		const properties = {
 			registry: mockRegistry,

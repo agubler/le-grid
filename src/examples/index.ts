@@ -7,4 +7,4 @@
 	]
 });
 
-(<any> require)([ 'src/main' ], function () {});
+(<any> require)([ 'src/examples/main' ], function () {});
