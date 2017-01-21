@@ -9,7 +9,7 @@ import { Column } from './createDgrid';
 
 export interface DgridRowProperties extends ExternalStateProperties, WidgetProperties, RegistryMixinProperties {
 	item: any;
-	column: Column;
+	columns: Column[];
 }
 
 export interface DgridRowMixin extends WidgetMixin<DgridRowProperties>, ExternalStateMixin, RegistryMixin { }
