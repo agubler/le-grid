@@ -1,20 +1,19 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import registryMixin, { RegistryMixin, RegistryMixinProperties }  from '@dojo/widgets/mixins/registryMixin';
 import { assign } from '@dojo/core/lang';
 import { v } from '@dojo/widgets/d';
 
 import { Column, SortDetails } from './createDgrid';
 
-export interface DgridHeaderProperties extends WidgetProperties, RegistryMixinProperties {
+export interface DgridHeaderProperties extends WidgetProperties {
 	onSortRequest(columnId: string, descending: boolean): void;
-	sortDetails: SortDetails;
+	sortDetails?: SortDetails;
 	column: Column;
 	id: string;
 }
 
-export interface DgridHeaderMixin extends WidgetMixin<DgridHeaderProperties>, RegistryMixin {
+export interface DgridHeaderMixin extends WidgetMixin<DgridHeaderProperties> {
 	onSortRequest(event: any): void;
 }
 
@@ -23,13 +22,13 @@ export type DgridHeader = Widget<DgridHeaderProperties> & DgridHeaderMixin
 export interface DgridHeaderFactory extends WidgetFactory<DgridHeader, DgridHeaderProperties> { }
 
 const createDgridHeader: DgridHeaderFactory = createWidgetBase
-	.mixin(registryMixin)
 	.mixin({
 		mixin: {
 			tagName: 'th',
 			classes: ['dgrid-cell'],
 			onSortRequest(this: DgridHeader, event: MouseEvent): void {
-				const { id, sortDetails: { descending = false } = { } } = <DgridHeaderProperties> this.properties;
+				debugger;
+				const { id, sortDetails: { descending = false } = {} } = <DgridHeaderProperties> this.properties;
 				this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);
 			},
 			nodeAttributes: [
