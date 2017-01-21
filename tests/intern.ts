@@ -55,7 +55,7 @@ export const loaderOptions = {
 	packages: [
 		{ name: 'src', location: '_build/src' },
 		{ name: 'tests', location: '_build/tests' },
-		{ name: 'cldrjs', location: 'node_modules/cldrjs' },
+		{ name: 'chai', location: 'node_modules/chai', main: 'chai' },
 		{ name: 'dojo', location: 'node_modules/intern/browser_modules/dojo' },
 		{ name: '@dojo', location: 'node_modules/@dojo' },
 		{ name: 'maquette', location: 'node_modules/maquette/dist', main: 'maquette' },
