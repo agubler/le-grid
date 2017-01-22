@@ -151,6 +151,8 @@ const createDgrid: DgridFactory = createWidgetBase
 				if (includes(evt.changedPropertyKeys, 'customCell')) {
 					instance.registry = createRegistry(evt.properties);
 				}
+
+				// TODO add changed of items per page
 			}));
 
 			if (pagination) {

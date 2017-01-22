@@ -1,19 +1,18 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import registryMixin, { RegistryMixin, RegistryMixinProperties }  from '@dojo/widgets/mixins/registryMixin';
 import { v } from '@dojo/widgets/d';
 
-import { Column, SortDetails } from './createDgrid';
+import { PaginationDetails, PaginatedProperties }  from './createDgrid';
 
-export interface DgridFooterProperties extends WidgetProperties, RegistryMixinProperties {
-	onSortRequest(columnId: string, descending: boolean): void;
+export interface DgridFooterProperties extends WidgetProperties {
 	onPaginationRequest(pageNumber: string): void;
-	columns: Column[];
-	sortDetails: SortDetails;
+	paginationDetails?: PaginationDetails;
+	pagination?: PaginatedProperties;
+	totalCount: number;
 }
 
-export interface DgridFooterMixin extends WidgetMixin<DgridFooterProperties>, RegistryMixin {
+export interface DgridFooterMixin extends WidgetMixin<DgridFooterProperties> {
 	onClick(this: DgridFooter, evt: MouseEvent): void;
 	createPageLink(this: DgridFooter, page: string, visable: boolean, disabled: boolean): DNode;
 }
@@ -23,7 +22,6 @@ export type DgridFooter = Widget<DgridFooterProperties> & DgridFooterMixin
 export interface DgridFooterFactory extends WidgetFactory<DgridFooter, DgridFooterProperties> { }
 
 const createDgridFooter: DgridFooterFactory = createWidgetBase
-.mixin(registryMixin)
 .mixin({
 	mixin: {
 		tagName: 'div',
@@ -41,7 +39,7 @@ const createDgridFooter: DgridFooterFactory = createWidgetBase
 			return null;
 		},
 		getChildrenNodes(this: DgridFooter): VNodeProperties {
-			const { properties: { totalCount, pagination, paginationDetails: { dataRangeStart = 0, dataRangeCount = 0, pageNumber = 1 } = {} } } = this;
+			const { properties: { totalCount, pagination, paginationDetails: { dataRangeStart = 0, dataRangeCount = 10, pageNumber = 1 } = {} } } = this;
 			const totalPages = Math.ceil(totalCount / dataRangeCount);
 
 			return [
