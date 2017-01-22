@@ -2,7 +2,7 @@ import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransform
 import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widgets/createWidgetBase';
 import uuid from '@dojo/core/uuid';
-import createCustomCell from './../createCustomCell';
+import createCustomCell from './createCustomCell';
 
 import createDgrid from './../createDgrid';
 
