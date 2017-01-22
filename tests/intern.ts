@@ -11,7 +11,7 @@ export const proxyUrl = 'http://localhost:9000/';
 // automatically
 export const capabilities = {
 	'browserstack.debug': false,
-	project: 'Dojo 2',
+	project: 'le-grid',
 	name: 'le-grid'
 };
 
@@ -19,12 +19,9 @@ export const capabilities = {
 // OnDemand. Options that will be permutated are browserName, version, platform, and platformVersion; any other
 // capabilities options specified for an environment will be copied as-is
 export const environments = [
-	{ browserName: 'IE', version: [ '10.0', '11.0' ], platform: 'Windows' },
 	{ browserName: 'Edge', platform: 'Windows' },
 	{ browserName: 'Firefox', platform: 'Windows' },
-	{ browserName: 'Chrome', platform: 'Windows' },
-	{ browserName: 'Opera', platform: 'Windows' },
-	{ browserName: 'Safari', version: [ '8.0', '9.0' ], platform: 'MAC' } // ,
+	{ browserName: 'Chrome', platform: 'Windows' }
 ];
 
 // Maximum number of simultaneous integration tests that should be executed on the remote WebDriver service

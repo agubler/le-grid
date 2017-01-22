@@ -1,9 +1,58 @@
 # le-grid
 
-```shell
-npm install
+A reactive lightweight, customisable grid implementation built using [@dojo/widgets](https://github/dojo/widgets) and [@dojo/stores](https://github/dojo/stores).
 
-grunt dev
+- [Features](#features)
+- [Usage](#usage)
+    - [Installation](#installation)
+    - [Testing](#testing)
+
+## Features
+
+Supports cell customisation, configurable columns and pagination.
+
+## Usage
+
+To use `le-grid`, clone the repository, install the dependencies, grunt link and npm link in the target project.
+
+```shell
+git clone git@github.com:agubler/le-grid.git
+
+cd le-grid
+
+npm install # or yarn install
+
+grunt link # this uses npm link under the covers
+
+cd path/to/project
+
+npm link le-grid
 ```
 
-Serve the root directory and navigate to http://localhost:9999/_build/src
+### Installation
+
+### Testing
+
+Tests are written using Intern.
+
+To test locally in node run:
+
+```shell
+grunt test
+```
+
+To test against browsers with a  selenium server run:
+
+```ts
+grunt test:local
+```
+
+To test against browserstack or saucelabs run:
+
+```
+grunt test:browserstack
+```
+
+```
+grunt test:saucelabs
+```
