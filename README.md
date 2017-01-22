@@ -1,5 +1,9 @@
 # le-grid
 
+[![Build Status](https://travis-ci.org/agubler/le-grid.svg?branch=master)](https://travis-ci.org/agubler/le-grid)
+[![codecov](https://codecov.io/gh/agubler/le-grid/branch/master/graph/badge.svg)](https://codecov.io/gh/agubler/le-grid)
+[![npm version](https://badge.fury.io/js/le-grid.svg)](https://badge.fury.io/js/le-grid)
+
 A reactive lightweight, customisable grid implementation built using [@dojo/widgets](https://github/dojo/widgets) and [@dojo/stores](https://github/dojo/stores).
 
 - [Features](#features)
