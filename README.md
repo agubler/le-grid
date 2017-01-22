@@ -15,6 +15,8 @@ A reactive lightweight, customisable grid implementation built using [@dojo/widg
 
 Supports cell customisation, configurable columns and pagination.
 
+<img src="docs/le-grid.gif" width=100%>
+
 ## Usage
 
 To use `le-grid`, clone the repository, install the dependencies, grunt link and npm link in the target project.
