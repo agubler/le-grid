@@ -1,5 +1,5 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import createCell, { DgridCell, DgridCellFactory } from './createCell';
+import createCell, { DgridCell, DgridCellFactory } from './../createCell';
 
 const createDgridCell: DgridCellFactory = createCell
 	.mixin({
