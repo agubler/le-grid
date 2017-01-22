@@ -27,7 +27,6 @@ const createDgridHeader: DgridHeaderFactory = createWidgetBase
 			tagName: 'th',
 			classes: ['dgrid-cell'],
 			onSortRequest(this: DgridHeader, event: MouseEvent): void {
-				debugger;
 				const { id, sortDetails: { descending = false } = {} } = <DgridHeaderProperties> this.properties;
 				this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);
 			},

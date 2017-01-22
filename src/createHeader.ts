@@ -9,7 +9,7 @@ import { Column, SortDetails } from './createDgrid';
 export interface DgridHeaderProperties extends WidgetProperties, RegistryMixinProperties {
 	onSortRequest(columnId: string, descending: boolean): void;
 	columns: Column[];
-	sortDetails: SortDetails;
+	sortDetails?: SortDetails;
 }
 
 export interface DgridHeaderMixin extends WidgetMixin<DgridHeaderProperties>, RegistryMixin { }
