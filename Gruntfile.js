@@ -19,19 +19,15 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.registerTask('dev', [
-		"clean:typings",
-		'typings',
-		'tslint',
-		'clean:dev',
-		'dojo-ts:dev',
+	grunt.registerTask('dev', grunt.config.get('devTasks').concat([
+		'copy:staticFiles',
 		'copy:staticTestFiles',
-		'copy:staticFiles'
-	]);
+		'postcss:modules-dev'
+	]));
 
 	grunt.registerTask('dist', grunt.config.get('distTasks').concat([
 		'copy:staticDistFiles',
-		'postcss:modules',
+		'postcss:modules-dist',
 		'postcss:variables'
 	]));
 };
