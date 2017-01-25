@@ -4,3 +4,4 @@ export const navigation: string;
 export const previousPage: string;
 export const nextPage: string;
 export const pageLink: string;
+export const disabledPageLink: string;

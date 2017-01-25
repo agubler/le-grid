@@ -6,6 +6,7 @@ import { assign } from '@dojo/core/lang';
 import { v } from '@dojo/widget-core/d';
 import outerNodeTheme from './mixins/outerNodeTheme';
 import { Column, SortDetails } from './createGrid';
+import { toggleClass } from './util/themeHelpers';
 
 import * as baseTheme from './styles/gridHeaderCell';
 
@@ -41,23 +42,20 @@ const createGridHeader: GridHeaderFactory = createWidgetBase
 			nodeAttributes: [
 				function(this: GridHeader, attributes: VNodeProperties): VNodeProperties {
 					const { id, sortDetails, column } = <GridHeaderProperties> this.properties;
-
-					// TODO won't work anymore
-					const classes = sortDetails ? {
-						'grid-sort-up': sortDetails.descending,
-						'grid-sort-down': !sortDetails.descending
-					} : {};
-
 					const onclick = column.sortable ? { onclick: this.onSortRequest } : {};
 
-					return assign({ classes, role: 'columnheader' }, onclick);
+					return assign({ role: 'columnheader' }, onclick);
 				}
 			],
 			getChildrenNodes(this: GridHeader): DNode[] {
 				const { id, column, sortDetails } = <GridHeaderProperties> this.properties;
+				const classes = sortDetails && sortDetails.descending ? this.theme.sortUp : toggleClass(this.theme.sortUp!);
+
 				return [
 					v('span', [ column.label ]),
-					sortDetails && sortDetails.columnId === id ? v('div', { classes: { ...this.theme.sortArrow, ...this.theme.icon }, role: 'presentation' }) : null
+					sortDetails && sortDetails.columnId === id ?
+						v('div', { classes: { ...this.theme.sortArrow, ...this.theme.icon, ...classes }, role: 'presentation' }) :
+						null
 				];
 			}
 		}

@@ -5,8 +5,9 @@ import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { v } from '@dojo/widget-core/d';
 import { PaginationDetails, PaginatedProperties }  from './createGrid';
 import outerNodeTheme from './mixins/outerNodeTheme';
+import { toggleClass } from './util/themeHelpers';
 
-import * as baseTheme1 from './styles/gridFooter';
+import * as baseTheme from './styles/gridFooter';
 
 export interface GridFooterProperties extends WidgetProperties {
 	onPaginationRequest(pageNumber: string): void;
@@ -15,9 +16,9 @@ export interface GridFooterProperties extends WidgetProperties {
 	totalCount: number;
 }
 
-export interface GridFooterMixin extends WidgetMixin<GridFooterProperties>, ThemeableMixin<typeof baseTheme1> {
+export interface GridFooterMixin extends WidgetMixin<GridFooterProperties>, ThemeableMixin<typeof baseTheme> {
 	onClick(this: GridFooter, evt: MouseEvent): void;
-	createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean): DNode;
+	createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean, extraClasses?: any, overrideLabel?: string): DNode;
 }
 
 export type GridFooter = Widget<GridFooterProperties> & GridFooterMixin
@@ -29,20 +30,23 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 .mixin(outerNodeTheme)
 .mixin({
 	mixin: {
-		baseTheme: baseTheme1,
+		baseTheme,
 		getOuterNodeThemes(this: GridFooter): Object[] {
 			return [ this.theme.footer || {} ];
 		},
 		onClick(this: GridFooter, evt: any) {
 			this.properties.onPaginationRequest && this.properties.onPaginationRequest(evt.target.attributes['page'].value);
 		},
-		createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean): DNode {
+		createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean, extraClasses: any = {}, overrideLabel?: string): DNode {
 			if (visable) {
-				// TODO this wont work now
-				/*const classes = {
-					'grid-page-disabled': disabled
-				};*/
-				return v('span', { key: page, classes: this.theme.pageLink,  onclick: this.onClick, page }, [ page ]);
+				const disabledLink = disabled ? this.theme.disabledPageLink : toggleClass(this.theme.disabledPageLink!);
+				const properies = {
+					key: page,
+					classes: { ...this.theme.pageLink, ...disabledLink, ...extraClasses },
+					onclick: this.onClick, page
+				};
+
+				return v('span', properies,	[ overrideLabel || page ]);
 			}
 			return null;
 		},
@@ -54,9 +58,9 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 				pagination ? v('div', [
 					v('div', { classes: this.theme.status }, [ `${dataRangeStart + 1} - ${dataRangeStart + dataRangeCount} of ${totalCount} results` ]),
 					v('div', { classes: this.theme.navigation }, [
-						v('span', { onclick: this.onClick, page: String(pageNumber - 1), classes: { ...this.theme.pageLink, ...this.theme.previousPage } }, [ '<' ]),
+						this.createPageLink(String(pageNumber - 1), true, Boolean(pageNumber === 1), this.theme.previousPage, '<'),
 						v('span', [
-							v('span', { onclick: this.onClick, page: '1', classes: this.theme.pageLink } , [ '1' ]),
+							this.createPageLink('1', true, Boolean(pageNumber === 1)),
 							pageNumber > 3 ? v('span', [ '...' ]) : null,
 							this.createPageLink(String(pageNumber - 2), Boolean(pageNumber - 2 > 1), false),
 							this.createPageLink(String(pageNumber - 1), Boolean(pageNumber - 1 > 1), false),
@@ -64,9 +68,9 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 							this.createPageLink(String(pageNumber + 1), Boolean(pageNumber + 1 < totalPages), false),
 							this.createPageLink(String(pageNumber + 2), Boolean(pageNumber + 2 < totalPages), false),
 							pageNumber !== totalPages ? v('span', [ '...' ]) : null,
-							v('span', { onclick: this.onClick, page: String(totalPages), classes: this.theme.pageLink }, [ String(totalPages) ])
+							this.createPageLink(String(totalPages), true, Boolean(pageNumber === totalPages))
 						]),
-						v('span', { onclick: this.onClick, page: String(pageNumber + 1), classes: { ...this.theme.pageLink, ...this.theme.nextPage } }, [ '>' ])
+						this.createPageLink(String(pageNumber - 1), true, Boolean(pageNumber === totalPages), this.theme.nextPage, '>')
 					])
 				]) : v('div', { classes: this.theme.status }, [ `${totalCount} results` ])
 			];

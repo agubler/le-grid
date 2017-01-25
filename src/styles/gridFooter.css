@@ -26,3 +26,8 @@
 	color: inherit;
 	padding: 0 4px;
 }
+
+.disabledPageLink {
+	color: #aaa;
+	cursor: default;
+}
