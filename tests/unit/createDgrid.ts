@@ -2,10 +2,10 @@ import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import { assign } from '@dojo/core/lang';
-import FactoryRegistry from '@dojo/widgets/FactoryRegistry';
+import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
 import createDgrid from '../../src/createDgrid';
@@ -45,7 +45,7 @@ registerSuite({
 	},
 	'dgrid without pagination'() {
 		const properties = {
-			externalState: createQueryStore(),
+			store: createQueryStore(),
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
@@ -71,7 +71,7 @@ registerSuite({
 	},
 	'dgrid with pagination'() {
 		const properties = {
-			externalState: createQueryStore(),
+			store: createQueryStore(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -100,7 +100,7 @@ registerSuite({
 	},
 	'onSortRequest'() {
 		const properties = {
-			externalState: createQueryStore(),
+			store: createQueryStore(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -147,7 +147,7 @@ registerSuite({
 	},
 	'onPaginationRequest'() {
 		const properties = {
-			externalState: createQueryStore(),
+			store: createQueryStore(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -193,7 +193,7 @@ registerSuite({
 	},
 	'custom cell applied on property change'() {
 		const properties = {
-			externalState: createQueryStore(),
+			store: createQueryStore(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -209,19 +209,19 @@ registerSuite({
 		assert.strictEqual(dgrid.registry!.get('dgrid-cell'), customCell);
 	},
 	'external state updated on property change'() {
-		const initialExternalState = createQueryStore({
+		const initialstore = createQueryStore({
 			data: [
 				{ id: '1', foo: 'bar' }
 			]
 		});
-		const updatedExternalState = createQueryStore({
+		const updatedstore = createQueryStore({
 			data: [
 				{ id: '9', baz: 'qux' }
 			]
 		});
 
 		const properties = {
-			externalState: initialExternalState,
+			store: initialstore,
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
@@ -231,7 +231,7 @@ registerSuite({
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 		return promise.then(() => {
 			assert.deepEqual(dgrid['state'].afterAll[0], { id: '1', foo: 'bar' });
-			dgrid.setProperties(assign(properties, { externalState: updatedExternalState }));
+			dgrid.setProperties(assign(properties, { store: updatedstore }));
 			const promise = new Promise((resolve) => setTimeout(resolve, 10));
 			return promise.then(() => {
 				assert.deepEqual(dgrid['state'].afterAll[0], { id: '9', baz: 'qux' });

@@ -18,7 +18,7 @@ module.exports = function (grunt) {
 		'typings',
 		'tslint',
 		'clean:dev',
-		'ts:dev',
+		'dojo-ts:dev',
 		'copy:staticTestFiles',
 		'copy:staticFiles'
 	]);

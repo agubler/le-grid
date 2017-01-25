@@ -1,10 +1,10 @@
 import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
-import FactoryRegistry from '@dojo/widgets/FactoryRegistry';
+import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
 import createRow from '../../src/createRow';
@@ -33,7 +33,7 @@ registerSuite({
 	render() {
 		const properties = {
 			registry: mockRegistry,
-			externalState: createQueryStore(),
+			store: createQueryStore(),
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			],

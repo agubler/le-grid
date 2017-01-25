@@ -1,12 +1,12 @@
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
-import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './../../src/examples/createCustomCell';
 
 import createDgrid from './../../src/createDgrid';
 
-const externalState = createQueryStore({
+const store = createQueryStore({
 	data: [
 		{ id: uuid(), age: 1, gender: 'A', location: 'Out' },
 		{ id: uuid(), age: 1, gender: 'B', location: 'Out' },
@@ -90,7 +90,7 @@ const columns = [
 
 const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
-		externalState,
+		store,
 		pagination: {
 			itemsPerPage: 5
 		},
@@ -102,7 +102,7 @@ let cellToggle = true;
 
 function onclick() {
 	const props = {
-		externalState,
+		store,
 		columns,
 		pagination: {
 			itemsPerPage: 5

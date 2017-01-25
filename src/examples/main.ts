@@ -1,6 +1,6 @@
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
-import createProjectorMixin from '@dojo/widgets/mixins/createProjectorMixin';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './createCustomCell';
 
@@ -39,7 +39,7 @@ function createData(count: number): any[] {
 
 let data = createData(250);
 
-const externalState = createQueryStore({
+const store = createQueryStore({
 	data: [...data]
 });
 
@@ -82,7 +82,7 @@ const columns = [
 
 const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
-		externalState,
+		store,
 		pagination: {
 			itemsPerPage: 25
 		},
@@ -92,7 +92,7 @@ const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
 
 const dgrid = createDgrid.mixin(createProjectorMixin)({
 	properties: {
-		externalState,
+		store,
 		columns
 	}
 });
@@ -101,7 +101,7 @@ let cellToggle = true;
 
 function onclick() {
 	const props = {
-		externalState,
+		store,
 		columns,
 		customCell: cellToggle ? createCustomCell : false
 	};
@@ -126,9 +126,9 @@ setInterval(function() {
 	const record = data[Math.floor(Math.random() * data.length + 1)];
 	if (record) {
 		const id = record.id;
-		externalState.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
+		store.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
 		setTimeout(() => {
-			externalState.patch({ id, color: 'transparent' });
+			store.patch({ id, color: 'transparent' });
 		}, 500);
 	}
 }, 50);
@@ -136,7 +136,7 @@ setInterval(function() {
 const interval = setInterval(function() {
 	const newData = createData(20);
 	data = [...data, ...newData];
-	externalState.put(newData);
+	store.put(newData);
 	if (data.length > 500) {
 		clearInterval(interval);
 	}

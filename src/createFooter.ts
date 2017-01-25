@@ -1,7 +1,7 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
-import { v } from '@dojo/widgets/d';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { v } from '@dojo/widget-core/d';
 
 import { PaginationDetails, PaginatedProperties }  from './createDgrid';
 

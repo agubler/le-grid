@@ -1,12 +1,12 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, PropertiesChangeEvent } from '@dojo/widgets/interfaces';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { includes } from '@dojo/shim/array';
 import createSort from '@dojo/stores/query/createSort';
-import { w } from '@dojo/widgets/d';
+import { w } from '@dojo/widget-core/d';
 import { QueryTransformMixin } from '@dojo/stores/store/mixins/createQueryTransformMixin';
-import externalState from '@dojo/widgets/mixins/externalState';
-import FactoryRegistry from '@dojo/widgets/FactoryRegistry';
+import storeMixin from '@dojo/widget-core/mixins/storeMixin';
+import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 
 import createBody from './createBody';
 import createRow from './createRow';
@@ -55,7 +55,7 @@ export interface PaginatedProperties {
 
 export interface DgridProperties extends WidgetProperties {
 	columns: Column[];
-	externalState: QueryTransformMixin<{}, any>;
+	store: QueryTransformMixin<{}, any>;
 	customCell?: any;
 	pagination?: PaginatedProperties;
 }
@@ -70,7 +70,7 @@ export type Dgrid = DgridMixin & Widget<DgridProperties>
 export interface DgridFactory extends WidgetFactory<Dgrid, DgridProperties> { }
 
 interface InternalState {
-	externalState: QueryTransformMixin<{}, any>;
+	store: QueryTransformMixin<{}, any>;
 	sortDetails?: SortDetails;
 	paginationDetails?: PaginationDetails;
 }
@@ -84,7 +84,7 @@ const defaultPaginationDetails: PaginationDetails  = {
 };
 
 const createDgrid: DgridFactory = createWidgetBase
-	.mixin(externalState)
+	.mixin(storeMixin)
 	.mixin({
 		mixin: {
 			classes: ['dgrid-widgets', 'dgrid', 'dgrid-grid'],
@@ -94,57 +94,57 @@ const createDgrid: DgridFactory = createWidgetBase
 				}
 			],
 			onSortRequest(this: Dgrid, columnId: string, descending: boolean): void {
-				const { pagination, externalState } = <DgridProperties> this.properties;
+				const { pagination, store } = <DgridProperties> this.properties;
 				const internalState = internalStateMap.get(this);
 
-				internalState.externalState = externalState.sort(createSort([ columnId ], [ descending ]));
+				internalState.store = store.sort(createSort([ columnId ], [ descending ]));
 
 				if (pagination) {
 					const { paginationDetails: { dataRangeStart, dataRangeCount } = defaultPaginationDetails } = internalState;
-					internalState.externalState = internalState.externalState.range(dataRangeStart, dataRangeCount);
+					internalState.store = internalState.store.range(dataRangeStart, dataRangeCount);
 				}
 
 				internalState.sortDetails = { columnId, descending };
 				this.invalidate();
 			},
 			onPaginationRequest(this: Dgrid, pageNumber: string): void {
-				const { pagination: { itemsPerPage = 10 } = { }, externalState } = <DgridProperties> this.properties;
+				const { pagination: { itemsPerPage = 10 } = { }, store } = <DgridProperties> this.properties;
 				const internalState = internalStateMap.get(this);
 				const dataRangeStart = (parseInt(pageNumber, 10) - 1) * itemsPerPage;
 
 				if (internalState.sortDetails) {
-					internalState.externalState = externalState
+					internalState.store = store
 						.sort(createSort(internalState.sortDetails.columnId, internalState.sortDetails.descending))
 						.range(dataRangeStart, itemsPerPage);
 				}
 				else {
-					internalState.externalState = externalState.range(dataRangeStart, itemsPerPage);
+					internalState.store = store.range(dataRangeStart, itemsPerPage);
 				}
 
 				internalState.paginationDetails = { dataRangeStart, dataRangeCount: itemsPerPage, pageNumber: parseInt(pageNumber, 10)};
 				this.invalidate();
 			},
 			getChildrenNodes(this: Dgrid): DNode[] {
-				const { state: { afterAll: items = [] }, properties: { columns, pagination }, registry } = this;
-				const { paginationDetails, sortDetails, externalState } = internalStateMap.get(this);
+				const { state = [], properties: { columns, pagination }, registry } = this;
+				const { paginationDetails, sortDetails, store } = internalStateMap.get(this);
 
 				return [
 					w('dgrid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
-					w('dgrid-body', { registry, externalState, columns } ),
-					w('dgrid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: items.length, paginationDetails, pagination: Boolean(pagination) } )
+					w('dgrid-body', { registry, store, columns } ),
+					w('dgrid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: state.length, paginationDetails, pagination: Boolean(pagination) } )
 				];
 			}
 		},
 		initialize(instance: Dgrid) {
-			const { externalState, pagination } = <DgridProperties> instance.properties;
+			const { store, pagination } = <DgridProperties> instance.properties;
 
 			instance.registry = createRegistry(instance.properties);
 
 			instance.own(instance.on('properties:changed', (evt: PropertiesChangeEvent<Dgrid, DgridProperties>) => {
-				if (includes(evt.changedPropertyKeys, 'externalState')) {
+				if (includes(evt.changedPropertyKeys, 'store')) {
 					const internalState = internalStateMap.get(instance);
 
-					internalState.externalState = evt.properties.externalState;
+					internalState.store = evt.properties.store;
 					internalStateMap.set(instance, internalState);
 				}
 
@@ -155,14 +155,18 @@ const createDgrid: DgridFactory = createWidgetBase
 				// TODO add changed of items per page
 			}));
 
+			instance.own(instance.on('state:changed', () => {
+				instance.invalidate();
+			}));
+
 			if (pagination) {
 				internalStateMap.set(instance, {
-					externalState: externalState.range(0, pagination.itemsPerPage),
+					store: store.range(0, pagination.itemsPerPage),
 					paginationDetails: { dataRangeStart: 0, dataRangeCount: pagination.itemsPerPage, pageNumber: 1 }
 				});
 			}
 			else {
-				internalStateMap.set(instance, { externalState });
+				internalStateMap.set(instance, { store });
 			}
 
 		}

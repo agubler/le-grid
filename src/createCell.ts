@@ -1,5 +1,5 @@
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widgets/interfaces';
-import createWidgetBase from '@dojo/widgets/createWidgetBase';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 export interface DgridCellProperties extends WidgetProperties {
 	data: string;
