@@ -1,10 +1,9 @@
 (<any> require).config({
-	baseUrl: '../../../',
+	baseUrl: '.',
 	packages: [
-		{ name: 'src', location: '_build/src' },
-		{ name: '@dojo', location: 'node_modules/@dojo' },
-		{ name: 'maquette', location: 'node_modules/maquette/dist', main: 'maquette' }
+		{ name: '@dojo', location: '../../../node_modules/@dojo' },
+		{ name: 'maquette', location: '../../../node_modules/maquette/dist', main: 'maquette' }
 	]
 });
 
-(<any> require)([ 'src/examples/main' ], function () {});
+(<any> require)([ './main' ], function () {});
