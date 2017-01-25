@@ -230,11 +230,11 @@ registerSuite({
 		const dgrid = createDgrid({ properties });
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 		return promise.then(() => {
-			assert.deepEqual(dgrid['state'].afterAll[0], { id: '1', foo: 'bar' });
+			assert.deepEqual(dgrid['state'][0], { id: '1', foo: 'bar' });
 			dgrid.setProperties(assign(properties, { store: updatedstore }));
 			const promise = new Promise((resolve) => setTimeout(resolve, 10));
 			return promise.then(() => {
-				assert.deepEqual(dgrid['state'].afterAll[0], { id: '9', baz: 'qux' });
+				assert.deepEqual(dgrid['state'][0], { id: '9', baz: 'qux' });
 			});
 		});
 	}
