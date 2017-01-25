@@ -15,19 +15,6 @@ export type DgridBody = Widget<DgridBodyProperties> & DgridBodyMixin
 
 export interface DgridBodyFactory extends WidgetFactory<DgridBodyMixin, DgridBodyProperties> { }
 
-function getRows(instance: DgridBody) {
-	const { state = [], properties: { store, columns, registry } } = instance;
-
-	if (Array.isArray(state)) {
-		return state.map((item: any) => {
-			return w('dgrid-row', { id: item.id, item, columns, store, registry });
-		});
-	}
-	else {
-		return [];
-	}
-}
-
 const createDgridBody: DgridBodyFactory = createWidgetBase
 .mixin(registryMixin)
 .mixin(storeMixin)
@@ -35,13 +22,10 @@ const createDgridBody: DgridBodyFactory = createWidgetBase
 	mixin: {
 		classes: [ 'dgrid-scroller' ],
 		getChildrenNodes(this: DgridBody): DNode[] {
-			return [ v('div.dgrid-content', getRows(this)) ];
+			const { state: { data = [] }, properties: { store, columns, registry } } = this;
+
+			return [ v('div.dgrid-content', data.map((item: any) => w('dgrid-row', { key: item.id, id: item.id, item, columns, store, registry }))) ];
 		}
-	},
-	initialize(instance) {
-		instance.own(instance.on('state:changed', () => {
-			instance.invalidate();
-		}));
 	}
 });
 

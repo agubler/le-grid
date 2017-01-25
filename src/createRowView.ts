@@ -32,7 +32,7 @@ const createDgridRowView: DgridRowViewFactory = createWidgetBase
 				const { properties: { item, columns = [] } } = this;
 
 				return columns.map(({ id, renderer }) => {
-					return w('dgrid-cell', { id, data: item[id], renderer });
+					return w('dgrid-cell', { key: id, data: item[id], renderer });
 				});
 			}
 		}

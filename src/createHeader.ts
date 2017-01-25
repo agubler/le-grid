@@ -34,7 +34,7 @@ const createDgridHeader: DgridHeaderFactory = createWidgetBase
 				return [
 					v('table.dgrid-row-table', { role: 'presentation' }, [
 						v('tr', columns.map((column) => {
-							return w('dgrid-header-cell', { id: column.id, column, sortDetails, onSortRequest });
+							return w('dgrid-header-cell', { id: column.id, key: column.id, column, sortDetails, onSortRequest });
 						}))
 					])
 				];

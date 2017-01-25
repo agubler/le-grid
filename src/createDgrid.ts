@@ -125,13 +125,13 @@ const createDgrid: DgridFactory = createWidgetBase
 				this.invalidate();
 			},
 			getChildrenNodes(this: Dgrid): DNode[] {
-				const { state = [], properties: { columns, pagination }, registry } = this;
+				const { state: { data = [] }, properties: { columns, pagination }, registry } = this;
 				const { paginationDetails, sortDetails, store } = internalStateMap.get(this);
 
 				return [
 					w('dgrid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
 					w('dgrid-body', { registry, store, columns } ),
-					w('dgrid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: state.length, paginationDetails, pagination: Boolean(pagination) } )
+					w('dgrid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: data.length, paginationDetails, pagination: Boolean(pagination) } )
 				];
 			}
 		},
@@ -153,10 +153,6 @@ const createDgrid: DgridFactory = createWidgetBase
 				}
 
 				// TODO add changed of items per page
-			}));
-
-			instance.own(instance.on('state:changed', () => {
-				instance.invalidate();
 			}));
 
 			if (pagination) {
