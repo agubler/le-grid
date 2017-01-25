@@ -1,32 +1,43 @@
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/registryMixin';
 import storeMixin, { StoreMixinApi, StoreMixinProperties } from '@dojo/widget-core/mixins/storeMixin';
+import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { v, w } from '@dojo/widget-core/d';
-import { Column } from './createDgrid';
+import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import outerNodeTheme from './mixins/outerNodeTheme';
+import { Column } from './createGrid';
 
-export interface DgridBodyProperties extends WidgetProperties, RegistryMixinProperties, StoreMixinProperties {
+import * as baseTheme from './styles/gridBody';
+
+export interface GridBodyProperties extends WidgetProperties, RegistryMixinProperties, StoreMixinProperties {
 	columns: Column[];
 }
 
-export interface DgridBodyMixin extends WidgetMixin<DgridBodyProperties>, StoreMixinApi, RegistryMixin {}
+export interface GridBodyMixin extends WidgetMixin<GridBodyProperties>, StoreMixinApi, RegistryMixin, ThemeableMixin<typeof baseTheme> {}
 
-export type DgridBody = Widget<DgridBodyProperties> & DgridBodyMixin
+export type GridBody = Widget<GridBodyProperties> & GridBodyMixin
 
-export interface DgridBodyFactory extends WidgetFactory<DgridBodyMixin, DgridBodyProperties> { }
+export interface GridBodyFactory extends WidgetFactory<GridBodyMixin, GridBodyProperties> { }
 
-const createDgridBody: DgridBodyFactory = createWidgetBase
+const createGridBody: GridBodyFactory = createWidgetBase
 .mixin(registryMixin)
 .mixin(storeMixin)
+.mixin(themeable)
+.mixin(outerNodeTheme)
 .mixin({
 	mixin: {
-		classes: [ 'dgrid-scroller' ],
-		getChildrenNodes(this: DgridBody): DNode[] {
+		baseTheme,
+		getOuterNodeThemes(this: GridBody): Object[] {
+			return [ this.theme.scroller || {} ];
+		},
+		getChildrenNodes(this: GridBody): DNode[] {
 			const { state: { data = [] }, properties: { store, columns, registry } } = this;
 
-			return [ v('div.dgrid-content', data.map((item: any) => w('dgrid-row', { key: item.id, id: item.id, item, columns, store, registry }))) ];
+			return [ v('div', { classes: this.theme.content }, data.map((item: any) =>
+				w('grid-row', { key: item.id, id: item.id, item, columns, store, registry })
+			))];
 		}
 	}
 });
 
-export default createDgridBody;
+export default createGridBody;

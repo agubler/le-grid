@@ -17,7 +17,7 @@ registerSuite({
 	name: 'createHeader',
 	beforeEach() {
 		widgetBaseSpy = spy(createWidgetBase);
-		getStub = stub().withArgs('dgrid-row-view').returns(widgetBaseSpy);
+		getStub = stub().withArgs('grid-row-view').returns(widgetBaseSpy);
 		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
@@ -43,10 +43,10 @@ registerSuite({
 		const row = createHeader({ properties });
 		const vnode = <VNode> row.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-header.dgrid-header-row');
+		assert.strictEqual(vnode.vnodeSelector, 'div.grid-header.grid-header-row');
 		assert.strictEqual(vnode.properties!['role'], 'row');
 		assert.lengthOf(vnode.children, 1);
-		assert.strictEqual(vnode.children![0].vnodeSelector, 'table.dgrid-row-table');
+		assert.strictEqual(vnode.children![0].vnodeSelector, 'table.grid-row-table');
 		assert.strictEqual(vnode.children![0].properties!['role'], 'presentation');
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');

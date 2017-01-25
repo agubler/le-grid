@@ -3,38 +3,46 @@ import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@do
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties }  from '@dojo/widget-core/mixins/registryMixin';
 import { v, w } from '@dojo/widget-core/d';
+import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
+import outerNodeTheme from './mixins/outerNodeTheme';
+import { Column, SortDetails } from './createGrid';
 
-import { Column, SortDetails } from './createDgrid';
+import * as baseTheme from './styles/gridHeader';
 
-export interface DgridHeaderProperties extends WidgetProperties, RegistryMixinProperties {
+export interface GridHeaderProperties extends WidgetProperties, RegistryMixinProperties {
 	onSortRequest(columnId: string, descending: boolean): void;
 	columns: Column[];
 	sortDetails?: SortDetails;
 }
 
-export interface DgridHeaderMixin extends WidgetMixin<DgridHeaderProperties>, RegistryMixin { }
+export interface GridHeaderMixin extends WidgetMixin<GridHeaderProperties>, RegistryMixin, ThemeableMixin<typeof baseTheme> { }
 
-export type DgridHeader = Widget<DgridHeaderProperties>
+export type GridHeader = Widget<GridHeaderProperties> & GridHeaderMixin
 
-export interface DgridHeaderFactory extends WidgetFactory<DgridHeader, DgridHeaderProperties> { }
+export interface GridHeaderFactory extends WidgetFactory<GridHeader, GridHeaderProperties> { }
 
-const createDgridHeader: DgridHeaderFactory = createWidgetBase
+const createGridHeader: GridHeaderFactory = createWidgetBase
+	.mixin(themeable)
+	.mixin(outerNodeTheme)
 	.mixin(registryMixin)
 	.mixin({
 		mixin: {
-			classes: ['dgrid-header', 'dgrid-header-row'],
+			baseTheme,
+			getOuterNodeThemes(this: GridHeader): Object[] {
+				return [ this.theme.gridHeaderRow || {}, this.theme.gridHeader || {} ];
+			},
 			nodeAttributes: [
-				function(this: DgridHeader): VNodeProperties {
+				function(this: GridHeader): VNodeProperties {
 					return { role: 'row' };
 				}
 			],
-			getChildrenNodes(this: DgridHeader): DNode[] {
+			getChildrenNodes(this: GridHeader): DNode[] {
 				const { properties: { onSortRequest, columns = [], sortDetails } } = this;
 
 				return [
-					v('table.dgrid-row-table', { role: 'presentation' }, [
+					v('table', { classes: this.theme.gridHeaderTable, role: 'presentation' }, [
 						v('tr', columns.map((column) => {
-							return w('dgrid-header-cell', { id: column.id, key: column.id, column, sortDetails, onSortRequest });
+							return w('grid-header-cell', { id: column.id, key: column.id, column, sortDetails, onSortRequest });
 						}))
 					])
 				];
@@ -42,4 +50,4 @@ const createDgridHeader: DgridHeaderFactory = createWidgetBase
 		}
 	});
 
-export default createDgridHeader;
+export default createGridHeader;

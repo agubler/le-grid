@@ -18,7 +18,7 @@ registerSuite({
 	name: 'createBody',
 	beforeEach() {
 		widgetBaseSpy = spy(createWidgetBase);
-		getStub = stub().withArgs('dgrid-row').returns(widgetBaseSpy);
+		getStub = stub().withArgs('grid-row').returns(widgetBaseSpy);
 		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
@@ -50,9 +50,9 @@ registerSuite({
 		return promise.then(() => {
 			const vnode = <VNode> row.__render__();
 
-			assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-scroller');
+			assert.strictEqual(vnode.vnodeSelector, 'div.grid-scroller');
 			assert.lengthOf(vnode.children, 1);
-			assert.equal(vnode.children![0].vnodeSelector, 'div.dgrid-content');
+			assert.equal(vnode.children![0].vnodeSelector, 'div.grid-content');
 			assert.lengthOf(vnode.children![0].children, 1);
 			assert.isTrue(widgetBaseSpy.calledOnce);
 			const args = widgetBaseSpy.getCall(0).args[0];
@@ -83,9 +83,9 @@ registerSuite({
 		return promise.then(() => {
 			const vnode = <VNode> row.__render__();
 
-			assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-scroller');
+			assert.strictEqual(vnode.vnodeSelector, 'div.grid-scroller');
 			assert.lengthOf(vnode.children, 1);
-			assert.equal(vnode.children![0].vnodeSelector, 'div.dgrid-content');
+			assert.equal(vnode.children![0].vnodeSelector, 'div.grid-content');
 			assert.lengthOf(vnode.children![0].children, 0);
 			assert.isTrue(widgetBaseSpy.notCalled);
 		});

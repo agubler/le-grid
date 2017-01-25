@@ -5,4 +5,4 @@ import './createBody';
 import './createHeaderCell';
 import './createHeader';
 import './createFooter';
-import './createDgrid';
+import './createGrid';

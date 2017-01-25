@@ -16,7 +16,7 @@ registerSuite({
 	name: 'createRowView',
 	beforeEach() {
 		widgetBaseSpy = spy(createWidgetBase);
-		getStub = stub().withArgs('dgrid-cell').returns(widgetBaseSpy);
+		getStub = stub().withArgs('grid-cell').returns(widgetBaseSpy);
 		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
@@ -40,7 +40,7 @@ registerSuite({
 		const rowView = createRowView({ properties });
 		const vnode = <VNode> rowView.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'tr.dgrid-row');
+		assert.strictEqual(vnode.vnodeSelector, 'tr.grid-row');
 		assert.strictEqual(vnode.properties!['role'], 'row');
 		assert.strictEqual(vnode.properties!.bind, rowView);
 		assert.strictEqual(vnode.properties!.key, rowView);
@@ -56,7 +56,7 @@ registerSuite({
 		const rowView = createRowView({ properties });
 
 		const vnode = <VNode> rowView.__render__();
-		assert.strictEqual(vnode.vnodeSelector, 'tr.dgrid-row');
+		assert.strictEqual(vnode.vnodeSelector, 'tr.grid-row');
 		assert.lengthOf(vnode.children, 0);
 		assert.isTrue(widgetBaseSpy.notCalled);
 	}

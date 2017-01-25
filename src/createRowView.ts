@@ -2,40 +2,48 @@ import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/registryMixin';
+import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { w } from '@dojo/widget-core/d';
+import outerNodeTheme from './mixins/outerNodeTheme';
+import { Column } from './createGrid';
 
-import { Column } from './createDgrid';
+import * as baseTheme from './styles/gridRow';
 
-export interface DgridRowViewProperties extends WidgetProperties, RegistryMixinProperties {
+export interface GridRowViewProperties extends WidgetProperties, RegistryMixinProperties {
 	item: any;
 	columns: Column[];
 }
 
-export interface DgridRowViewMixin extends WidgetMixin<DgridRowViewProperties>, RegistryMixin { }
+export interface GridRowViewMixin extends WidgetMixin<GridRowViewProperties>, RegistryMixin { }
 
-export type DgridRowView = Widget<DgridRowViewProperties>
+export type GridRowView = Widget<GridRowViewProperties> & Themeable<typeof baseTheme>
 
-export interface DgridRowViewFactory extends WidgetFactory<DgridRowView, DgridRowViewProperties> { }
+export interface GridRowViewFactory extends WidgetFactory<GridRowViewMixin, GridRowViewProperties> { }
 
-const createDgridRowView: DgridRowViewFactory = createWidgetBase
+const createGridRowView: GridRowViewFactory = createWidgetBase
 	.mixin(registryMixin)
+	.mixin(themeable)
+	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
 			tagName: 'tr',
-			classes: [ 'dgrid-row' ],
+			baseTheme,
+			getOuterNodeThemes(this: GridRowView): Object[] {
+				return [ this.theme.gridRow || {} ];
+			},
 			nodeAttributes: [
-				function(this: DgridRowView): VNodeProperties {
+				function(this: GridRowView): VNodeProperties {
 					return { role: 'row' };
 				}
 			],
-			getChildrenNodes(this: DgridRowView): DNode[] {
+			getChildrenNodes(this: GridRowView): DNode[] {
 				const { properties: { item, columns = [] } } = this;
 
 				return columns.map(({ id, renderer }) => {
-					return w('dgrid-cell', { key: id, data: item[id], renderer });
+					return w('grid-cell', { key: id, data: item[id], renderer });
 				});
 			}
 		}
 	});
 
-export default createDgridRowView;
+export default createGridRowView;

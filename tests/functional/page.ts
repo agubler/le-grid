@@ -13,32 +13,32 @@ export default class Page {
 		return this.remote
 			.get('http://localhost:9000/_build/tests/functional/index.html')
 			.setFindTimeout(5000)
-			.findByCssSelector('.dgrid-widgets.dgrid.dgrid-grid')
+			.findByCssSelector('.grid-widgets.grid.grid-grid')
 			.setFindTimeout(100);
 	}
 
 	isFooterVisible(): Promise<boolean> {
 		return this.remote
-			.findByCssSelector('.dgrid-footer')
+			.findByCssSelector('.grid-footer')
 			.isDisplayed();
 	}
 
 	getCellValue(column: number, row: number): Promise<string> {
 		return this.remote
-			.findByCssSelector(`tr.dgrid-row:nth-of-type(${row})`)
-			.findByCssSelector(`td.dgrid-cell:nth-of-type(${column})`)
+			.findByCssSelector(`tr.grid-row:nth-of-type(${row})`)
+			.findByCssSelector(`td.grid-cell:nth-of-type(${column})`)
 			.getVisibleText();
 	}
 
 	getFooterStatus() {
 		return this.remote
-			.findByCssSelector('.dgrid-status')
+			.findByCssSelector('.grid-status')
 			.getVisibleText();
 	}
 
 	sortColumn(column: number): Promise<any> {
 		return this.remote
-			.findByCssSelector(`th.dgrid-cell:nth-of-type(${column})`)
+			.findByCssSelector(`th.grid-cell:nth-of-type(${column})`)
 			.click()
 			.end();
 	}
@@ -52,14 +52,14 @@ export default class Page {
 
 	gotoNextPage(): Promise<any> {
 		return this.remote
-			.findByCssSelector('.dgrid-next.dgrid-page-link')
+			.findByCssSelector('.grid-next.grid-page-link')
 			.click()
 			.end();
 	}
 
 	gotoLastPage(): Promise<any> {
 		return this.remote
-			.findByCssSelector('.dgrid-page-link:last-of-type')
+			.findByCssSelector('.grid-page-link:last-of-type')
 			.click()
 			.end();
 	}

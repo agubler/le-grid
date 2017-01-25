@@ -8,7 +8,7 @@ import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
-import createDgrid from '../../src/createDgrid';
+import createGrid from '../../src/createGrid';
 
 let headerSpy: SinonSpy;
 let bodySpy: SinonSpy;
@@ -17,7 +17,7 @@ let isComposeFactoryStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
-	name: 'createDgrid',
+	name: 'createGrid',
 	beforeEach() {
 		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
 		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
@@ -25,13 +25,13 @@ registerSuite({
 		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get(value: string) {
-				if (value === 'dgrid-header') {
+				if (value === 'grid-header') {
 					return headerSpy;
 				}
-				else if (value === 'dgrid-body') {
+				else if (value === 'grid-body') {
 					return bodySpy;
 				}
-				else if (value === 'dgrid-footer') {
+				else if (value === 'grid-footer') {
 					return footerSpy;
 				}
 			},
@@ -43,7 +43,7 @@ registerSuite({
 	afterEach() {
 		isComposeFactoryStub.restore();
 	},
-	'dgrid without pagination'() {
+	'grid without pagination'() {
 		const properties = {
 			store: createQueryStore(),
 			columns: [
@@ -51,11 +51,11 @@ registerSuite({
 			]
 		};
 
-		const dgrid = createDgrid({ properties });
-		dgrid.registry = mockRegistry;
-		const vnode = <VNode> dgrid.__render__();
+		const grid = createGrid({ properties });
+		grid.registry = mockRegistry;
+		const vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-widgets.dgrid.dgrid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -69,7 +69,7 @@ registerSuite({
 
 		// TODO more assert on params
 	},
-	'dgrid with pagination'() {
+	'grid with pagination'() {
 		const properties = {
 			store: createQueryStore(),
 			pagination: {
@@ -80,11 +80,11 @@ registerSuite({
 			]
 		};
 
-		const dgrid = createDgrid({ properties });
-		dgrid.registry = mockRegistry;
-		const vnode = <VNode> dgrid.__render__();
+		const grid = createGrid({ properties });
+		grid.registry = mockRegistry;
+		const vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-widgets.dgrid.dgrid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -109,13 +109,13 @@ registerSuite({
 			]
 		};
 
-		const dgrid = createDgrid({ properties });
-		spy(dgrid, 'invalidate');
+		const grid = createGrid({ properties });
+		spy(grid, 'invalidate');
 
-		dgrid.registry = mockRegistry;
-		let vnode = <VNode> dgrid.__render__();
+		grid.registry = mockRegistry;
+		let vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-widgets.dgrid.dgrid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -131,10 +131,10 @@ registerSuite({
 		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
 		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
 
-		dgrid.onSortRequest('foo', true);
-		vnode = <VNode> dgrid.__render__();
+		grid.onSortRequest('foo', true);
+		vnode = <VNode> grid.__render__();
 
-		assert.isTrue((<any> dgrid).invalidate.called);
+		assert.isTrue((<any> grid).invalidate.called);
 		assert.isTrue(headerSpy.calledOnce);
 
 		headerProperties = headerSpy.getCall(0).args[0].properties;
@@ -156,13 +156,13 @@ registerSuite({
 			]
 		};
 
-		const dgrid = createDgrid({ properties });
-		spy(dgrid, 'invalidate');
+		const grid = createGrid({ properties });
+		spy(grid, 'invalidate');
 
-		dgrid.registry = mockRegistry;
-		let vnode = <VNode> dgrid.__render__();
+		grid.registry = mockRegistry;
+		let vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-widgets.dgrid.dgrid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -178,10 +178,10 @@ registerSuite({
 		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
 		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
 
-		dgrid.onPaginationRequest('2');
-		vnode = <VNode> dgrid.__render__();
+		grid.onPaginationRequest('2');
+		vnode = <VNode> grid.__render__();
 
-		assert.isTrue((<any> dgrid).invalidate.called);
+		assert.isTrue((<any> grid).invalidate.called);
 
 		assert.isTrue(headerSpy.calledOnce);
 		assert.isTrue(bodySpy.calledOnce);
@@ -203,10 +203,10 @@ registerSuite({
 		};
 
 		const customCell = createWidgetBase.override({});
-		const dgrid = createDgrid({ properties });
-		assert.notEqual(dgrid.registry!.get('dgrid-cell'), customCell);
-		dgrid.setProperties(assign({ customCell }, properties));
-		assert.strictEqual(dgrid.registry!.get('dgrid-cell'), customCell);
+		const grid = createGrid({ properties });
+		assert.notEqual(grid.registry!.get('grid-cell'), customCell);
+		grid.setProperties(assign({ customCell }, properties));
+		assert.strictEqual(grid.registry!.get('grid-cell'), customCell);
 	},
 	'external state updated on property change'() {
 		const initialstore = createQueryStore({
@@ -227,14 +227,14 @@ registerSuite({
 			]
 		};
 
-		const dgrid = createDgrid({ properties });
+		const grid = createGrid({ properties });
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 		return promise.then(() => {
-			assert.deepEqual(dgrid['state'][0], { id: '1', foo: 'bar' });
-			dgrid.setProperties(assign(properties, { store: updatedstore }));
+			assert.deepEqual(grid['state'][0], { id: '1', foo: 'bar' });
+			grid.setProperties(assign(properties, { store: updatedstore }));
 			const promise = new Promise((resolve) => setTimeout(resolve, 10));
 			return promise.then(() => {
-				assert.deepEqual(dgrid['state'][0], { id: '9', baz: 'qux' });
+				assert.deepEqual(grid['state'][0], { id: '9', baz: 'qux' });
 			});
 		});
 	}

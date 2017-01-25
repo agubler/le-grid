@@ -4,7 +4,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './createCustomCell';
 
-import createDgrid from './../createDgrid';
+import createGrid from './../createGrid';
 
 const locations = [
 	'Dive Bar',
@@ -80,7 +80,7 @@ const columns = [
 	}
 ];
 
-const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
+const paginatedGrid = createGrid.mixin(createProjectorMixin)({
 	properties: {
 		store,
 		pagination: {
@@ -90,7 +90,7 @@ const paginatedGrid = createDgrid.mixin(createProjectorMixin)({
 	}
 });
 
-const dgrid = createDgrid.mixin(createProjectorMixin)({
+const grid = createGrid.mixin(createProjectorMixin)({
 	properties: {
 		store,
 		columns
@@ -106,7 +106,7 @@ function onclick() {
 		customCell: cellToggle ? createCustomCell : false
 	};
 	cellToggle = !cellToggle;
-	dgrid.setProperties(props);
+	grid.setProperties(props);
 }
 
 const button = createWidgetBase.mixin(createProjectorMixin).override({
@@ -119,7 +119,7 @@ const button = createWidgetBase.mixin(createProjectorMixin).override({
 })();
 
 button.append();
-dgrid.append();
+grid.append();
 paginatedGrid.append();
 
 setInterval(function() {

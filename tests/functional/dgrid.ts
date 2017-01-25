@@ -4,7 +4,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './../../src/examples/createCustomCell';
 
-import createDgrid from './../../src/createDgrid';
+import createGrid from './../../src/createGrid';
 
 const store = createQueryStore({
 	data: [
@@ -88,7 +88,7 @@ const columns = [
 	}
 ];
 
-const dgrid = createDgrid.mixin(createProjectorMixin)({
+const grid = createGrid.mixin(createProjectorMixin)({
 	properties: {
 		store,
 		pagination: {
@@ -110,7 +110,7 @@ function onclick() {
 		customCell: cellToggle ? createCustomCell : false
 	};
 	cellToggle = !cellToggle;
-	dgrid.setProperties(props);
+	grid.setProperties(props);
 }
 
 const button = createWidgetBase.mixin(createProjectorMixin).override({
@@ -123,4 +123,4 @@ const button = createWidgetBase.mixin(createProjectorMixin).override({
 })();
 
 button.append();
-dgrid.append();
+grid.append();

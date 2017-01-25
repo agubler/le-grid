@@ -1,22 +1,31 @@
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
+import outerNodeTheme from './mixins/outerNodeTheme';
 
-export interface DgridCellProperties extends WidgetProperties {
+import * as baseTheme from './styles/gridCell';
+
+export interface GridCellProperties extends WidgetProperties {
 	data: string;
 }
 
-export interface DgridCellMixin extends WidgetMixin<DgridCellProperties> { }
+export interface GridCellMixin extends WidgetMixin<GridCellProperties>, ThemeableMixin<typeof baseTheme> { }
 
-export type DgridCell = Widget<DgridCellProperties> & DgridCellMixin
+export type GridCell = Widget<GridCellProperties> & GridCellMixin
 
-export interface DgridCellFactory extends WidgetFactory<DgridCell, DgridCellProperties> { }
+export interface GridCellFactory extends WidgetFactory<GridCellMixin, GridCellProperties> { }
 
-const createDgridCell: DgridCellFactory = createWidgetBase
+const createGridCell: GridCellFactory = createWidgetBase
+	.mixin(themeable)
+	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
 			tagName: 'td',
-			classes: [ 'dgrid-cell' ],
-			getChildrenNodes(this: DgridCell): DNode[] {
+			baseTheme,
+			getOuterNodeThemes(this: GridCell): Object[] {
+				return [ this.theme.cell || {} ];
+			},
+			getChildrenNodes(this: GridCell): DNode[] {
 				const { properties: { data, renderer } } = this;
 				const value = renderer ? renderer(data) : data;
 				return [ value ? value.toString() : null ];
@@ -24,4 +33,4 @@ const createDgridCell: DgridCellFactory = createWidgetBase
 		}
 	});
 
-export default createDgridCell;
+export default createGridCell;

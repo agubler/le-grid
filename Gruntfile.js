@@ -22,4 +22,9 @@ module.exports = function (grunt) {
 		'copy:staticTestFiles',
 		'copy:staticFiles'
 	]);
+
+	grunt.registerTask('dist', grunt.config.get('distTasks').concat([
+		'postcss:modules',
+		'postcss:variables'
+	]));
 };

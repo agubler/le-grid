@@ -14,9 +14,9 @@ registerSuite({
 			const footer = createFooter({ properties });
 
 			const vnode = <VNode> footer.__render__();
-			assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-footer');
+			assert.strictEqual(vnode.vnodeSelector, 'div.grid-footer');
 			assert.lengthOf(vnode.children, 1);
-			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.dgrid-status');
+			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.grid-status');
 			assert.strictEqual(vnode.children![0].text, '100 results');
 		},
 		'renders footer with pagination - first page'() {
@@ -35,20 +35,20 @@ registerSuite({
 			const footer = createFooter({ properties });
 
 			const vnode = <VNode> footer.__render__();
-			assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-footer');
+			assert.strictEqual(vnode.vnodeSelector, 'div.grid-footer');
 
-			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.dgrid-pagination');
+			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.grid-pagination');
 			assert.lengthOf(vnode.children![0].children, 2);
-			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div.dgrid-status');
+			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div.grid-status');
 			assert.strictEqual(vnode.children![0].children![0].text, '1 - 10 of 100 results');
-			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div.dgrid-navigation');
+			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div.grid-navigation');
 
 			assert.lengthOf(vnode.children![0].children![1].children, 3);
-			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span.dgrid-previous.dgrid-page-link');
-			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span.dgrid-pagination-links');
+			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span.grid-previous.grid-page-link');
+			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span.grid-pagination-links');
 			assert.lengthOf(vnode.children![0].children![1].children![1].children, 5);
 			// more asserts
-			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span.dgrid-next.dgrid-page-link');
+			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span.grid-next.grid-page-link');
 		},
 		'renders footer with pagination - last page'() {
 			const properties = {
@@ -66,20 +66,20 @@ registerSuite({
 			const footer = createFooter({ properties });
 
 			const vnode = <VNode> footer.__render__();
-			assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-footer');
+			assert.strictEqual(vnode.vnodeSelector, 'div.grid-footer');
 
-			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.dgrid-pagination');
+			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.grid-pagination');
 			assert.lengthOf(vnode.children![0].children, 2);
-			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div.dgrid-status');
+			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div.grid-status');
 			assert.strictEqual(vnode.children![0].children![0].text, '91 - 100 of 100 results');
-			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div.dgrid-navigation');
+			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div.grid-navigation');
 
 			assert.lengthOf(vnode.children![0].children![1].children, 3);
-			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span.dgrid-previous.dgrid-page-link');
-			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span.dgrid-pagination-links');
+			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span.grid-previous.grid-page-link');
+			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span.grid-pagination-links');
 			assert.lengthOf(vnode.children![0].children![1].children![1].children, 7);
 			// more asserts
-			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span.dgrid-next.dgrid-page-link');
+			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span.grid-next.grid-page-link');
 		},
 		'renders footer with pagination - middle page'() {
 			const properties = {
@@ -97,20 +97,20 @@ registerSuite({
 			const footer = createFooter({ properties });
 
 			const vnode = <VNode> footer.__render__();
-			assert.strictEqual(vnode.vnodeSelector, 'div.dgrid-footer');
+			assert.strictEqual(vnode.vnodeSelector, 'div.grid-footer');
 
-			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.dgrid-pagination');
+			assert.strictEqual(vnode.children![0].vnodeSelector, 'div.grid-pagination');
 			assert.lengthOf(vnode.children![0].children, 2);
-			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div.dgrid-status');
+			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div.grid-status');
 			assert.strictEqual(vnode.children![0].children![0].text, '51 - 60 of 100 results');
-			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div.dgrid-navigation');
+			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div.grid-navigation');
 
 			assert.lengthOf(vnode.children![0].children![1].children, 3);
-			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span.dgrid-previous.dgrid-page-link');
-			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span.dgrid-pagination-links');
+			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span.grid-previous.grid-page-link');
+			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span.grid-pagination-links');
 			assert.lengthOf(vnode.children![0].children![1].children![1].children, 9);
 			// more asserts
-			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span.dgrid-next.dgrid-page-link');
+			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span.grid-next.grid-page-link');
 		}
 	}
 });

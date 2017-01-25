@@ -20,7 +20,7 @@ registerSuite({
 			const headerCell = createHeaderCell({ properties });
 
 			const vnode = <VNode> headerCell.__render__();
-			assert.strictEqual(vnode.vnodeSelector, 'th.dgrid-cell');
+			assert.strictEqual(vnode.vnodeSelector, 'th.grid-cell');
 			assert.isUndefined(vnode.properties!.onclick);
 			assert.equal(vnode.properties!['role'], 'columnheader');
 			assert.deepEqual(vnode.properties!.classes, {});
@@ -44,7 +44,7 @@ registerSuite({
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
 
-			assert.strictEqual(vnode.vnodeSelector, 'th.dgrid-cell');
+			assert.strictEqual(vnode.vnodeSelector, 'th.grid-cell');
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -73,18 +73,18 @@ registerSuite({
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
 
-			assert.strictEqual(vnode.vnodeSelector, 'th.dgrid-cell');
+			assert.strictEqual(vnode.vnodeSelector, 'th.grid-cell');
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
 			assert.deepEqual(vnode.properties!.classes, {
-				'dgrid-sort-up': true,
-				'dgrid-sort-down': false
+				'grid-sort-up': true,
+				'grid-sort-down': false
 			});
 			assert.lengthOf(vnode.children, 2);
 			assert.equal(vnode.children![0].vnodeSelector, 'span');
 			assert.equal(vnode.children![0].text, 'foo');
-			assert.equal(vnode.children![1].vnodeSelector, 'div.dgrid-sort-arrow.ui-icon');
+			assert.equal(vnode.children![1].vnodeSelector, 'div.grid-sort-arrow.ui-icon');
 			assert.equal(vnode.children![1].properties!['role'], 'presentation');
 		},
 		'renders sortable header cell with ascending direction'() {
@@ -107,18 +107,18 @@ registerSuite({
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
 
-			assert.strictEqual(vnode.vnodeSelector, 'th.dgrid-cell');
+			assert.strictEqual(vnode.vnodeSelector, 'th.grid-cell');
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
 			assert.deepEqual(vnode.properties!.classes, {
-				'dgrid-sort-up': false,
-				'dgrid-sort-down': true
+				'grid-sort-up': false,
+				'grid-sort-down': true
 			});
 			assert.lengthOf(vnode.children, 2);
 			assert.equal(vnode.children![0].vnodeSelector, 'span');
 			assert.equal(vnode.children![0].text, 'foo');
-			assert.equal(vnode.children![1].vnodeSelector, 'div.dgrid-sort-arrow.ui-icon');
+			assert.equal(vnode.children![1].vnodeSelector, 'div.grid-sort-arrow.ui-icon');
 			assert.equal(vnode.children![1].properties!['role'], 'presentation');
 		}
 	}

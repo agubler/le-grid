@@ -1,13 +1,14 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { includes } from '@dojo/shim/array';
 import createSort from '@dojo/stores/query/createSort';
 import { w } from '@dojo/widget-core/d';
 import { QueryTransformMixin } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import storeMixin from '@dojo/widget-core/mixins/storeMixin';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
-
+import outerNodeTheme from './mixins/outerNodeTheme';
 import createBody from './createBody';
 import createRow from './createRow';
 import createRowView from './createRowView';
@@ -16,16 +17,18 @@ import createHeader from './createHeader';
 import createHeaderCell from './createHeaderCell';
 import createFooter from './createFooter';
 
+import * as baseTheme from './styles/grid';
+
 function createRegistry(props: any) {
 	const { customCell } = props;
 	const registry = new FactoryRegistry();
-	registry.define('dgrid-body', createBody);
-	registry.define('dgrid-row', createRow);
-	registry.define('dgrid-row-view', createRowView);
-	registry.define('dgrid-cell', customCell || createCell);
-	registry.define('dgrid-header', createHeader);
-	registry.define('dgrid-header-cell', createHeaderCell);
-	registry.define('dgrid-footer', createFooter);
+	registry.define('grid-body', createBody);
+	registry.define('grid-row', createRow);
+	registry.define('grid-row-view', createRowView);
+	registry.define('grid-cell', customCell || createCell);
+	registry.define('grid-header', createHeader);
+	registry.define('grid-header-cell', createHeaderCell);
+	registry.define('grid-footer', createFooter);
 	return registry;
 }
 
@@ -53,21 +56,21 @@ export interface PaginatedProperties {
 	itemsPerPage: number;
 }
 
-export interface DgridProperties extends WidgetProperties {
+export interface GridProperties extends WidgetProperties {
 	columns: Column[];
 	store: QueryTransformMixin<{}, any>;
 	customCell?: any;
 	pagination?: PaginatedProperties;
 }
 
-export interface DgridMixin extends WidgetMixin<DgridProperties> {
-	onSortRequest(this: DgridMixin, columnId: string, descending: boolean): void;
-	onPaginationRequest(this: DgridMixin, pageNumber: string): void;
+export interface GridMixin extends WidgetMixin<GridProperties>, ThemeableMixin<typeof baseTheme>  {
+	onSortRequest(this: GridMixin, columnId: string, descending: boolean): void;
+	onPaginationRequest(this: GridMixin, pageNumber: string): void;
 }
 
-export type Dgrid = DgridMixin & Widget<DgridProperties>
+export type Grid = Widget<GridProperties> & GridMixin
 
-export interface DgridFactory extends WidgetFactory<Dgrid, DgridProperties> { }
+export interface GridFactory extends WidgetFactory<Grid, GridProperties> { }
 
 interface InternalState {
 	store: QueryTransformMixin<{}, any>;
@@ -75,7 +78,7 @@ interface InternalState {
 	paginationDetails?: PaginationDetails;
 }
 
-const internalStateMap = new WeakMap<Dgrid, InternalState>();
+const internalStateMap = new WeakMap<Grid, InternalState>();
 
 const defaultPaginationDetails: PaginationDetails  = {
 	dataRangeStart: 0,
@@ -83,18 +86,23 @@ const defaultPaginationDetails: PaginationDetails  = {
 	pageNumber: 1
 };
 
-const createDgrid: DgridFactory = createWidgetBase
+const createGrid: GridFactory = createWidgetBase
+	.mixin(themeable)
+	.mixin(outerNodeTheme)
 	.mixin(storeMixin)
 	.mixin({
 		mixin: {
-			classes: ['dgrid-widgets', 'dgrid', 'dgrid-grid'],
+			baseTheme,
+			getOuterNodeThemes(this: Grid): Object[] {
+				return [ this.theme.grid || {} ];
+			},
 			nodeAttributes: [
-				function(this: Dgrid, attributes: VNodeProperties): VNodeProperties {
+				function(this: Grid, attributes: VNodeProperties): VNodeProperties {
 					return { role: 'grid' };
 				}
 			],
-			onSortRequest(this: Dgrid, columnId: string, descending: boolean): void {
-				const { pagination, store } = <DgridProperties> this.properties;
+			onSortRequest(this: Grid, columnId: string, descending: boolean): void {
+				const { pagination, store } = <GridProperties> this.properties;
 				const internalState = internalStateMap.get(this);
 
 				internalState.store = store.sort(createSort([ columnId ], [ descending ]));
@@ -107,8 +115,8 @@ const createDgrid: DgridFactory = createWidgetBase
 				internalState.sortDetails = { columnId, descending };
 				this.invalidate();
 			},
-			onPaginationRequest(this: Dgrid, pageNumber: string): void {
-				const { pagination: { itemsPerPage = 10 } = { }, store } = <DgridProperties> this.properties;
+			onPaginationRequest(this: Grid, pageNumber: string): void {
+				const { pagination: { itemsPerPage = 10 } = { }, store } = <GridProperties> this.properties;
 				const internalState = internalStateMap.get(this);
 				const dataRangeStart = (parseInt(pageNumber, 10) - 1) * itemsPerPage;
 
@@ -124,23 +132,23 @@ const createDgrid: DgridFactory = createWidgetBase
 				internalState.paginationDetails = { dataRangeStart, dataRangeCount: itemsPerPage, pageNumber: parseInt(pageNumber, 10)};
 				this.invalidate();
 			},
-			getChildrenNodes(this: Dgrid): DNode[] {
+			getChildrenNodes(this: Grid): DNode[] {
 				const { state: { data = [] }, properties: { columns, pagination }, registry } = this;
 				const { paginationDetails, sortDetails, store } = internalStateMap.get(this);
 
 				return [
-					w('dgrid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
-					w('dgrid-body', { registry, store, columns } ),
-					w('dgrid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: data.length, paginationDetails, pagination: Boolean(pagination) } )
+					w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
+					w('grid-body', { registry, store, columns } ),
+					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: data.length, paginationDetails, pagination: Boolean(pagination) } )
 				];
 			}
 		},
-		initialize(instance: Dgrid) {
-			const { store, pagination } = <DgridProperties> instance.properties;
+		initialize(instance) {
+			const { store, pagination } = <GridProperties> instance.properties;
 
 			instance.registry = createRegistry(instance.properties);
 
-			instance.own(instance.on('properties:changed', (evt: PropertiesChangeEvent<Dgrid, DgridProperties>) => {
+			instance.own(instance.on('properties:changed', (evt: PropertiesChangeEvent<Grid, GridProperties>) => {
 				if (includes(evt.changedPropertyKeys, 'store')) {
 					const internalState = internalStateMap.get(instance);
 
@@ -168,4 +176,4 @@ const createDgrid: DgridFactory = createWidgetBase
 		}
 	});
 
-export default createDgrid;
+export default createGrid;

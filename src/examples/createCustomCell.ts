@@ -1,15 +1,15 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
-import createCell, { DgridCell, DgridCellFactory } from './../createCell';
+import createCell, { GridCell, GridCellFactory } from './../createCell';
 
-const createDgridCell: DgridCellFactory = createCell
+const createGridCell: GridCellFactory = createCell
 	.mixin({
 		mixin: {
 			nodeAttributes: [
-				function(this: DgridCell, attributes: VNodeProperties): VNodeProperties {
+				function(this: GridCell, attributes: VNodeProperties): VNodeProperties {
 					return { classes: { 'custom-cell': !!Math.round(Math.random()) } };
 				}
 			]
 		}
 	});
 
-export default createDgridCell;
+export default createGridCell;

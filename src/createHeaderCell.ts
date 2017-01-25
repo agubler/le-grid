@@ -1,42 +1,51 @@
 import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { assign } from '@dojo/core/lang';
 import { v } from '@dojo/widget-core/d';
+import outerNodeTheme from './mixins/outerNodeTheme';
+import { Column, SortDetails } from './createGrid';
 
-import { Column, SortDetails } from './createDgrid';
+import * as baseTheme from './styles/gridHeaderCell';
 
-export interface DgridHeaderProperties extends WidgetProperties {
+export interface GridHeaderProperties extends WidgetProperties {
 	onSortRequest(columnId: string, descending: boolean): void;
 	sortDetails?: SortDetails;
 	column: Column;
 	id: string;
 }
 
-export interface DgridHeaderMixin extends WidgetMixin<DgridHeaderProperties> {
+export interface GridHeaderMixin extends WidgetMixin<GridHeaderProperties>, ThemeableMixin<typeof baseTheme> {
 	onSortRequest(event: any): void;
 }
 
-export type DgridHeader = Widget<DgridHeaderProperties> & DgridHeaderMixin
+export type GridHeader = Widget<GridHeaderProperties> & GridHeaderMixin
 
-export interface DgridHeaderFactory extends WidgetFactory<DgridHeader, DgridHeaderProperties> { }
+export interface GridHeaderFactory extends WidgetFactory<GridHeader, GridHeaderProperties> { }
 
-const createDgridHeader: DgridHeaderFactory = createWidgetBase
+const createGridHeader: GridHeaderFactory = createWidgetBase
+	.mixin(themeable)
+	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
 			tagName: 'th',
-			classes: ['dgrid-cell'],
-			onSortRequest(this: DgridHeader, event: MouseEvent): void {
-				const { id, sortDetails: { descending = false } = {} } = <DgridHeaderProperties> this.properties;
+			baseTheme,
+			getOuterNodeThemes(this: GridHeader): Object[] {
+				return [ this.theme.cell || {} ];
+			},
+			onSortRequest(this: GridHeader, event: MouseEvent): void {
+				const { id, sortDetails: { descending = false } = {} } = <GridHeaderProperties> this.properties;
 				this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);
 			},
 			nodeAttributes: [
-				function(this: DgridHeader, attributes: VNodeProperties): VNodeProperties {
-					const { id, sortDetails, column } = <DgridHeaderProperties> this.properties;
+				function(this: GridHeader, attributes: VNodeProperties): VNodeProperties {
+					const { id, sortDetails, column } = <GridHeaderProperties> this.properties;
 
+					// TODO won't work anymore
 					const classes = sortDetails ? {
-						'dgrid-sort-up': sortDetails.descending,
-						'dgrid-sort-down': !sortDetails.descending
+						'grid-sort-up': sortDetails.descending,
+						'grid-sort-down': !sortDetails.descending
 					} : {};
 
 					const onclick = column.sortable ? { onclick: this.onSortRequest } : {};
@@ -44,14 +53,14 @@ const createDgridHeader: DgridHeaderFactory = createWidgetBase
 					return assign({ classes, role: 'columnheader' }, onclick);
 				}
 			],
-			getChildrenNodes(this: DgridHeader): DNode[] {
-				const { id, column, sortDetails } = <DgridHeaderProperties> this.properties;
+			getChildrenNodes(this: GridHeader): DNode[] {
+				const { id, column, sortDetails } = <GridHeaderProperties> this.properties;
 				return [
 					v('span', [ column.label ]),
-					sortDetails && sortDetails.columnId === id ? v('div.dgrid-sort-arrow.ui-icon', { role: 'presentation' }) : null
+					sortDetails && sortDetails.columnId === id ? v('div', { classes: { ...this.theme.sortArrow, ...this.theme.icon }, role: 'presentation' }) : null
 				];
 			}
 		}
 	});
 
-export default createDgridHeader;
+export default createGridHeader;

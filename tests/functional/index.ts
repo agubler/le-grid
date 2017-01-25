@@ -8,4 +8,4 @@
 	]
 });
 
-(<any> require)([ 'tests/functional/dgrid' ], function () {});
+(<any> require)([ 'tests/functional/grid' ], function () {});

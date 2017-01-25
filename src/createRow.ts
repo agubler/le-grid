@@ -3,47 +3,50 @@ import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@do
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/registryMixin';
 import storeMixin, { StoreMixinApi, StoreMixinProperties } from '@dojo/widget-core/mixins/storeMixin';
+import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { v, w } from '@dojo/widget-core/d';
+import outerNodeTheme from './mixins/outerNodeTheme';
+import { Column } from './createGrid';
 
-import { Column } from './createDgrid';
+import * as baseTheme1 from './styles/gridRow';
 
-export interface DgridRowProperties extends StoreMixinProperties, WidgetProperties, RegistryMixinProperties {
+export interface GridRowProperties extends StoreMixinProperties, WidgetProperties, RegistryMixinProperties {
 	item: any;
 	columns: Column[];
 }
 
-export interface DgridRowMixin extends WidgetMixin<DgridRowProperties>, StoreMixinApi, RegistryMixin { }
+export interface GridRowMixin extends WidgetMixin<GridRowProperties>, StoreMixinApi, RegistryMixin { }
 
-export type DgridRow = Widget<DgridRowProperties>
+export type GridRow = Widget<GridRowProperties> & Themeable<typeof baseTheme1>
 
-export interface DgridRowFactory extends WidgetFactory<DgridRowMixin, DgridRowProperties> { }
+export interface GridRowFactory extends WidgetFactory<GridRowMixin, GridRowProperties> { }
 
-const createDgridRow: DgridRowFactory = createWidgetBase
+const createGridRow: GridRowFactory = createWidgetBase
 	.mixin(registryMixin)
 	.mixin(storeMixin)
+	.mixin(themeable)
+	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
-			classes: [ 'dgrid-row' ],
+			baseTheme: baseTheme1,
+			getOuterNodeThemes(this: GridRow): Object[] {
+				return [ this.theme.gridRow || {} ];
+			},
 			nodeAttributes: [
-				function(this: DgridRow): VNodeProperties {
+				function(this: GridRow): VNodeProperties {
 					return { role: 'row' };
 				}
 			],
-			getChildrenNodes(this: DgridRow): DNode[] {
+			getChildrenNodes(this: GridRow): DNode[] {
 				const { properties: { item, columns, registry } } = this;
 
 				return [
-					v('table.dgrid-row-table', { styles: { 'background-color': item.color } }, [
-						w('dgrid-row-view', { registry, columns, item } )
+					v('table', { classes: this.theme.gridRowTable, styles: { 'background-color': item.color } }, [
+						w('grid-row-view', { registry, columns, item } )
 					])
 				];
 			}
-		},
-		initialize(instance) {
-			instance.own(instance.on('state:changed', () => {
-				instance.invalidate();
-			}));
 		}
 	});
 
-export default createDgridRow;
+export default createGridRow;
