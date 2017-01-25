@@ -3,10 +3,10 @@
 }
 
 .gridRowTable {
-  border-collapse: collapse;
-  border: none;
-  table-layout: fixed;
-  empty-cells: show;
-  width: 100%;
-  height: 100%;
+	border-collapse: collapse;
+	border: none;
+	table-layout: fixed;
+	empty-cells: show;
+	width: 100%;
+	height: 100%;
 }
