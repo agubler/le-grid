@@ -4,7 +4,9 @@
 [![codecov](https://codecov.io/gh/agubler/le-grid/branch/master/graph/badge.svg)](https://codecov.io/gh/agubler/le-grid)
 [![npm version](https://badge.fury.io/js/le-grid.svg)](https://badge.fury.io/js/le-grid)
 
-A reactive lightweight, customisable grid implementation built using [@dojo/widget-core](https://github/dojo/widgets) and [@dojo/stores](https://github/dojo/stores).
+<img src="docs/Logo-01.svg" width=20%>
+
+A reactive lightweight, customisable grid implementation built using [@dojo/widget-core](https://github/dojo/widget-core) and [@dojo/stores](https://github/dojo/stores).
 
 - [Features](#features)
 - [Usage](#usage)
