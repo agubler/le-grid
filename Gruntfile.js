@@ -1,15 +1,9 @@
 module.exports = function (grunt) {
 
-	var staticFiles = [ '**/*.html', '**/*.png' ];
+	var staticFiles = [ 'src/**/*.html', 'src/**/*.png' ];
 
 	require('grunt-dojo2').initConfig(grunt, {
 		copy: {
-			staticDistFiles: {
-				expand: true,
-				cwd: 'src',
-				src: staticFiles,
-				dest: '<%= distDirectory %>'
-			},
 			staticFiles: {
 				expand: true,
 				cwd: '.',
@@ -26,7 +20,6 @@ module.exports = function (grunt) {
 	]));
 
 	grunt.registerTask('dist', grunt.config.get('distTasks').concat([
-		'copy:staticDistFiles',
 		'postcss:modules-dist',
 		'postcss:variables'
 	]));
