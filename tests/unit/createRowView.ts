@@ -48,7 +48,6 @@ registerSuite({
 		assert.strictEqual(vnode.properties!.key, rowView);
 		assert.lengthOf(vnode.children, 1);
 		assert.isTrue(widgetBaseSpy.calledOnce);
-		debugger;
 		assert.isTrue(widgetBaseSpy.calledWith({ properties: { data: 'bar', key: 'foo', renderer: undefined } }));
 	},
 	'render with no columns'() {

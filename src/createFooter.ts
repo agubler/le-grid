@@ -70,7 +70,7 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 							pageNumber !== totalPages ? v('span', [ '...' ]) : null,
 							this.createPageLink(String(totalPages), true, Boolean(pageNumber === totalPages))
 						]),
-						this.createPageLink(String(pageNumber - 1), true, Boolean(pageNumber === totalPages), this.theme.nextPage, '>')
+						this.createPageLink(String(pageNumber + 1), true, Boolean(pageNumber === totalPages), this.theme.nextPage, '>')
 					])
 				]) : v('div', { classes: this.theme.status }, [ `${totalCount} results` ])
 			];
