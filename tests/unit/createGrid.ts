@@ -9,6 +9,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
 import createGrid from '../../src/createGrid';
+import * as gridTheme from '../../src/styles/grid';
 
 let headerSpy: SinonSpy;
 let bodySpy: SinonSpy;
@@ -55,7 +56,8 @@ registerSuite({
 		grid.registry = mockRegistry;
 		const vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -84,7 +86,8 @@ registerSuite({
 		grid.registry = mockRegistry;
 		const vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -115,7 +118,8 @@ registerSuite({
 		grid.registry = mockRegistry;
 		let vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -162,7 +166,8 @@ registerSuite({
 		grid.registry = mockRegistry;
 		let vnode = <VNode> grid.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.grid-widgets.grid.grid-grid');
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -230,11 +235,11 @@ registerSuite({
 		const grid = createGrid({ properties });
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 		return promise.then(() => {
-			assert.deepEqual(grid['state'][0], { id: '1', foo: 'bar' });
+			assert.deepEqual(grid['state'].data[0], { id: '1', foo: 'bar' });
 			grid.setProperties(assign(properties, { store: updatedstore }));
 			const promise = new Promise((resolve) => setTimeout(resolve, 10));
 			return promise.then(() => {
-				assert.deepEqual(grid['state'][0], { id: '9', baz: 'qux' });
+				assert.deepEqual(grid['state'].data[0], { id: '9', baz: 'qux' });
 			});
 		});
 	}

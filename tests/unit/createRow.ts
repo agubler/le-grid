@@ -8,6 +8,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
 import createRow from '../../src/createRow';
+import * as gridRowTheme from '../../src/styles/gridRow';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -43,7 +44,8 @@ registerSuite({
 		const row = createRow({ properties });
 		const vnode = <VNode> row.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.grid-row');
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.deepEqual(vnode.properties!.classes, {[gridRowTheme.gridRow]: true});
 		assert.strictEqual(vnode.properties!['role'], 'row');
 
 		assert.lengthOf(vnode.children, 1);

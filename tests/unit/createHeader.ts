@@ -7,6 +7,7 @@ import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 import createHeader from '../../src/createHeader';
+import * as gridHeaderTheme from '../../src/styles/gridHeader';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -43,16 +44,22 @@ registerSuite({
 		const row = createHeader({ properties });
 		const vnode = <VNode> row.__render__();
 
-		assert.strictEqual(vnode.vnodeSelector, 'div.grid-header.grid-header-row');
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.deepEqual(vnode.properties!.classes, {[gridHeaderTheme.gridHeader]: true, [gridHeaderTheme.gridHeaderRow]: true});
 		assert.strictEqual(vnode.properties!['role'], 'row');
 		assert.lengthOf(vnode.children, 1);
-		assert.strictEqual(vnode.children![0].vnodeSelector, 'table.grid-row-table');
+		assert.strictEqual(vnode.children![0].vnodeSelector, 'table');
+		assert.deepEqual(vnode.children![0].properties!.classes, {[gridHeaderTheme.gridHeaderTable]: true});
 		assert.strictEqual(vnode.children![0].properties!['role'], 'presentation');
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
 		assert.isTrue(widgetBaseSpy.calledTwice);
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0], { properties: { id: 'foo', column: { id: 'foo', label: 'foo' }, sortDetails: undefined, onSortRequest } });
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0], { properties: { id: 'bar', column: { id: 'bar', label: 'bar' }, sortDetails: undefined, onSortRequest } });
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0], {
+			properties: { key: 'foo', id: 'foo', column: { id: 'foo', label: 'foo' }, sortDetails: undefined, onSortRequest }
+		});
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0], {
+			properties: { key: 'bar', id: 'bar', column: { id: 'bar', label: 'bar' }, sortDetails: undefined, onSortRequest }
+		});
 	}
 });
