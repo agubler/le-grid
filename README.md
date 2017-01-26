@@ -1,4 +1,4 @@
-#![npm version](docs/legrid.png)
+#![le grid](https://cdn.rawgit.com/agubler/le-grid/master/docs/legrid.png)
 
 [![Build Status](https://travis-ci.org/agubler/le-grid.svg?branch=master)](https://travis-ci.org/agubler/le-grid)
 [![codecov](https://codecov.io/gh/agubler/le-grid/branch/master/graph/badge.svg)](https://codecov.io/gh/agubler/le-grid)
@@ -17,7 +17,7 @@ A reactive lightweight, customisable grid implementation built using [@dojo/widg
 
 Supports cell customisation, configurable columns and pagination.
 
-<img src="docs/le-grid.gif">
+<img src="https://cdn.rawgit.com/agubler/le-grid/master/docs/le-grid.gif">
 
 ## Usage
 
