@@ -32,14 +32,15 @@ registerSuite({
 		isComposeFactoryStub.restore();
 	},
 	render() {
+		const renderer = (value: string) => { return value; };
 		const properties = {
 			registry: mockRegistry,
-			dataProvider: new ArrayDataProvider(),
+			id: 'id',
+			dataProvider: new ArrayDataProvider<any>([{ id: 'id', foo: 'bar', bar: 'foo' }]),
 			columns: [
 				{ id: 'foo', label: 'foo' },
-				{ id: 'bar', label: 'bar' }
-			],
-			item: { foo: 'bar', boo: 'foo' }
+				{ id: 'bar', label: 'bar', renderer }
+			]
 		};
 
 		const row = createRow({ properties });
@@ -56,7 +57,8 @@ registerSuite({
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
 		assert.isTrue(widgetBaseSpy.calledTwice);
 		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
-		/*assert.deepEqual(args, { properties: { registry: mockRegistry, columns: properties.columns, item: properties.item } });*/
+		assert.deepEqual(callOneArgs, { properties: { key: 'foo', data: 'bar', renderer: undefined } });
 		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
+		assert.deepEqual(callTwoArgs, { properties: { key: 'bar', data: 'foo', renderer } });
 	}
 });
