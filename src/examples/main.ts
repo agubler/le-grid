@@ -1,10 +1,10 @@
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './createCustomCell';
 
 import createGrid from './../createGrid';
+import ArrayDataProvider from './../providers/ArrayDataProvider';
 
 const locations = [
 	'Dive Bar',
@@ -37,11 +37,10 @@ function createData(count: number): any[] {
 	return data;
 };
 
-let data = createData(250);
+let data = createData(500);
 
-const store = createQueryStore({
-	data: [...data]
-});
+const dataProvider1 = new ArrayDataProvider(data);
+const dataProvider2 = new ArrayDataProvider(data);
 
 const columns = [
 	{
@@ -82,7 +81,7 @@ const columns = [
 
 const paginatedGrid = createGrid.mixin(createProjectorMixin)({
 	properties: {
-		store,
+		dataProvider: dataProvider1,
 		pagination: {
 			itemsPerPage: 25
 		},
@@ -92,7 +91,7 @@ const paginatedGrid = createGrid.mixin(createProjectorMixin)({
 
 const grid = createGrid.mixin(createProjectorMixin)({
 	properties: {
-		store,
+		dataProvider: dataProvider2,
 		columns
 	}
 });
@@ -101,7 +100,7 @@ let cellToggle = true;
 
 function onclick() {
 	const props = {
-		store,
+		dataProvider: dataProvider2,
 		columns,
 		customCell: cellToggle ? createCustomCell : false
 	};
@@ -126,18 +125,18 @@ setInterval(function() {
 	const record = data[Math.floor(Math.random() * data.length + 1)];
 	if (record) {
 		const id = record.id;
-		store.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
+		dataProvider1.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
 		setTimeout(() => {
-			store.patch({ id, color: 'transparent' });
+			dataProvider1.patch({ id, color: 'transparent' });
 		}, 500);
 	}
 }, 50);
 
-const interval = setInterval(function() {
+/*const interval = setInterval(function() {
 	const newData = createData(20);
 	data = [...data, ...newData];
-	store.put(newData);
+	dataProvider.patch(newData);
 	if (data.length > 500) {
 		clearInterval(interval);
 	}
-}, 2000);
+}, 2000);*/

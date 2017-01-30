@@ -5,8 +5,8 @@ import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
+import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createBody from '../../src/createBody';
 import * as gridBodyTheme from '../../src/styles/gridBody';
 
@@ -32,14 +32,11 @@ registerSuite({
 		isComposeFactoryStub.restore();
 	},
 	'render with items'() {
-		const store = createQueryStore({
-				data: [
-					{ id: 'id', foo: 'bar' }
-				]
-		});
+		const dataProvider = new ArrayDataProvider<any>([{ id: 'id', foo: 'bar' }]);
 		const properties = {
 			registry: mockRegistry,
-			store,
+			dataProvider,
+			items: [{ id: 'id', foo: 'bar' }],
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
@@ -62,7 +59,7 @@ registerSuite({
 			assert.deepEqual(args, { properties: {
 				id: 'id',
 				key: 'id',
-				store,
+				dataProvider,
 				registry: mockRegistry,
 				columns: properties.columns,
 				item: { id: 'id', foo: 'bar' }
@@ -70,12 +67,12 @@ registerSuite({
 		});
 	},
 	'render with no items'() {
-		const store = createQueryStore({
-				data: undefined
-		});
+		const dataProvider = new ArrayDataProvider();
+
 		const properties = {
 			registry: mockRegistry,
-			store,
+			dataProvider,
+			items: [],
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]

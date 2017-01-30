@@ -3,15 +3,13 @@ import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, Properties
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { includes } from '@dojo/shim/array';
-import createSort from '@dojo/stores/query/createSort';
 import { w } from '@dojo/widget-core/d';
-import { QueryTransformMixin } from '@dojo/stores/store/mixins/createQueryTransformMixin';
-import storeMixin from '@dojo/widget-core/mixins/storeMixin';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
+
 import outerNodeTheme from './mixins/outerNodeTheme';
+import dataProviderMixin, { DataProviderMixinProperties, DataProviderMixin } from './mixins/dataProviderMixin';
 import createBody from './createBody';
 import createRow from './createRow';
-import createRowView from './createRowView';
 import createCell from './createCell';
 import createHeader from './createHeader';
 import createHeaderCell from './createHeaderCell';
@@ -24,7 +22,6 @@ function createRegistry(props: any) {
 	const registry = new FactoryRegistry();
 	registry.define('grid-body', createBody);
 	registry.define('grid-row', createRow);
-	registry.define('grid-row-view', createRowView);
 	registry.define('grid-cell', customCell || createCell);
 	registry.define('grid-header', createHeader);
 	registry.define('grid-header-cell', createHeaderCell);
@@ -56,9 +53,8 @@ export interface PaginatedProperties {
 	itemsPerPage: number;
 }
 
-export interface GridProperties extends WidgetProperties {
+export interface GridProperties extends WidgetProperties, DataProviderMixinProperties {
 	columns: Column[];
-	store: QueryTransformMixin<{}, any>;
 	customCell?: any;
 	pagination?: PaginatedProperties;
 }
@@ -68,28 +64,21 @@ export interface GridMixin extends WidgetMixin<GridProperties>, ThemeableMixin<t
 	onPaginationRequest(this: GridMixin, pageNumber: string): void;
 }
 
-export type Grid = Widget<GridProperties> & GridMixin
+export type Grid = Widget<GridProperties> & GridMixin & DataProviderMixin
 
 export interface GridFactory extends WidgetFactory<Grid, GridProperties> { }
 
 interface InternalState {
-	store: QueryTransformMixin<{}, any>;
 	sortDetails?: SortDetails;
 	paginationDetails?: PaginationDetails;
 }
 
 const internalStateMap = new WeakMap<Grid, InternalState>();
 
-const defaultPaginationDetails: PaginationDetails  = {
-	dataRangeStart: 0,
-	dataRangeCount: 10,
-	pageNumber: 1
-};
-
 const createGrid: GridFactory = createWidgetBase
 	.mixin(themeable)
 	.mixin(outerNodeTheme)
-	.mixin(storeMixin)
+	.mixin(dataProviderMixin)
 	.mixin({
 		mixin: {
 			baseTheme,
@@ -102,60 +91,44 @@ const createGrid: GridFactory = createWidgetBase
 				}
 			],
 			onSortRequest(this: Grid, columnId: string, descending: boolean): void {
-				const { pagination, store } = <GridProperties> this.properties;
+				const { properties: { dataProvider } } = this;
 				const internalState = internalStateMap.get(this);
 
-				internalState.store = store.sort(createSort([ columnId ], [ descending ]));
-
-				if (pagination) {
-					const { paginationDetails: { dataRangeStart, dataRangeCount } = defaultPaginationDetails } = internalState;
-					internalState.store = internalState.store.range(dataRangeStart, dataRangeCount);
-				}
-
 				internalState.sortDetails = { columnId, descending };
-				this.invalidate();
+				dataProvider.sort({
+					columnId,
+					direction: descending ? 'desc' : 'asc'
+				});
 			},
 			onPaginationRequest(this: Grid, pageNumber: string): void {
-				const { pagination: { itemsPerPage = 10 } = { }, store } = <GridProperties> this.properties;
+				const { properties: { dataProvider, pagination: { itemsPerPage } = { itemsPerPage: 10 } } } = this;
 				const internalState = internalStateMap.get(this);
 				const dataRangeStart = (parseInt(pageNumber, 10) - 1) * itemsPerPage;
 
-				if (internalState.sortDetails) {
-					internalState.store = store
-						.sort(createSort(internalState.sortDetails.columnId, internalState.sortDetails.descending))
-						.range(dataRangeStart, itemsPerPage);
-				}
-				else {
-					internalState.store = store.range(dataRangeStart, itemsPerPage);
-				}
+				dataProvider.fetch({
+					start: dataRangeStart,
+					count: itemsPerPage
+				});
 
 				internalState.paginationDetails = { dataRangeStart, dataRangeCount: itemsPerPage, pageNumber: parseInt(pageNumber, 10)};
-				this.invalidate();
 			},
 			getChildrenNodes(this: Grid): DNode[] {
-				const { state: { data = [] }, properties: { columns, pagination }, registry } = this;
-				const { paginationDetails, sortDetails, store } = internalStateMap.get(this);
+				const { data, properties: { dataProvider, columns, pagination }, registry } = this;
+				const { paginationDetails, sortDetails } = internalStateMap.get(this);
 
 				return [
 					w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
-					w('grid-body', { registry, store, columns } ),
-					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: data.length, paginationDetails, pagination: Boolean(pagination) } )
+					w('grid-body', { registry, dataProvider, columns, items: data.items } ),
+					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: data.totalCount, paginationDetails, pagination: Boolean(pagination) } )
 				];
 			}
 		},
 		initialize(instance) {
-			const { store, pagination } = <GridProperties> instance.properties;
+			const { dataProvider, pagination } = <GridProperties> instance.properties;
 
 			instance.registry = createRegistry(instance.properties);
 
 			instance.own(instance.on('properties:changed', (evt: PropertiesChangeEvent<Grid, GridProperties>) => {
-				if (includes(evt.changedPropertyKeys, 'store')) {
-					const internalState = internalStateMap.get(instance);
-
-					internalState.store = evt.properties.store;
-					internalStateMap.set(instance, internalState);
-				}
-
 				if (includes(evt.changedPropertyKeys, 'customCell')) {
 					instance.registry = createRegistry(evt.properties);
 				}
@@ -164,15 +137,12 @@ const createGrid: GridFactory = createWidgetBase
 			}));
 
 			if (pagination) {
-				internalStateMap.set(instance, {
-					store: store.range(0, pagination.itemsPerPage),
-					paginationDetails: { dataRangeStart: 0, dataRangeCount: pagination.itemsPerPage, pageNumber: 1 }
-				});
+				dataProvider.configure({ size: { start: 0, count: pagination.itemsPerPage }});
+				internalStateMap.set(instance, { paginationDetails: { dataRangeStart: 0, dataRangeCount: pagination.itemsPerPage, pageNumber: 1 } });
 			}
 			else {
-				internalStateMap.set(instance, { store });
+				internalStateMap.set(instance, {});
 			}
-
 		}
 	});
 

@@ -5,8 +5,8 @@ import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
+import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createRow from '../../src/createRow';
 import * as gridRowTheme from '../../src/styles/gridRow';
 
@@ -19,7 +19,7 @@ registerSuite({
 	name: 'createRow',
 	beforeEach() {
 		widgetBaseSpy = spy(createWidgetBase);
-		getStub = stub().withArgs('grid-row-view').returns(widgetBaseSpy);
+		getStub = stub().withArgs('grid-cell').returns(widgetBaseSpy);
 		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
@@ -34,11 +34,12 @@ registerSuite({
 	render() {
 		const properties = {
 			registry: mockRegistry,
-			store: createQueryStore(),
+			dataProvider: new ArrayDataProvider(),
 			columns: [
-				{ id: 'foo', label: 'foo' }
+				{ id: 'foo', label: 'foo' },
+				{ id: 'bar', label: 'bar' }
 			],
-			item: { foo: 'bar' }
+			item: { foo: 'bar', boo: 'foo' }
 		};
 
 		const row = createRow({ properties });
@@ -49,8 +50,13 @@ registerSuite({
 		assert.strictEqual(vnode.properties!['role'], 'row');
 
 		assert.lengthOf(vnode.children, 1);
-		assert.isTrue(widgetBaseSpy.calledOnce);
-		const args = widgetBaseSpy.getCall(0).args[0];
-		assert.deepEqual(args, { properties: { registry: mockRegistry, columns: properties.columns, item: properties.item } });
+		assert.strictEqual(vnode.children![0].vnodeSelector, 'table');
+		assert.lengthOf(vnode.children![0].children, 1);
+		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
+		assert.lengthOf(vnode.children![0].children![0].children, 2);
+		assert.isTrue(widgetBaseSpy.calledTwice);
+		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
+		/*assert.deepEqual(args, { properties: { registry: mockRegistry, columns: properties.columns, item: properties.item } });*/
+		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
 	}
 });
