@@ -37,7 +37,7 @@ const createGridRow: GridRowFactory = createWidgetBase
 				}
 			],
 			getChildrenNodes(this: GridRow): DNode[] {
-				const { data: item, properties: { columns } } = this;
+				const { data: item, properties: { columns = [] } } = this;
 
 				return [
 					v('table', { classes: this.theme.gridRowTable, styles: { 'background-color': item.color } }, [
