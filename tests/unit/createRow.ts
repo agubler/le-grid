@@ -37,6 +37,7 @@ registerSuite({
 			registry: mockRegistry,
 			id: 'id',
 			dataProvider: new ArrayDataProvider<any>([{ id: 'id', foo: 'bar', bar: 'foo' }]),
+			item: { id: 'id', foo: 'bar', bar: 'foo' },
 			columns: [
 				{ id: 'foo', label: 'foo' },
 				{ id: 'bar', label: 'bar', renderer }

@@ -12,6 +12,7 @@ import * as baseTheme1 from './styles/gridRow';
 
 export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties, DataProviderMixinProperties {
 	columns: Column[];
+	item: any;
 }
 
 export interface GridRowMixin extends WidgetMixin<GridRowProperties>, RegistryMixin { }
@@ -37,7 +38,7 @@ const createGridRow: GridRowFactory = createWidgetBase
 				}
 			],
 			getChildrenNodes(this: GridRow): DNode[] {
-				const { data: item, properties: { columns = [] } } = this;
+				const { data: item = this.properties.item, properties: { columns = [] } } = this;
 
 				return [
 					v('table', { classes: this.theme.gridRowTable, styles: { 'background-color': item.color } }, [

@@ -5,13 +5,13 @@ import Observable from '@dojo/core/Observable';
  */
 export interface DataProviderState<T> {
 	sort?: SortState<T>;
-	size?: SizeState;
+	size?: FetchState;
 };
 
 /**
  *
  */
-export interface SizeState {
+export interface FetchState {
 	count: number;
 	start: number;
 }
@@ -35,6 +35,15 @@ export interface BaseItem {
 /**
  *
  */
+export interface DispatchPayload<T extends BaseItem, D> {
+	data: D;
+	state: DataProviderState<T>;
+	item?: T;
+}
+
+/**
+ *
+ */
 export interface ObserverPayload<T extends BaseItem> {
 	totalCount: number;
 	state: DataProviderState<T>;
@@ -51,12 +60,17 @@ export interface DataProvider<T extends BaseItem> {
 	/**
 	 *
 	 */
-	patch(item: T): void;
+	patch(item: T | T[]): void;
 
 	/**
 	 *
 	 */
-	fetch(fetchRequest: SizeState): void;
+	put(item: T | T[]): void;
+
+	/**
+	 *
+	 */
+	fetch(fetchRequest: FetchState): void;
 
 	/**
 	 *

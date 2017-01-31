@@ -113,13 +113,13 @@ const createGrid: GridFactory = createWidgetBase
 				internalState.paginationDetails = { dataRangeStart, dataRangeCount: itemsPerPage, pageNumber: parseInt(pageNumber, 10)};
 			},
 			getChildrenNodes(this: Grid): DNode[] {
-				const { data, properties: { dataProvider, columns, pagination }, registry } = this;
+				const { data: { items = [], totalCount = 0 } = {}, properties: { dataProvider, columns, pagination }, registry } = this;
 				const { paginationDetails, sortDetails } = internalStateMap.get(this);
 
 				return [
 					w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
-					w('grid-body', { registry, dataProvider, columns, items: data.items } ),
-					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount: data.totalCount, paginationDetails, pagination: Boolean(pagination) } )
+					w('grid-body', { registry, dataProvider, columns, items } ),
+					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, paginationDetails, pagination: Boolean(pagination) } )
 				];
 			}
 		},

@@ -1,51 +1,48 @@
-import { DataProvider, BaseItem, ObserverPayload } from './interfaces';
+import {
+	DataProvider,
+	BaseItem,
+	ObserverPayload,
+	DataProviderState,
+	DispatchPayload,
+	SortState,
+	FetchState
+} from './interfaces';
 import Observable, { Observer } from '@dojo/core/Observable';
-
-interface DataProviderState<T> {
-	sort?: SortState<T>;
-	size?: SizeState;
-};
-
-interface SizeState {
-	count: number;
-	start: number;
-}
-
-interface SortState<T> {
-	columnId: keyof T;
-	direction: 'desc' | 'asc';
-}
+import { List, Iterable } from 'immutable';
 
 export default class ArrayDataProvider<T extends BaseItem> implements DataProvider<T> {
 
 	private currentState: DataProviderState<T>;
 	private observers: Map<string, Observer<T>>;
 	private storeObservers: Observer<ObserverPayload<T>>[];
-	private data: T[];
+	private data: List<T>;
 
 	constructor(data: T[] = []) {
 		this.currentState = {};
 		this.observers = new Map<string, Observer<T>>();
 		this.storeObservers = [];
-		this.data = [ ...data ];
+		this.data = List(data);
 	}
 
-	configure(configuration: { sort?: Partial<SortState<T>>, size?: Partial<SizeState> }): void {
+	configure(configuration: { sort?: Partial<SortState<T>>, size?: Partial<FetchState> }): void {
 		if (configuration.size) {
 			this.currentState.size = Object.assign({}, configuration.size);
 		}
 		if (configuration.sort) {
 			this.currentState.sort = Object.assign({}, configuration.sort);
 		}
-		this.dispatch();
+		this.dispatch({
+			data: this.data,
+			state: this.currentState
+		});
 	}
 
-	private dispatch(item?: T) {
-		let dataCopy = [ ...this.data ];
-		const { sort, size } = this.currentState;
+	private dispatch(dispatchPayload: DispatchPayload<T, Iterable<number, T>>) {
+		const { item, state: { sort, size } } = dispatchPayload;
+		let data = dispatchPayload.data;
 
 		if (sort) {
-			dataCopy.sort((a: T, b: T) => {
+			data = data.sort((a: T, b: T) => {
 				if (a[sort.columnId] < b[sort.columnId]) {
 					return -1;
 				}
@@ -56,19 +53,19 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 			});
 
 			if (sort.direction === 'desc') {
-				dataCopy.reverse();
+				data = data.reverse();
 			}
 		}
 
 		if (size) {
-			dataCopy = dataCopy.slice(size.start, size.start + size.count);
+			data = data.slice(size.start, size.start + size.count);
 		}
 
 		this.storeObservers.forEach((observer) => {
 			observer.next({
-				totalCount: this.data.length,
+				totalCount: this.data.size,
 				state: this.currentState,
-				items: dataCopy
+				items: data.toArray()
 			});
 		});
 
@@ -79,31 +76,68 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 
 	private get(id: string) {
 		return this.data.find((item) => {
-			return item.id === id;
+			return Boolean(item && item.id === id);
 		});
 	}
 
-	patch(item: T) {
-		const existingItem = this.get(item.id);
-		if (existingItem) {
-			Object.assign(existingItem, item);
-		}
-		else {
-			this.data.push(Object.assign({}, item));
-		}
-		this.dispatch(existingItem);
+	patch(items: T | T[]) {
+		items = Array.isArray(items) ? items : [ items ];
+		items.forEach((item) => {
+			const existingItem = this.get(item.id);
+			if (existingItem) {
+				Object.assign(existingItem, item);
+			}
+			else {
+				this.data = this.data.push(Object.assign({}, item));
+			}
+			this.dispatch({
+				data: this.data,
+				state: this.currentState,
+				item: existingItem
+			});
+		});
 	}
 
-	fetch(fetchRequest: SizeState) {
+	put(items: T | T[]) {
+		let existingItems: T[] = [];
+		items = Array.isArray(items) ? items : [ items ];
+
+		items = items.filter((item) => {
+			if (this.get(item.id)) {
+				existingItems.push(item);
+				return false;
+			}
+			return true;
+		});
+
+		this.data = this.data.concat(items).toList();
+		this.patch(existingItems);
+
+		items.forEach((item) => {
+			this.dispatch({
+				data: this.data,
+				state: this.currentState,
+				item
+			});
+		});
+	}
+
+	fetch(fetchRequest: FetchState) {
 		this.currentState = Object.assign({}, this.currentState);
 		this.currentState.size = Object.assign({}, this.currentState.size, fetchRequest);
-		this.dispatch();
+		this.dispatch({
+			data: this.data,
+			state: this.currentState
+		});
 	}
 
 	sort(sortRequest: SortState<T>) {
 		this.currentState = Object.assign({}, this.currentState);
 		this.currentState.sort = Object.assign({}, this.currentState.sort, sortRequest);
-		this.dispatch();
+		this.dispatch({
+			data: this.data,
+			state: this.currentState
+		});
 	}
 
 	observe(): Observable<ObserverPayload<T>>;
@@ -114,12 +148,20 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 			return new Observable((observer: Observer<T>) => {
 				if (typeof ids === 'string') {
 					this.observers.set(ids, observer);
-					this.dispatch(this.get(ids));
+					this.dispatch({
+						data: this.data,
+						state: this.currentState,
+						item: this.get(ids)
+					});
 				}
 				else if (Array.isArray(ids)) {
 					ids.forEach((id) => {
 						this.observers.set(id, observer);
-						this.dispatch(this.get(id));
+						this.dispatch({
+							data: this.data,
+							state: this.currentState,
+							item: this.get(id)
+						});
 					});
 				}
 			});
@@ -127,7 +169,10 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 
 		return new Observable((observer: Observer<ObserverPayload<T>>) => {
 			this.storeObservers.push(observer);
-			this.dispatch();
+			this.dispatch({
+				data: this.data,
+				state: this.currentState
+			});
 		});
 	}
 }
