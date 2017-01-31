@@ -10,19 +10,17 @@ export type OuterNodeTheme = OuterNodeThemeMixin & {
 	theme: any;
 }
 
-export interface GridBodyFactory extends ComposeFactory<OuterNodeThemeMixin, {}> { }
+export interface GridBodyFactory extends ComposeFactory<{}, {}> { }
 
 const outerNodeTheme: GridBodyFactory = compose({
-	getOuterNodeThemes(): Object[] {
-		return [];
-	}
 }).mixin({
 	aspectAdvice: {
 		after: {
 			getNodeAttributes(this: OuterNodeTheme, results: VNodeProperties) {
+				const themes = this.getOuterNodeThemes() || [];
 				const classes = {
 					...results.classes,
-					...this.getOuterNodeThemes().reduce((classes, item) => { return { ...classes, ...item }; }, {})
+					...themes.reduce((classes, item) => { return { ...classes, ...item }; }, {})
 				};
 				return assign(results, { classes });
 			}
