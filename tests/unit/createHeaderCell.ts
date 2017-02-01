@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import createHeaderCell from '../../src/createHeaderCell';
 
-import * as gridHeaderCellTheme from '../../src/styles/gridHeaderCell';
+import css from '../../src/styles/gridHeaderCell';
 
 registerSuite({
 	name: 'createCell',
@@ -23,7 +23,7 @@ registerSuite({
 
 			const vnode = <VNode> headerCell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.deepEqual(vnode.properties!.classes, {[css.classes.cell]: true});
 			assert.isUndefined(vnode.properties!.onclick);
 			assert.equal(vnode.properties!['role'], 'columnheader');
 			assert.lengthOf(vnode.children, 1);
@@ -47,7 +47,7 @@ registerSuite({
 			vnode.properties!.onclick!.call(headerCell);
 
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.deepEqual(vnode.properties!.classes, {[css.classes.cell]: true});
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -76,7 +76,7 @@ registerSuite({
 			vnode.properties!.onclick!.call(headerCell);
 
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.deepEqual(vnode.properties!.classes, {[css.classes.cell]: true});
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -85,7 +85,7 @@ registerSuite({
 			assert.equal(vnode.children![0].text, 'foo');
 			assert.equal(vnode.children![1].vnodeSelector, 'div');
 			assert.deepEqual(vnode.children![1].properties!.classes, {
-				[gridHeaderCellTheme.sortUp]: true, [gridHeaderCellTheme.sortArrow]: true, [gridHeaderCellTheme.icon]: true
+				[css.classes.sortUp]: true, [css.classes.sortArrow]: true, [css.classes.icon]: true
 			});
 			assert.equal(vnode.children![1].properties!['role'], 'presentation');
 		},
@@ -110,7 +110,7 @@ registerSuite({
 			vnode.properties!.onclick!.call(headerCell);
 
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.deepEqual(vnode.properties!.classes, {[css.classes.cell]: true});
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -119,7 +119,7 @@ registerSuite({
 			assert.equal(vnode.children![0].text, 'foo');
 			assert.equal(vnode.children![1].vnodeSelector, 'div');
 			assert.deepEqual(vnode.children![1].properties!.classes, {
-				[gridHeaderCellTheme.sortUp]: false, [gridHeaderCellTheme.sortArrow]: true, [gridHeaderCellTheme.icon]: true
+				[css.classes.sortUp]: false, [css.classes.sortArrow]: true, [css.classes.icon]: true
 			});
 			assert.equal(vnode.children![1].properties!['role'], 'presentation');
 		}

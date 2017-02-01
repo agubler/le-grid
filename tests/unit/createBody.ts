@@ -8,7 +8,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createBody from '../../src/createBody';
-import * as gridBodyTheme from '../../src/styles/gridBody';
+import css from '../../src/styles/gridBody';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -49,10 +49,10 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.deepEqual(vnode.properties!.classes, { [gridBodyTheme.scroller]: true });
+			assert.deepEqual(vnode.properties!.classes, { [css.classes.scroller]: true });
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![0].properties!.classes, { [gridBodyTheme.content]: true });
+			assert.deepEqual(vnode.children![0].properties!.classes, { [css.classes.content]: true });
 			assert.lengthOf(vnode.children![0].children, 1);
 			assert.isTrue(widgetBaseSpy.calledOnce);
 			const args = widgetBaseSpy.getCall(0).args[0];
@@ -85,10 +85,10 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.deepEqual(vnode.properties!.classes, { [gridBodyTheme.scroller]: true });
+			assert.deepEqual(vnode.properties!.classes, { [css.classes.scroller]: true });
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![0].properties!.classes, { [gridBodyTheme.content]: true });
+			assert.deepEqual(vnode.children![0].properties!.classes, { [css.classes.content]: true });
 			assert.lengthOf(vnode.children![0].children, 0);
 			assert.isTrue(widgetBaseSpy.notCalled);
 		});

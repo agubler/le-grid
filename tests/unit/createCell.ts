@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import createCell from '../../src/createCell';
 
-import * as gridCellTheme from '../../src/styles/gridCell';
+import css from '../../src/styles/gridCell';
 
 registerSuite({
 	name: 'createCell',
@@ -13,7 +13,7 @@ registerSuite({
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
-			assert.deepEqual(vnode.properties!.classes, { [gridCellTheme.cell]: true });
+			assert.deepEqual(vnode.properties!.classes, { [css.classes.cell]: true });
 			assert.strictEqual(vnode.text, 'Hello, World!');
 		},
 		'data propety value passed through renderer when provided'() {
@@ -24,7 +24,7 @@ registerSuite({
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
-			assert.deepEqual(vnode.properties!.classes, { [gridCellTheme.cell]: true });
+			assert.deepEqual(vnode.properties!.classes, { [css.classes.cell]: true });
 			assert.strictEqual(vnode.text, 'Hello, Dojo!');
 		},
 		'null is returned when no data property'() {
@@ -32,7 +32,7 @@ registerSuite({
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
-			assert.deepEqual(vnode.properties!.classes, { [gridCellTheme.cell]: true });
+			assert.deepEqual(vnode.properties!.classes, { [css.classes.cell]: true });
 			assert.isUndefined(vnode.text);
 		},
 		'cell data is stringified'() {
@@ -40,7 +40,7 @@ registerSuite({
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
-			assert.deepEqual(vnode.properties!.classes, { [gridCellTheme.cell]: true });
+			assert.deepEqual(vnode.properties!.classes, { [css.classes.cell]: true });
 			assert.strictEqual(vnode.text, '1234');
 		}
 	}

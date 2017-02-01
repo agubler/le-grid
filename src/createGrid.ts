@@ -1,12 +1,10 @@
-import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { includes } from '@dojo/shim/array';
-import { w } from '@dojo/widget-core/d';
+import { w, v } from '@dojo/widget-core/d';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 
-import outerNodeTheme from './mixins/outerNodeTheme';
 import dataProviderMixin, { DataProviderMixinProperties, DataProviderMixin } from './mixins/dataProviderMixin';
 import createBody from './createBody';
 import createRow from './createRow';
@@ -15,14 +13,14 @@ import createHeader from './createHeader';
 import createHeaderCell from './createHeaderCell';
 import createFooter from './createFooter';
 
-import * as baseTheme from './styles/grid';
+import css from './styles/grid';
 
 function createRegistry(props: any) {
 	const { customCell } = props;
 	const registry = new FactoryRegistry();
 	registry.define('grid-body', createBody);
 	registry.define('grid-row', createRow);
-	registry.define('grid-cell', customCell || createCell);
+	registry.define('grid-cell', customCell ? customCell() : createCell);
 	registry.define('grid-header', createHeader);
 	registry.define('grid-header-cell', createHeaderCell);
 	registry.define('grid-footer', createFooter);
@@ -59,7 +57,7 @@ export interface GridProperties extends WidgetProperties, DataProviderMixinPrope
 	pagination?: PaginatedProperties;
 }
 
-export interface GridMixin extends WidgetMixin<GridProperties>, ThemeableMixin<typeof baseTheme>  {
+export interface GridMixin extends WidgetMixin<GridProperties>, ThemeableMixin  {
 	onSortRequest(this: GridMixin, columnId: string, descending: boolean): void;
 	onPaginationRequest(this: GridMixin, pageNumber: string): void;
 }
@@ -77,19 +75,10 @@ const internalStateMap = new WeakMap<Grid, InternalState>();
 
 const createGrid: GridFactory = createWidgetBase
 	.mixin(themeable)
-	.mixin(outerNodeTheme)
 	.mixin(dataProviderMixin)
 	.mixin({
 		mixin: {
-			baseTheme,
-			getOuterNodeThemes(this: Grid): Object[] {
-				return [ this.theme.grid || {} ];
-			},
-			nodeAttributes: [
-				function(this: Grid, attributes: VNodeProperties): VNodeProperties {
-					return { role: 'grid' };
-				}
-			],
+			baseClasses: css,
 			onSortRequest(this: Grid, columnId: string, descending: boolean): void {
 				const { properties: { dataProvider } } = this;
 				const internalState = internalStateMap.get(this);
@@ -112,15 +101,15 @@ const createGrid: GridFactory = createWidgetBase
 
 				internalState.paginationDetails = { dataRangeStart, dataRangeCount: itemsPerPage, pageNumber: parseInt(pageNumber, 10)};
 			},
-			getChildrenNodes(this: Grid): DNode[] {
+			render(this: Grid): DNode {
 				const { data: { items = [], totalCount = 0 } = {}, properties: { dataProvider, columns, pagination }, registry } = this;
 				const { paginationDetails, sortDetails } = internalStateMap.get(this);
 
-				return [
+				return v('div', { classes: this.classes(css.classes.grid).get(), role: 'grid' }, [
 					w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
 					w('grid-body', { registry, dataProvider, columns, items } ),
 					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, paginationDetails, pagination: Boolean(pagination) } )
-				];
+				]);
 			}
 		},
 		initialize(instance) {

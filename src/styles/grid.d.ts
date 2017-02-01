@@ -1,1 +1,6 @@
-export const grid: string;
+export default {
+	classes: {
+		grid: 'grid'
+	},
+	key: 'dojo-grid'
+};

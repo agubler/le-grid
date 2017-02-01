@@ -1,2 +1,7 @@
-export const scroller: string;
-export const content: string;
+export default {
+	classes: {
+		scroller: 'scroller',
+		content: 'content'
+	},
+	key: 'dojo-gridBody'
+};

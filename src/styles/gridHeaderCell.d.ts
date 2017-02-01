@@ -1,4 +1,9 @@
-export const cell: string;
-export const icon: string;
-export const sortArrow: string;
-export const sortUp: string;
+export default {
+	classes: {
+		cell: 'cell',
+		icon: 'icon',
+		sortArrow: 'sortArrow',
+		sortUp: 'sortUp'
+	},
+	key: 'dojo-gridHeaderCell'
+};

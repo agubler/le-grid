@@ -8,7 +8,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createRow from '../../src/createRow';
-import * as gridRowTheme from '../../src/styles/gridRow';
+import css from '../../src/styles/gridRow';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -48,7 +48,7 @@ registerSuite({
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, {[gridRowTheme.gridRow]: true});
+		assert.deepEqual(vnode.properties!.classes, {[css.classes.gridRow]: true});
 		assert.strictEqual(vnode.properties!['role'], 'row');
 
 		assert.lengthOf(vnode.children, 1);

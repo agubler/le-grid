@@ -1,5 +1,6 @@
 import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { v } from '@dojo/widget-core/d';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './createCustomCell';
 
@@ -86,12 +87,9 @@ const columns = [
 const root = document.getElementsByTagName('store-data-grid')[0];
 
 const storeButton = createWidgetBase.mixin(createProjectorMixin).override({
-	tagName: 'button',
-	nodeAttributes: [
-		function(): any {
-			return { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(storeDataProvider, storeGrid) };
-		}
-	]
+	render() {
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(storeDataProvider, storeGrid) } );
+	}
 })({
 	root
 });
@@ -122,12 +120,9 @@ paginatedStoreGrid.append();
 const arrayGridRoot = document.getElementsByTagName('array-data-grid')[0];
 
 const arrayButton = createWidgetBase.mixin(createProjectorMixin).override({
-	tagName: 'button',
-	nodeAttributes: [
-		function(): any {
-			return { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(arrayDataProvider, arrayGrid) };
-		}
-	]
+	render() {
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(arrayDataProvider, arrayGrid) } );
+	}
 })({
 	root: arrayGridRoot
 });
@@ -161,7 +156,7 @@ function buttonClick(provider: any, grid: any) {
 		const props = {
 			dataProvider: provider,
 			columns,
-			customCell: cellToggle ? createCustomCell : false
+			customCell: cellToggle ? () => { return createCustomCell; } : false
 		};
 		cellToggle = !cellToggle;
 		grid.setProperties(props);

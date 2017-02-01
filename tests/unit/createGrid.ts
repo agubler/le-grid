@@ -9,7 +9,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createGrid from '../../src/createGrid';
-import * as gridTheme from '../../src/styles/grid';
+import css from '../../src/styles/grid';
 
 let headerSpy: SinonSpy;
 let bodySpy: SinonSpy;
@@ -57,7 +57,7 @@ registerSuite({
 		const vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -87,7 +87,7 @@ registerSuite({
 		const vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -119,7 +119,7 @@ registerSuite({
 		let vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -167,7 +167,7 @@ registerSuite({
 		let vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
