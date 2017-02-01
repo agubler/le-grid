@@ -2,7 +2,6 @@ import compose from '@dojo/compose/compose';
 import { DataProvider, BaseItem } from './../providers/interfaces';
 
 export interface DataProviderMixinProperties {
-	id?: string;
 	dataProvider: DataProvider<any>;
 }
 
@@ -17,7 +16,6 @@ export interface DataProviderMixin {
 }
 
 interface InternalState {
-	id?: string;
 	dataProvider?: DataProvider<any>;
 }
 
@@ -31,22 +29,15 @@ function replaceLocalData(instance: DataProviderMixin, data: any) {
 }
 
 function wire(instance: DataProviderMixin) {
-	const { dataProvider, id } = instance.properties;
+	const { dataProvider } = instance.properties;
 
 	if (!dataProvider) {
 		return;
 	}
 
-	if (id) {
-		dataProvider.observe(id).subscribe((data) => {
-			replaceLocalData(instance, data);
-		});
-	}
-	else {
-		dataProvider.observe().subscribe((data) => {
-			replaceLocalData(instance, data);
-		});
-	}
+	dataProvider.observe().subscribe((data) => {
+		replaceLocalData(instance, data);
+	});
 
 	// TODO handle destruction
 }
@@ -58,9 +49,9 @@ const dataProviderFactory = compose({
 	})
 	.mixin({
 		initialize(instance: DataProviderMixin, options: DataProviderOptions) {
-			const { properties: { id, dataProvider } } = options;
+			const { properties: { dataProvider } } = options;
 
-			internalStateMap.set(instance, { id, dataProvider });
+			internalStateMap.set(instance, { dataProvider });
 			wire(instance);
 		}
 	});

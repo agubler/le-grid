@@ -101,14 +101,7 @@ export default class StoreDataProvider<T extends BaseItem> implements DataProvid
 		});
 	}
 
-	observe(): Observable<ObserverPayload<T>>;
-	observe(ids: string[]): Observable<T>;
-	observe(ids: string): Observable<T>
-	observe(ids?: string | string[]): Observable<T> | Observable<ObserverPayload<T>> {
-		if (ids) {
-			return new Observable((observer: Observer<T>) => {});
-		}
-
+	observe(): Observable<ObserverPayload<T>> {
 		return new Observable((observer: Observer<ObserverPayload<T>>) => {
 			this.storeObservers.push(observer);
 			this.dispatch({

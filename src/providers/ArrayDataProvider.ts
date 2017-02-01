@@ -8,20 +8,20 @@ import {
 	FetchState
 } from './interfaces';
 import Observable, { Observer } from '@dojo/core/Observable';
-import { List, Iterable } from 'immutable';
+import { List, Iterable, fromJS, Map as ImmutableMap } from 'immutable';
 
 export default class ArrayDataProvider<T extends BaseItem> implements DataProvider<T> {
 
 	private currentState: DataProviderState<T>;
 	private observers: Map<string, Observer<T>>;
 	private storeObservers: Observer<ObserverPayload<T>>[];
-	private data: List<T>;
+	private data: List<ImmutableMap<string, any>>;
 
 	constructor(data: T[] = []) {
 		this.currentState = {};
 		this.observers = new Map<string, Observer<T>>();
 		this.storeObservers = [];
-		this.data = List(data);
+		this.data = fromJS(data);
 	}
 
 	configure(configuration: { sort?: Partial<SortState<T>>, size?: Partial<FetchState> }): void {
@@ -37,16 +37,16 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 		});
 	}
 
-	private dispatch(dispatchPayload: DispatchPayload<T, Iterable<number, T>>) {
-		const { item, state: { sort, size } } = dispatchPayload;
+	private dispatch(dispatchPayload: DispatchPayload<T, Iterable<number, ImmutableMap<string, any>>>) {
+		const { state: { sort, size } } = dispatchPayload;
 		let data = dispatchPayload.data;
 
 		if (sort) {
-			data = data.sort((a: T, b: T) => {
-				if (a[sort.columnId] < b[sort.columnId]) {
+			data = data.sort((a: ImmutableMap<string, any>, b: ImmutableMap<string, any>) => {
+				if (a.get(sort.columnId) < b.get(sort.columnId)) {
 					return -1;
 				}
-				if (a[sort.columnId] > b[sort.columnId]) {
+				if (a.get(sort.columnId) > b.get(sort.columnId)) {
 					return 1;
 				}
 				return 0;
@@ -65,61 +65,37 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 			observer.next({
 				totalCount: this.data.size,
 				state: this.currentState,
-				items: data.toArray()
+				items: data.toJS()
 			});
 		});
-
-		if (item && this.observers.has(item.id)) {
-			this.observers.get(item.id).next(item);
-		}
 	}
 
-	private get(id: string) {
-		return this.data.find((item) => {
-			return Boolean(item && item.id === id);
-		});
-	}
+	patch(newItems: T | T[]) {
+		newItems = Array.isArray(newItems) ? newItems : [ newItems ];
 
-	patch(items: T | T[]) {
-		items = Array.isArray(items) ? items : [ items ];
-		items.forEach((item) => {
-			const existingItem = this.get(item.id);
-			if (existingItem) {
-				Object.assign(existingItem, item);
+		newItems.forEach((newItem) => {
+			const index = this.data.findIndex((item) => {
+				return Boolean(item && item.get('id') === newItem.id);
+			});
+
+			if (index !== -1) {
+				this.data = this.data.update(index, (item) => {
+					return item.merge(newItem);
+				});
 			}
 			else {
-				this.data = this.data.push(Object.assign({}, item));
+				this.data = this.data.push(ImmutableMap(newItem));
 			}
-			this.dispatch({
-				data: this.data,
-				state: this.currentState,
-				item: existingItem
-			});
+		});
+
+		this.dispatch({
+			data: this.data,
+			state: this.currentState
 		});
 	}
 
 	put(items: T | T[]) {
-		let existingItems: T[] = [];
-		items = Array.isArray(items) ? items : [ items ];
-
-		items = items.filter((item) => {
-			if (this.get(item.id)) {
-				existingItems.push(item);
-				return false;
-			}
-			return true;
-		});
-
-		this.data = this.data.concat(items).toList();
-		this.patch(existingItems);
-
-		items.forEach((item) => {
-			this.dispatch({
-				data: this.data,
-				state: this.currentState,
-				item
-			});
-		});
+		this.patch(items);
 	}
 
 	fetch(fetchRequest: FetchState) {
@@ -140,33 +116,7 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 		});
 	}
 
-	observe(): Observable<ObserverPayload<T>>;
-	observe(ids: string[]): Observable<T>;
-	observe(ids: string): Observable<T>
-	observe(ids?: string | string[]): Observable<T> | Observable<ObserverPayload<T>> {
-		if (ids) {
-			return new Observable((observer: Observer<T>) => {
-				if (typeof ids === 'string') {
-					this.observers.set(ids, observer);
-					this.dispatch({
-						data: this.data,
-						state: this.currentState,
-						item: this.get(ids)
-					});
-				}
-				else if (Array.isArray(ids)) {
-					ids.forEach((id) => {
-						this.observers.set(id, observer);
-						this.dispatch({
-							data: this.data,
-							state: this.currentState,
-							item: this.get(id)
-						});
-					});
-				}
-			});
-		}
-
+	observe(): Observable<ObserverPayload<T>> {
 		return new Observable((observer: Observer<ObserverPayload<T>>) => {
 			this.storeObservers.push(observer);
 			this.dispatch({

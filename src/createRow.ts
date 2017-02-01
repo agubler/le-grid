@@ -5,12 +5,11 @@ import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/wid
 import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { v, w } from '@dojo/widget-core/d';
 import outerNodeTheme from './mixins/outerNodeTheme';
-import dataProviderMixin, { DataProviderMixinProperties } from './mixins/dataProviderMixin';
 import { Column } from './createGrid';
 
 import * as baseTheme1 from './styles/gridRow';
 
-export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties, DataProviderMixinProperties {
+export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties {
 	columns: Column[];
 	item: any;
 }
@@ -24,7 +23,6 @@ export interface GridRowFactory extends WidgetFactory<GridRowMixin, GridRowPrope
 const createGridRow: GridRowFactory = createWidgetBase
 	.mixin(registryMixin)
 	.mixin(themeable)
-	.mixin(dataProviderMixin)
 	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
@@ -38,7 +36,7 @@ const createGridRow: GridRowFactory = createWidgetBase
 				}
 			],
 			getChildrenNodes(this: GridRow): DNode[] {
-				const { data: item = this.properties.item, properties: { columns = [] } } = this;
+				const { properties: { item, columns = [] } } = this;
 
 				return [
 					v('table', { classes: this.theme.gridRowTable, styles: { 'background-color': item.color } }, [

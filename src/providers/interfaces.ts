@@ -81,6 +81,4 @@ export interface DataProvider<T extends BaseItem> {
 	 *
 	 */
 	observe(): Observable<ObserverPayload<T>>;
-	observe(ids: string[]): Observable<T>;
-	observe(ids: string): Observable<T>;
 }
