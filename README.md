@@ -19,25 +19,32 @@ Supports cell customisation, configurable columns and pagination.
 
 <img src="https://cdn.rawgit.com/agubler/le-grid/master/docs/le-grid.gif">
 
-## Usage
+### Installation
 
-To use `le-grid`, clone the repository, install the dependencies, grunt link and npm link in the target project.
+To use `le-grid`, install using `yarn` or `npm`
 
 ```shell
-git clone git@github.com:agubler/le-grid.git
-
-cd le-grid
-
-npm install # or yarn install
-
-grunt link # this uses npm link under the covers
-
-cd path/to/project
-
-npm link le-grid
+npm install le-grid --save
+yarn add le-grid --save
 ```
 
-### Installation
+### Usage
+
+```ts
+createGrid.mixin(createProjectorMixin)({
+	properties: {
+		dataProvider: new ArrayDataProvider([{ id: '1', value: 'one' }, { id: '2', value: 'two' }]),
+		columns: [{
+            id: 'value',
+		    field: 'value',
+    		label: 'Value',
+    		sortable: true
+		}]
+	}
+}).append();
+```
+
+More usage examples can be [found here](https://github.com/agubler/le-grid/blob/master/src/examples/main.ts)
 
 ### Testing
 
