@@ -5,10 +5,12 @@ import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
+import { assertAppliedClasses } from './../support/classHelper';
+import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createBody from '../../src/createBody';
-import * as gridBodyTheme from '../../src/styles/gridBody';
+import css from '../../src/styles/gridBody';
+import { Map as ImmutableMap } from 'immutable';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -32,50 +34,45 @@ registerSuite({
 		isComposeFactoryStub.restore();
 	},
 	'render with items'() {
-		const store = createQueryStore({
-				data: [
-					{ id: 'id', foo: 'bar' }
-				]
-		});
+		const dataProvider = new ArrayDataProvider<any>([{ id: 'id', foo: 'bar' }]);
 		const properties = {
 			registry: mockRegistry,
-			store,
+			dataProvider,
+			items: [{ id: 'id', foo: 'bar' }],
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
 		};
 
 		const row = createBody({ properties });
-		const promise = new Promise((resolve) => setTimeout(resolve, 10));
+		/*const promise = new Promise((resolve) => setTimeout(resolve, 10));*/
 
-		return promise.then(() => {
+		/*return promise.then(() => {*/
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.deepEqual(vnode.properties!.classes, { [gridBodyTheme.scroller]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![0].properties!.classes, { [gridBodyTheme.content]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 1);
 			assert.isTrue(widgetBaseSpy.calledOnce);
 			const args = widgetBaseSpy.getCall(0).args[0];
-			assert.deepEqual(args, { properties: {
-				id: 'id',
-				key: 'id',
-				store,
-				registry: mockRegistry,
-				columns: properties.columns,
-				item: { id: 'id', foo: 'bar' }
-			}});
-		});
+
+			assert.deepEqual(args.properties.key, 'id');
+			assert.deepEqual(args.properties.id, 'id');
+			assert.deepEqual(args.properties.item, { id: 'id', foo: 'bar' });
+			assert.deepEqual(args.properties.registry, mockRegistry);
+			assert.deepEqual(args.properties.dataProvider, dataProvider);
+		/*});*/
 	},
 	'render with no items'() {
-		const store = createQueryStore({
-				data: undefined
-		});
+		const dataProvider = new ArrayDataProvider();
+
 		const properties = {
 			registry: mockRegistry,
-			store,
+			dataProvider,
+			items: <any> undefined,
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
@@ -88,12 +85,46 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.deepEqual(vnode.properties!.classes, { [gridBodyTheme.scroller]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![0].properties!.classes, { [gridBodyTheme.content]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 0);
 			assert.isTrue(widgetBaseSpy.notCalled);
+		});
+	},
+	'render with immutable items'() {
+		const dataProvider = new ArrayDataProvider();
+
+		const item = ImmutableMap({ id: 'id', foo: 'bar' });
+		const properties = {
+			registry: mockRegistry,
+			dataProvider,
+			items: [item],
+			columns: [
+				{ id: 'foo', label: 'foo' }
+			]
+		};
+
+		const row = createBody({ properties });
+		const promise = new Promise((resolve) => setTimeout(resolve, 10));
+
+		return promise.then(() => {
+			const vnode = <VNode> row.__render__();
+
+			assert.strictEqual(vnode.vnodeSelector, 'div');
+			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
+			assert.lengthOf(vnode.children, 1);
+			assert.equal(vnode.children![0].vnodeSelector, 'div');
+			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
+			assert.lengthOf(vnode.children![0].children, 1);
+			const args = widgetBaseSpy.getCall(0).args[0];
+
+			assert.deepEqual(args.properties.key, 'id');
+			assert.deepEqual(args.properties.id, 'id');
+			assert.deepEqual(args.properties.item, item);
+			assert.deepEqual(args.properties.registry, mockRegistry);
+			assert.deepEqual(args.properties.dataProvider, dataProvider);
 		});
 	}
 });

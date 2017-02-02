@@ -1,2 +1,7 @@
-export const gridRow: string;
-export const gridRowTable: string;
+export default {
+	classes: {
+		gridRow: 'gridRow',
+		gridRowTable: 'gridRowTable'
+	},
+	key: 'dojo-gridRow'
+};

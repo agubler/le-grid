@@ -6,10 +6,10 @@ import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 
+import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createGrid from '../../src/createGrid';
-import * as gridTheme from '../../src/styles/grid';
+import css from '../../src/styles/grid';
 
 let headerSpy: SinonSpy;
 let bodySpy: SinonSpy;
@@ -46,7 +46,7 @@ registerSuite({
 	},
 	'grid without pagination'() {
 		const properties = {
-			store: createQueryStore(),
+			dataProvider: new ArrayDataProvider(),
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
@@ -57,7 +57,7 @@ registerSuite({
 		const vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -73,7 +73,7 @@ registerSuite({
 	},
 	'grid with pagination'() {
 		const properties = {
-			store: createQueryStore(),
+			dataProvider: new ArrayDataProvider(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -87,7 +87,7 @@ registerSuite({
 		const vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -103,7 +103,7 @@ registerSuite({
 	},
 	'onSortRequest'() {
 		const properties = {
-			store: createQueryStore(),
+			dataProvider: new ArrayDataProvider(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -119,7 +119,7 @@ registerSuite({
 		let vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -148,10 +148,28 @@ registerSuite({
 
 		assert.isTrue(bodySpy.calledOnce);
 		assert.isTrue(footerSpy.calledOnce);
+
+		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
+		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
+		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
+
+		grid.onSortRequest('foo', false);
+		vnode = <VNode> grid.__render__();
+
+		assert.isTrue((<any> grid).invalidate.called);
+		assert.isTrue(headerSpy.calledOnce);
+
+		headerProperties = headerSpy.getCall(0).args[0].properties;
+		assert.strictEqual(headerProperties.registry, mockRegistry);
+		assert.deepEqual(headerProperties.sortDetails, { columnId: 'foo', descending: false });
+		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
+
+		assert.isTrue(bodySpy.calledOnce);
+		assert.isTrue(footerSpy.calledOnce);
 	},
 	'onPaginationRequest'() {
 		const properties = {
-			store: createQueryStore(),
+			dataProvider: new ArrayDataProvider(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -167,7 +185,7 @@ registerSuite({
 		let vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, { [gridTheme.grid]: true });
+		assert.deepEqual(vnode.properties!.classes, { [css.classes.grid]: true });
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
@@ -176,8 +194,7 @@ registerSuite({
 		let footerProperties = footerSpy.getCall(0).args[0].properties;
 
 		assert.strictEqual(footerProperties.totalCount, 0);
-		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 0, dataRangeCount: 10, pageNumber: 1 });
-		assert.isTrue(footerProperties.pagination);
+		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 0, dataRangeCount: 10 });
 
 		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
 		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
@@ -193,12 +210,11 @@ registerSuite({
 		assert.isTrue(footerSpy.calledOnce);
 		footerProperties = footerSpy.getCall(0).args[0].properties;
 		assert.strictEqual(footerProperties.totalCount, 0);
-		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 10, dataRangeCount: 10, pageNumber: 2 });
-		assert.isTrue(footerProperties.pagination);
+		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 10, dataRangeCount: 10 });
 	},
 	'custom cell applied on property change'() {
 		const properties = {
-			store: createQueryStore(),
+			dataProvider: new ArrayDataProvider(),
 			pagination: {
 				itemsPerPage: 10
 			},
@@ -208,25 +224,21 @@ registerSuite({
 		};
 
 		const customCell = createWidgetBase.override({});
+		const customCellWrapper = () => { return customCell; };
 		const grid = createGrid({ properties });
 		assert.notEqual(grid.registry!.get('grid-cell'), customCell);
-		grid.setProperties(assign({ customCell }, properties));
+		grid.setProperties(assign({ customCell: customCellWrapper }, properties));
+		assert.strictEqual(grid.registry!.get('grid-cell'), customCell);
+		grid.setProperties(assign(<any> { customCell: customCellWrapper }, properties, { pagination: { itemsPerPage: 15 }}));
 		assert.strictEqual(grid.registry!.get('grid-cell'), customCell);
 	},
-	'external state updated on property change'() {
-		const initialstore = createQueryStore({
-			data: [
-				{ id: '1', foo: 'bar' }
-			]
-		});
-		const updatedstore = createQueryStore({
-			data: [
-				{ id: '9', baz: 'qux' }
-			]
-		});
+	'data provider updated on property change'(this: any) {
+		this.skip();
+		const initialstore = new ArrayDataProvider<any>([{ id: '1', foo: 'bar' }]);
+		const updatedstore = new ArrayDataProvider<any>([{ id: '9', baz: 'qux' }]);
 
 		const properties = {
-			store: initialstore,
+			dataProvider: initialstore,
 			columns: [
 				{ id: 'foo', label: 'foo' }
 			]
@@ -235,11 +247,15 @@ registerSuite({
 		const grid = createGrid({ properties });
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 		return promise.then(() => {
-			assert.deepEqual(grid['state'].data[0], { id: '1', foo: 'bar' });
-			grid.setProperties(assign(properties, { store: updatedstore }));
+			assert.deepEqual(grid.data, {
+				items: [{ id: '1', foo: 'bar' }],
+				totalCount: 1,
+				state: {}
+			});
+			grid.setProperties(assign(properties, { dataProvider: updatedstore }));
 			const promise = new Promise((resolve) => setTimeout(resolve, 10));
 			return promise.then(() => {
-				assert.deepEqual(grid['state'].data[0], { id: '9', baz: 'qux' });
+				assert.deepEqual(grid.data, { id: '9', baz: 'qux' });
 			});
 		});
 	}

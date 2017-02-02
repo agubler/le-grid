@@ -1,8 +1,9 @@
 import './createCell';
-import './createRowView';
 import './createRow';
 import './createBody';
 import './createHeaderCell';
 import './createHeader';
 import './createFooter';
 import './createGrid';
+import './mixins/all';
+import './providers/all';

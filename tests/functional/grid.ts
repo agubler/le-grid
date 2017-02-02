@@ -1,13 +1,13 @@
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
+import { v } from '@dojo/widget-core/d';
 import createCustomCell from './../../src/examples/createCustomCell';
 
+import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createGrid from './../../src/createGrid';
 
-const store = createQueryStore({
-	data: [
+const store = new ArrayDataProvider<any>([
 		{ id: uuid(), age: 1, gender: 'A', location: 'Out' },
 		{ id: uuid(), age: 1, gender: 'B', location: 'Out' },
 		{ id: uuid(), age: 2, gender: 'C', location: 'Out' },
@@ -48,8 +48,7 @@ const store = createQueryStore({
 		{ id: uuid(), age: 18, gender: 'LL', location: 'Out' },
 		{ id: uuid(), age: 19, gender: 'MM', location: 'Out' },
 		{ id: uuid(), age: 20, gender: 'NN', location: 'Out' }
-	]
-});
+	]);
 
 const columns = [
 	{
@@ -90,7 +89,7 @@ const columns = [
 
 const grid = createGrid.mixin(createProjectorMixin)({
 	properties: {
-		store,
+		dataProvider: store,
 		pagination: {
 			itemsPerPage: 5
 		},
@@ -102,24 +101,21 @@ let cellToggle = true;
 
 function onclick() {
 	const props = {
-		store,
+		dataProvider: store,
 		columns,
 		pagination: {
 			itemsPerPage: 5
 		},
-		customCell: cellToggle ? createCustomCell : false
+		customCell: cellToggle ? () => { return createCustomCell; } : false
 	};
 	cellToggle = !cellToggle;
 	grid.setProperties(props);
 }
 
 const button = createWidgetBase.mixin(createProjectorMixin).override({
-	tagName: 'button',
-	nodeAttributes: [
-		function(): any {
-			return { innerHTML: 'Use custom cell', classes: { button: true }, onclick };
-		}
-	]
+	render() {
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick } );
+	}
 })();
 
 button.append();

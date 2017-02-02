@@ -2,11 +2,12 @@ import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import createHeaderCell from '../../src/createHeaderCell';
+import { assertAppliedClasses } from './../support/classHelper';
 
-import * as gridHeaderCellTheme from '../../src/styles/gridHeaderCell';
+import css from '../../src/styles/gridHeaderCell';
 
 registerSuite({
-	name: 'createCell',
+	name: 'createHeaderCell',
 	render: {
 		'renders non sortable header cell'() {
 			let clicked = false;
@@ -23,7 +24,7 @@ registerSuite({
 
 			const vnode = <VNode> headerCell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.isTrue(assertAppliedClasses([css.classes.cell], vnode.properties!.classes));
 			assert.isUndefined(vnode.properties!.onclick);
 			assert.equal(vnode.properties!['role'], 'columnheader');
 			assert.lengthOf(vnode.children, 1);
@@ -47,7 +48,7 @@ registerSuite({
 			vnode.properties!.onclick!.call(headerCell);
 
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.isTrue(assertAppliedClasses([css.classes.cell], vnode.properties!.classes));
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -76,7 +77,7 @@ registerSuite({
 			vnode.properties!.onclick!.call(headerCell);
 
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.isTrue(assertAppliedClasses([css.classes.cell], vnode.properties!.classes));
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -84,9 +85,7 @@ registerSuite({
 			assert.equal(vnode.children![0].vnodeSelector, 'span');
 			assert.equal(vnode.children![0].text, 'foo');
 			assert.equal(vnode.children![1].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![1].properties!.classes, {
-				[gridHeaderCellTheme.sortUp]: true, [gridHeaderCellTheme.sortArrow]: true, [gridHeaderCellTheme.icon]: true
-			});
+			assert.isTrue(assertAppliedClasses([css.classes.sortUp, css.classes.sortArrow, css.classes.icon], vnode.children![1].properties!.classes));
 			assert.equal(vnode.children![1].properties!['role'], 'presentation');
 		},
 		'renders sortable header cell with ascending direction'() {
@@ -110,7 +109,7 @@ registerSuite({
 			vnode.properties!.onclick!.call(headerCell);
 
 			assert.strictEqual(vnode.vnodeSelector, 'th');
-			assert.deepEqual(vnode.properties!.classes, {[gridHeaderCellTheme.cell]: true});
+			assert.isTrue(assertAppliedClasses([css.classes.cell], vnode.properties!.classes));
 			assert.isFunction(vnode.properties!.onclick);
 			assert.isTrue(clicked);
 			assert.equal(vnode.properties!['role'], 'columnheader');
@@ -118,9 +117,7 @@ registerSuite({
 			assert.equal(vnode.children![0].vnodeSelector, 'span');
 			assert.equal(vnode.children![0].text, 'foo');
 			assert.equal(vnode.children![1].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![1].properties!.classes, {
-				[gridHeaderCellTheme.sortUp]: false, [gridHeaderCellTheme.sortArrow]: true, [gridHeaderCellTheme.icon]: true
-			});
+			assert.isTrue(assertAppliedClasses([css.classes.sortArrow, css.classes.icon], vnode.children![1].properties!.classes));
 			assert.equal(vnode.children![1].properties!['role'], 'presentation');
 		}
 	}

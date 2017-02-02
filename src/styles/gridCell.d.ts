@@ -1,1 +1,6 @@
-export const cell: string;
+export default {
+	classes: {
+		cell: 'cell'
+	},
+	key: 'dojo-gridCell'
+};

@@ -56,7 +56,8 @@ export const loaderOptions = {
 		{ name: 'dojo', location: 'node_modules/intern/browser_modules/dojo' },
 		{ name: '@dojo', location: 'node_modules/@dojo' },
 		{ name: 'maquette', location: 'node_modules/maquette/dist', main: 'maquette' },
-		{ name: 'sinon', location: 'node_modules/sinon/pkg', main: 'sinon' }
+		{ name: 'sinon', location: 'node_modules/sinon/pkg', main: 'sinon' },
+		{ name: 'immutable', location: 'node_modules/immutable/dist', main: 'immutable' }
 	]
 };
 

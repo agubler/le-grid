@@ -1,10 +1,12 @@
-import { createQueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { v } from '@dojo/widget-core/d';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './createCustomCell';
 
 import createGrid from './../createGrid';
+import ArrayDataProvider from './../providers/ArrayDataProvider';
+import StoreDataProvider from './../providers/StoreDataProvider';
 
 const locations = [
 	'Dive Bar',
@@ -37,11 +39,13 @@ function createData(count: number): any[] {
 	return data;
 };
 
-let data = createData(250);
+let storeData = createData(200);
+let arrayData = createData(200);
 
-const store = createQueryStore({
-	data: [...data]
-});
+const arrayDataProvider = new ArrayDataProvider(arrayData);
+const storeDataProvider = new StoreDataProvider(storeData);
+const arrayDataProviderPaginated = new ArrayDataProvider(createData(500));
+const storeDataProviderPaginated = new StoreDataProvider(createData(500));
 
 const columns = [
 	{
@@ -80,64 +84,121 @@ const columns = [
 	}
 ];
 
-const paginatedGrid = createGrid.mixin(createProjectorMixin)({
+const root = document.getElementsByTagName('store-data-grid')[0];
+
+const storeButton = createWidgetBase.mixin(createProjectorMixin).override({
+	render() {
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(storeDataProvider, storeGrid) } );
+	}
+})({
+	root
+});
+
+const paginatedStoreGrid = createGrid.mixin(createProjectorMixin)({
+	root,
 	properties: {
-		store,
+		dataProvider: storeDataProviderPaginated,
 		pagination: {
-			itemsPerPage: 25
+			itemsPerPage: 10
 		},
 		columns
 	}
 });
 
-const grid = createGrid.mixin(createProjectorMixin)({
+const storeGrid = createGrid.mixin(createProjectorMixin)({
+	root,
 	properties: {
-		store,
+		dataProvider: storeDataProvider,
 		columns
 	}
 });
 
-let cellToggle = true;
+storeButton.append();
+storeGrid.append();
+paginatedStoreGrid.append();
 
-function onclick() {
-	const props = {
-		store,
-		columns,
-		customCell: cellToggle ? createCustomCell : false
+const arrayGridRoot = document.getElementsByTagName('array-data-grid')[0];
+
+const arrayButton = createWidgetBase.mixin(createProjectorMixin).override({
+	render() {
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(arrayDataProvider, arrayGrid) } );
+	}
+})({
+	root: arrayGridRoot
+});
+
+const paginatedArrayGrid = createGrid.mixin(createProjectorMixin)({
+	root: arrayGridRoot,
+	properties: {
+		dataProvider: arrayDataProviderPaginated,
+		pagination: {
+			itemsPerPage: 10
+		},
+		columns
+	}
+});
+
+const arrayGrid = createGrid.mixin(createProjectorMixin)({
+	root: arrayGridRoot,
+	properties: {
+		dataProvider: arrayDataProvider,
+		columns
+	}
+});
+
+arrayButton.append();
+arrayGrid.append();
+paginatedArrayGrid.append();
+
+function buttonClick(provider: any, grid: any) {
+	let cellToggle = true;
+	return function onclick() {
+		const props = {
+			dataProvider: provider,
+			columns,
+			customCell: cellToggle ? () => { return createCustomCell; } : false
+		};
+		cellToggle = !cellToggle;
+		grid.setProperties(props);
 	};
-	cellToggle = !cellToggle;
-	grid.setProperties(props);
 }
 
-const button = createWidgetBase.mixin(createProjectorMixin).override({
-	tagName: 'button',
-	nodeAttributes: [
-		function(): any {
-			return { innerHTML: 'Use custom cell', classes: { button: true }, onclick };
-		}
-	]
-})();
-
-button.append();
-grid.append();
-paginatedGrid.append();
-
 setInterval(function() {
-	const record = data[Math.floor(Math.random() * data.length + 1)];
+	const record = arrayData[Math.floor(Math.random() * arrayData.length + 1)];
 	if (record) {
 		const id = record.id;
-		store.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
+		arrayDataProvider.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
 		setTimeout(() => {
-			store.patch({ id, color: 'transparent' });
+			arrayDataProvider.patch({ id, color: 'transparent' });
+		}, 500);
+	}
+}, 50);
+
+setInterval(function() {
+	const record = storeData[Math.floor(Math.random() * storeData.length + 1)];
+	if (record) {
+		const id = record.id;
+		storeDataProvider.patch({ id, location: locations[Math.floor(Math.random() * locations.length)], color: 'aqua' });
+		setTimeout(() => {
+			storeDataProvider.patch({ id, color: 'transparent' });
 		}, 500);
 	}
 }, 50);
 
 const interval = setInterval(function() {
 	const newData = createData(20);
-	data = [...data, ...newData];
-	store.put(newData);
-	if (data.length > 500) {
+	storeData = [...storeData, ...newData];
+	storeDataProvider.put(newData);
+	if (storeData.length > 500) {
 		clearInterval(interval);
+	}
+}, 2000);
+
+const arrayInterval = setInterval(function() {
+	const newData = createData(20);
+	arrayData = [...arrayData, ...newData];
+	arrayDataProvider.put(newData);
+	if (arrayData.length > 500) {
+		clearInterval(arrayInterval);
 	}
 }, 2000);

@@ -53,10 +53,29 @@
 				width: 200px;
 				border-radius: 5px;
 			}
+
+			.layout-grid {
+				display: flex;
+			}
+
+			.layout-grid-cell {
+				flex: 1;
+			}
+
 		</style>
 	</head>
 	<body>
 		<script src="./../../../node_modules/@dojo/loader/loader.min.js"></script>
 		<script src="./index.js"></script>
+		<div class="layout-grid">
+			<div class="layout-grid-cell">
+				<h1>Store Provider</h1>
+				<store-data-grid/>
+			</div>
+			<div class="layout-grid-cell">
+				<h1>Array Provider</h1>
+				<array-data-grid/>
+			</div>
+		</div>
 	</body>
 </html>

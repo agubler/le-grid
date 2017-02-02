@@ -1,3 +1,8 @@
-export const gridHeader: string;
-export const gridHeaderRow: string;
-export const gridHeaderTable: string;
+export default {
+	classes: {
+		gridHeader: 'gridHeader',
+		gridHeaderTable: 'gridHeaderTable',
+		gridHeaderRow: 'gridHeaderRow'
+	},
+	key: 'dojo-gridHeader'
+};

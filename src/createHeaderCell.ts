@@ -1,14 +1,10 @@
-import { VNodeProperties } from '@dojo/interfaces/vdom';
 import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
-import { assign } from '@dojo/core/lang';
 import { v } from '@dojo/widget-core/d';
-import outerNodeTheme from './mixins/outerNodeTheme';
 import { Column, SortDetails } from './createGrid';
-import { toggleClass } from './util/themeHelpers';
 
-import * as baseTheme from './styles/gridHeaderCell';
+import css from './styles/gridHeaderCell';
 
 export interface GridHeaderProperties extends WidgetProperties {
 	onSortRequest(columnId: string, descending: boolean): void;
@@ -17,7 +13,7 @@ export interface GridHeaderProperties extends WidgetProperties {
 	id: string;
 }
 
-export interface GridHeaderMixin extends WidgetMixin<GridHeaderProperties>, ThemeableMixin<typeof baseTheme> {
+export interface GridHeaderMixin extends WidgetMixin<GridHeaderProperties>, ThemeableMixin {
 	onSortRequest(event: any): void;
 }
 
@@ -27,36 +23,27 @@ export interface GridHeaderFactory extends WidgetFactory<GridHeader, GridHeaderP
 
 const createGridHeader: GridHeaderFactory = createWidgetBase
 	.mixin(themeable)
-	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
-			tagName: 'th',
-			baseTheme,
-			getOuterNodeThemes(this: GridHeader): Object[] {
-				return [ this.theme.cell || {} ];
-			},
+			baseClasses: css,
 			onSortRequest(this: GridHeader, event: MouseEvent): void {
 				const { id, sortDetails: { descending = false } = {} } = <GridHeaderProperties> this.properties;
 				this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);
 			},
-			nodeAttributes: [
-				function(this: GridHeader, attributes: VNodeProperties): VNodeProperties {
-					const { id, sortDetails, column } = <GridHeaderProperties> this.properties;
-					const onclick = column.sortable ? { onclick: this.onSortRequest } : {};
-
-					return assign({ role: 'columnheader' }, onclick);
-				}
-			],
-			getChildrenNodes(this: GridHeader): DNode[] {
+			render(this: GridHeader): DNode {
 				const { id, column, sortDetails } = <GridHeaderProperties> this.properties;
-				const classes = sortDetails && sortDetails.descending ? this.theme.sortUp : toggleClass(this.theme.sortUp!);
+				const classes = [css.classes.sortArrow, css.classes.icon];
+				if (sortDetails && sortDetails.descending) {
+					classes.push(css.classes.sortUp);
+				}
+				const onclick = column.sortable ? { onclick: this.onSortRequest } : {};
 
-				return [
+				return v('th', { ...onclick, ...{ classes: this.classes(css.classes.cell).get(), role: 'columnheader' } }, [
 					v('span', [ column.label ]),
 					sortDetails && sortDetails.columnId === id ?
-						v('div', { classes: { ...this.theme.sortArrow, ...this.theme.icon, ...classes }, role: 'presentation' }) :
+						v('div', { classes: this.classes(...classes).get(), role: 'presentation' }) :
 						null
-				];
+				]);
 			}
 		}
 	});
