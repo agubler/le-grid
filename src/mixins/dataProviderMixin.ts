@@ -1,4 +1,4 @@
-import compose from '@dojo/compose/compose';
+import compose, { ComposeFactory } from '@dojo/compose/compose';
 import { DataProvider, BaseItem } from './../providers/interfaces';
 
 export interface DataProviderMixinProperties {
@@ -14,6 +14,8 @@ export interface DataProviderMixin {
 	readonly properties: DataProviderMixinProperties;
 	invalidate(): void;
 }
+
+export interface DataProviderMixinFactory extends ComposeFactory<DataProviderMixin, DataProviderOptions> {}
 
 interface InternalState {
 	dataProvider?: DataProvider<any, any>;
@@ -42,7 +44,7 @@ function wire(instance: DataProviderMixin) {
 	// TODO handle destruction
 }
 
-const dataProviderFactory = compose({
+const dataProviderFactory: DataProviderMixinFactory = compose({
 		get data(this: DataProviderMixin): any {
 			return dataMap.get(this);
 		}
