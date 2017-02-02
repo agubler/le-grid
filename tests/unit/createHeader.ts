@@ -8,7 +8,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 import { assertAppliedClasses } from './../support/classHelper';
 import createHeader from '../../src/createHeader';
-import css from '../../src/styles/gridHeader';
+import * as css from '../../src/styles/gridHeader.css';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -46,11 +46,11 @@ registerSuite({
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.isTrue(assertAppliedClasses([css.classes.gridHeader, css.classes.gridHeaderRow], vnode.properties!.classes));
+		assert.isTrue(assertAppliedClasses([css.gridHeader, css.gridHeaderRow], vnode.properties!.classes));
 		assert.strictEqual(vnode.properties!['role'], 'row');
 		assert.lengthOf(vnode.children, 1);
 		assert.strictEqual(vnode.children![0].vnodeSelector, 'table');
-		assert.isTrue(assertAppliedClasses([css.classes.gridHeaderTable], vnode.children![0].properties!.classes));
+		assert.isTrue(assertAppliedClasses([css.gridHeaderTable], vnode.children![0].properties!.classes));
 		assert.strictEqual(vnode.children![0].properties!['role'], 'presentation');
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');

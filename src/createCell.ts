@@ -3,7 +3,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { v } from '@dojo/widget-core/d';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 
-import css from './styles/gridCell';
+import * as css from './styles/gridCell.css';
 
 export interface GridCellProperties extends WidgetProperties {
 	data: string;
@@ -23,7 +23,7 @@ const createGridCell: GridCellFactory = createWidgetBase
 			render(this: GridCell): DNode {
 				const { properties: { data, renderer } } = this;
 				const value = renderer ? renderer(data) : data;
-				return v('td', { classes: this.classes(css.classes.cell).get() }, [ value ? value.toString() : null ]);
+				return v('td', { classes: this.classes(css.cell).get() }, [ value ? value.toString() : null ]);
 			}
 		}
 	});

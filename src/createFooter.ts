@@ -4,7 +4,7 @@ import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { v } from '@dojo/widget-core/d';
 import { PaginationDetails }  from './createGrid';
 
-import css from './styles/gridFooter';
+import * as css from './styles/gridFooter.css';
 
 export interface GridFooterProperties extends WidgetProperties {
 	onPaginationRequest(pageNumber: string): void;
@@ -31,10 +31,10 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 		},
 		createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean, extraClasses: string, overrideLabel?: string): DNode {
 			if (visable) {
-				const classes = [css.classes.pageLink];
+				const classes = [css.pageLink];
 
 				if (disabled) {
-					classes.push(css.classes.disabledPageLink);
+					classes.push(css.disabledPageLink);
 				}
 				if (extraClasses) {
 					classes.push(extraClasses);
@@ -55,11 +55,11 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 			const totalPages = Math.ceil(totalCount / dataRangeCount);
 			const pageNumber = dataRangeStart === 0 ? 1 : (dataRangeStart / dataRangeCount) + 1;
 
-			return v('div', { classes: this.classes(css.classes.footer).get() }, [
+			return v('div', { classes: this.classes(css.footer).get() }, [
 				dataRangeCount !== Infinity ? v('div', [
-					v('div', { classes: this.classes(css.classes.status).get() }, [ `${dataRangeStart + 1} - ${dataRangeStart + dataRangeCount} of ${totalCount} results` ]),
-					v('div', { classes: this.classes(css.classes.navigation).get() }, [
-						this.createPageLink(String(pageNumber - 1), true, Boolean(pageNumber === 1), css.classes.previousPage, '<'),
+					v('div', { classes: this.classes(css.status).get() }, [ `${dataRangeStart + 1} - ${dataRangeStart + dataRangeCount} of ${totalCount} results` ]),
+					v('div', { classes: this.classes(css.navigation).get() }, [
+						this.createPageLink(String(pageNumber - 1), true, Boolean(pageNumber === 1), css.previousPage, '<'),
 						v('span', [
 							this.createPageLink('1', true, Boolean(pageNumber === 1)),
 							pageNumber > 3 ? v('span', [ '...' ]) : null,
@@ -71,9 +71,9 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 							pageNumber !== totalPages ? v('span', [ '...' ]) : null,
 							this.createPageLink(String(totalPages), true, Boolean(pageNumber === totalPages))
 						]),
-						this.createPageLink(String(pageNumber + 1), true, Boolean(pageNumber === totalPages), css.classes.nextPage, '>')
+						this.createPageLink(String(pageNumber + 1), true, Boolean(pageNumber === totalPages), css.nextPage, '>')
 					])
-				]) : v('div', { classes: this.classes(css.classes.status).get() }, [ `${totalCount} results` ])
+				]) : v('div', { classes: this.classes(css.status).get() }, [ `${totalCount} results` ])
 			]);
 		}
 	}

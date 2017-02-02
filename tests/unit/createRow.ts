@@ -10,7 +10,7 @@ import { Map as ImmutableMap } from 'immutable';
 import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createRow from '../../src/createRow';
-import css from '../../src/styles/gridRow';
+import * as css from '../../src/styles/gridRow.css';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
@@ -50,7 +50,7 @@ registerSuite({
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.isTrue(assertAppliedClasses([css.classes.gridRow], vnode.properties!.classes));
+		assert.isTrue(assertAppliedClasses([css.gridRow], vnode.properties!.classes));
 		assert.strictEqual(vnode.properties!['role'], 'row');
 
 		assert.lengthOf(vnode.children, 1);
@@ -86,7 +86,7 @@ registerSuite({
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.isTrue(assertAppliedClasses([css.classes.gridRow], vnode.properties!.classes));
+		assert.isTrue(assertAppliedClasses([css.gridRow], vnode.properties!.classes));
 		assert.strictEqual(vnode.properties!['role'], 'row');
 
 		assert.lengthOf(vnode.children, 1);

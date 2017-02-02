@@ -1,8 +1,8 @@
-import gridTheme from '../../src/styles/grid';
-import gridFooter from '../../src/styles/gridFooter';
-import gridCell from '../../src/styles/gridCell';
-import gridHeaderCell from '../../src/styles/gridHeaderCell';
-import gridRow from '../../src/styles/gridRow';
+import * as gridTheme from '../../src/styles/grid.css';
+import * as gridFooter from '../../src/styles/gridFooter.css';
+import * as gridCell from '../../src/styles/gridCell.css';
+import * as gridHeaderCell from '../../src/styles/gridHeaderCell.css';
+import * as gridRow from '../../src/styles/gridRow.css';
 
 export default class Page {
 	private remote: any;
@@ -19,32 +19,32 @@ export default class Page {
 		return this.remote
 			.get('http://localhost:9000/_build/tests/functional/index.html')
 			.setFindTimeout(5000)
-			.findByCssSelector(`.${gridTheme.classes.grid}`)
+			.findByCssSelector(`.${gridTheme.grid}`)
 			.setFindTimeout(100);
 	}
 
 	isFooterVisible(): Promise<boolean> {
 		return this.remote
-			.findByCssSelector(`.${gridFooter.classes.footer}`)
+			.findByCssSelector(`.${gridFooter.footer}`)
 			.isDisplayed();
 	}
 
 	getCellValue(column: number, row: number): Promise<string> {
 		return this.remote
-			.findByCssSelector(`tr.${gridRow.classes.gridRow}:nth-of-type(${row})`)
-			.findByCssSelector(`td.${gridCell.classes.cell}:nth-of-type(${column})`)
+			.findByCssSelector(`tr.${gridRow.gridRow}:nth-of-type(${row})`)
+			.findByCssSelector(`td.${gridCell.cell}:nth-of-type(${column})`)
 			.getVisibleText();
 	}
 
 	getFooterStatus() {
 		return this.remote
-			.findByCssSelector(`.${gridFooter.classes.status}`)
+			.findByCssSelector(`.${gridFooter.status}`)
 			.getVisibleText();
 	}
 
 	sortColumn(column: number): Promise<any> {
 		return this.remote
-			.findByCssSelector(`th.${gridHeaderCell.classes.cell}:nth-of-type(${column})`)
+			.findByCssSelector(`th.${gridHeaderCell.cell}:nth-of-type(${column})`)
 			.click()
 			.end();
 	}
@@ -58,14 +58,14 @@ export default class Page {
 
 	gotoNextPage(): Promise<any> {
 		return this.remote
-			.findByCssSelector(`.${gridFooter.classes.nextPage}.${gridFooter.classes.pageLink}`)
+			.findByCssSelector(`.${gridFooter.nextPage}.${gridFooter.pageLink}`)
 			.click()
 			.end();
 	}
 
 	gotoLastPage(): Promise<any> {
 		return this.remote
-			.findByCssSelector(`.${gridFooter.classes.pageLink}:last-of-type`)
+			.findByCssSelector(`.${gridFooter.pageLink}:last-of-type`)
 			.click()
 			.end();
 	}

@@ -5,7 +5,7 @@ import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
 import { v, w } from '@dojo/widget-core/d';
 import { Column } from './createGrid';
 
-import css from './styles/gridRow';
+import * as css from './styles/gridRow.css';
 
 export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties {
 	columns: Column[];
@@ -42,9 +42,9 @@ const createGridRow: GridRowFactory = createWidgetBase
 				const { properties: { columns = [] } } = this;
 				const item = this.properties.item.get ? this.properties.item.toObject() : this.properties.item;
 
-				return v('div', { classes: this.classes(css.classes.gridRow).get(), role: 'row' }, [
-					v('table', { classes: this.classes(css.classes.gridRowTable).get(), styles: { 'background-color': item.color } }, [
-						v('tr', { classes: this.classes(css.classes.gridRow).get(), role: 'row' },
+				return v('div', { classes: this.classes(css.gridRow).get(), role: 'row' }, [
+					v('table', { classes: this.classes(css.gridRowTable).get(), styles: { 'background-color': item.color } }, [
+						v('tr', { classes: this.classes(css.gridRow).get(), role: 'row' },
 							columns.map(({ id, renderer }) => {
 								return w('grid-cell', { key: id, data: item[id], renderer });
 							})

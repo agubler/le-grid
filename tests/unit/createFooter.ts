@@ -4,7 +4,7 @@ import { VNode } from '@dojo/interfaces/vdom';
 import createFooter from '../../src/createFooter';
 import { assertAppliedClasses } from './../support/classHelper';
 
-import css from '../../src/styles/gridFooter';
+import * as css from '../../src/styles/gridFooter.css';
 
 registerSuite({
 	name: 'createFooter',
@@ -18,10 +18,10 @@ registerSuite({
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.footer], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.footer], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.strictEqual(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.status], vnode.children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.status], vnode.children![0].properties!.classes));
 			assert.strictEqual(vnode.children![0].text, '100 results');
 		},
 		'renders footer with pagination - first page'() {
@@ -38,30 +38,30 @@ registerSuite({
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.footer], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.footer], vnode.properties!.classes));
 
 			assert.strictEqual(vnode.children![0].vnodeSelector, 'div');
 			assert.lengthOf(vnode.children![0].children, 2);
 			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.status], vnode.children![0].children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.status], vnode.children![0].children![0].properties!.classes));
 			assert.strictEqual(vnode.children![0].children![0].text, '1 - 10 of 100 results');
 			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.navigation], vnode.children![0].children![1].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.navigation], vnode.children![0].children![1].properties!.classes));
 
 			assert.lengthOf(vnode.children![0].children![1].children, 3);
 			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
-				css.classes.pageLink,
-				css.classes.previousPage,
-				css.classes.disabledPageLink
+				css.pageLink,
+				css.previousPage,
+				css.disabledPageLink
 			], vnode.children![0].children![1].children![0].properties!.classes));
 			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span');
 			assert.lengthOf(vnode.children![0].children![1].children![1].children, 5);
 			// more asserts
 			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
-				css.classes.pageLink,
-				css.classes.previousPage
+				css.pageLink,
+				css.previousPage
 			], vnode.children![0].children![1].children![2].properties!.classes));
 		},
 		'renders footer with pagination - last page'() {
@@ -77,22 +77,22 @@ registerSuite({
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.footer], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.footer], vnode.properties!.classes));
 
 			assert.strictEqual(vnode.children![0].vnodeSelector, 'div');
 			assert.lengthOf(vnode.children![0].children, 2);
 			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.status], vnode.children![0].children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.status], vnode.children![0].children![0].properties!.classes));
 
 			assert.strictEqual(vnode.children![0].children![0].text, '91 - 100 of 100 results');
 			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.navigation], vnode.children![0].children![1].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.navigation], vnode.children![0].children![1].properties!.classes));
 
 			assert.lengthOf(vnode.children![0].children![1].children, 3);
 			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
-				css.classes.pageLink,
-				css.classes.previousPage
+				css.pageLink,
+				css.previousPage
 			], vnode.children![0].children![1].children![0].properties!.classes));
 
 			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span');
@@ -100,9 +100,9 @@ registerSuite({
 			// more asserts
 			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
-				css.classes.pageLink,
-				css.classes.previousPage,
-				css.classes.disabledPageLink
+				css.pageLink,
+				css.previousPage,
+				css.disabledPageLink
 			], vnode.children![0].children![1].children![2].properties!.classes));
 		},
 		'renders footer with pagination - middle page'() {
@@ -119,29 +119,29 @@ registerSuite({
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.footer], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.footer], vnode.properties!.classes));
 
 			assert.strictEqual(vnode.children![0].vnodeSelector, 'div');
 			assert.lengthOf(vnode.children![0].children, 2);
 			assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.status], vnode.children![0].children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.status], vnode.children![0].children![0].properties!.classes));
 			assert.strictEqual(vnode.children![0].children![0].text, '51 - 60 of 100 results');
 			assert.strictEqual(vnode.children![0].children![1].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.navigation], vnode.children![0].children![1].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.navigation], vnode.children![0].children![1].properties!.classes));
 
 			assert.lengthOf(vnode.children![0].children![1].children, 3);
 			assert.strictEqual(vnode.children![0].children![1].children![0].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
-				css.classes.pageLink,
-				css.classes.previousPage
+				css.pageLink,
+				css.previousPage
 			], vnode.children![0].children![1].children![0].properties!.classes));
 			assert.strictEqual(vnode.children![0].children![1].children![1].vnodeSelector, 'span');
 			assert.lengthOf(vnode.children![0].children![1].children![1].children, 9);
 			// more asserts
 			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
-				css.classes.pageLink,
-				css.classes.previousPage
+				css.pageLink,
+				css.previousPage
 			], vnode.children![0].children![1].children![2].properties!.classes));
 		}
 	},

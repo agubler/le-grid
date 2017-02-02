@@ -6,7 +6,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { DataProviderMixinProperties } from './mixins/dataProviderMixin';
 import { Column } from './createGrid';
 
-import css from './styles/gridBody';
+import * as css from './styles/gridBody.css';
 
 export interface GridBodyProperties extends WidgetProperties, RegistryMixinProperties, DataProviderMixinProperties {
 	columns: Column[];
@@ -27,8 +27,8 @@ const createGridBody: GridBodyFactory = createWidgetBase
 		render(this: GridBody): DNode {
 			const { properties: { items = [], dataProvider, columns, registry } } = this;
 
-			return v('div', { classes: this.classes(css.classes.scroller).get() }, [
-				v('div', { classes: this.classes(css.classes.content).get() }, items.map((item: any) => {
+			return v('div', { classes: this.classes(css.scroller).get() }, [
+				v('div', { classes: this.classes(css.content).get() }, items.map((item: any) => {
 						const key = item.get ? item.get('id') : item.id;
 						return w('grid-row', { key, id: key, item, columns, dataProvider, registry });
 					})

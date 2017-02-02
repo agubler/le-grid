@@ -5,7 +5,7 @@ import { v, w } from '@dojo/widget-core/d';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { Column, SortDetails } from './createGrid';
 
-import css from './styles/gridHeader';
+import * as css from './styles/gridHeader.css';
 
 export interface GridHeaderProperties extends WidgetProperties, RegistryMixinProperties {
 	onSortRequest(columnId: string, descending: boolean): void;
@@ -28,8 +28,8 @@ const createGridHeader: GridHeaderFactory = createWidgetBase
 			render(this: GridHeader): DNode {
 				const { properties: { onSortRequest, columns = [], sortDetails } } = this;
 
-				return v('div', { role: 'row', classes: this.classes(css.classes.gridHeaderRow, css.classes.gridHeader).get() }, [
-					v('table', { classes: this.classes(css.classes.gridHeaderTable).get(), role: 'presentation' }, [
+				return v('div', { role: 'row', classes: this.classes(css.gridHeaderRow, css.gridHeader).get() }, [
+					v('table', { classes: this.classes(css.gridHeaderTable).get(), role: 'presentation' }, [
 						v('tr', columns.map((column) => {
 							return w('grid-header-cell', { id: column.id, key: column.id, column, sortDetails, onSortRequest });
 						}))

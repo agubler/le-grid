@@ -9,7 +9,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createBody from '../../src/createBody';
-import css from '../../src/styles/gridBody';
+import * as css from '../../src/styles/gridBody.css';
 import { Map as ImmutableMap } from 'immutable';
 
 let widgetBaseSpy: SinonSpy;
@@ -51,10 +51,10 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 1);
 			assert.isTrue(widgetBaseSpy.calledOnce);
 			const args = widgetBaseSpy.getCall(0).args[0];
@@ -85,10 +85,10 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 0);
 			assert.isTrue(widgetBaseSpy.notCalled);
 		});
@@ -113,10 +113,10 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
+			assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 1);
 			const args = widgetBaseSpy.getCall(0).args[0];
 

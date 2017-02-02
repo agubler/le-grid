@@ -13,7 +13,7 @@ import createHeader from './createHeader';
 import createHeaderCell from './createHeaderCell';
 import createFooter from './createFooter';
 
-import css from './styles/grid';
+import * as css from './styles/grid.css';
 
 function createRegistry(props: any) {
 	const { customCell } = props;
@@ -105,7 +105,7 @@ const createGrid: GridFactory = createWidgetBase
 				const { data: { items, totalCount }, properties: { dataProvider, columns }, registry } = this;
 				const { paginationDetails, sortDetails } = internalStateMap.get(this);
 
-				return v('div', { classes: this.classes(css.classes.grid).get(), role: 'grid' }, [
+				return v('div', { classes: this.classes(css.grid).get(), role: 'grid' }, [
 					w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
 					w('grid-body', { registry, dataProvider, columns, items } ),
 					w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, paginationDetails } )
