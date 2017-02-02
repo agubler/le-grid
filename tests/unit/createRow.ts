@@ -6,6 +6,7 @@ import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
+import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createRow from '../../src/createRow';
 import css from '../../src/styles/gridRow';
@@ -48,7 +49,7 @@ registerSuite({
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, {[css.classes.gridRow]: true});
+		assert.isTrue(assertAppliedClasses([css.classes.gridRow], vnode.properties!.classes));
 		assert.strictEqual(vnode.properties!['role'], 'row');
 
 		assert.lengthOf(vnode.children, 1);
@@ -57,9 +58,15 @@ registerSuite({
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
 		assert.isTrue(widgetBaseSpy.calledTwice);
+
 		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
-		assert.deepEqual(callOneArgs, { properties: { key: 'foo', data: 'bar', renderer: undefined } });
+		assert.deepEqual(callOneArgs.properties.key, 'foo');
+		assert.deepEqual(callOneArgs.properties.data, 'bar');
+		assert.isUndefined(callOneArgs.properties.renderer);
+
 		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
-		assert.deepEqual(callTwoArgs, { properties: { key: 'bar', data: 'foo', renderer } });
+		assert.deepEqual(callTwoArgs.properties.key, 'bar');
+		assert.deepEqual(callTwoArgs.properties.data, 'foo');
+		assert.isFunction(callTwoArgs.properties.renderer);
 	}
 });

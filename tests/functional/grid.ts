@@ -1,6 +1,7 @@
 import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import uuid from '@dojo/core/uuid';
+import { v } from '@dojo/widget-core/d';
 import createCustomCell from './../../src/examples/createCustomCell';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
@@ -105,19 +106,16 @@ function onclick() {
 		pagination: {
 			itemsPerPage: 5
 		},
-		customCell: cellToggle ? createCustomCell : false
+		customCell: cellToggle ? () => { return createCustomCell; } : false
 	};
 	cellToggle = !cellToggle;
 	grid.setProperties(props);
 }
 
 const button = createWidgetBase.mixin(createProjectorMixin).override({
-	tagName: 'button',
-	nodeAttributes: [
-		function(): any {
-			return { innerHTML: 'Use custom cell', classes: { button: true }, onclick };
-		}
-	]
+	render() {
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick } );
+	}
 })();
 
 button.append();

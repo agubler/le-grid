@@ -6,6 +6,7 @@ import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
+import { assertAppliedClasses } from './../support/classHelper';
 import createHeader from '../../src/createHeader';
 import css from '../../src/styles/gridHeader';
 
@@ -45,21 +46,27 @@ registerSuite({
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
-		assert.deepEqual(vnode.properties!.classes, {[css.classes.gridHeader]: true, [css.classes.gridHeaderRow]: true});
+		assert.isTrue(assertAppliedClasses([css.classes.gridHeader, css.classes.gridHeaderRow], vnode.properties!.classes));
 		assert.strictEqual(vnode.properties!['role'], 'row');
 		assert.lengthOf(vnode.children, 1);
 		assert.strictEqual(vnode.children![0].vnodeSelector, 'table');
-		assert.deepEqual(vnode.children![0].properties!.classes, {[css.classes.gridHeaderTable]: true});
+		assert.isTrue(assertAppliedClasses([css.classes.gridHeaderTable], vnode.children![0].properties!.classes));
 		assert.strictEqual(vnode.children![0].properties!['role'], 'presentation');
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
 		assert.isTrue(widgetBaseSpy.calledTwice);
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0], {
-			properties: { key: 'foo', id: 'foo', column: { id: 'foo', label: 'foo' }, sortDetails: undefined, onSortRequest }
-		});
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0], {
-			properties: { key: 'bar', id: 'bar', column: { id: 'bar', label: 'bar' }, sortDetails: undefined, onSortRequest }
-		});
+
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].properties.key, 'foo');
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].properties.id, 'foo');
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].properties.column, { id: 'foo', label: 'foo' });
+		assert.isUndefined(widgetBaseSpy.getCall(0).args[0].properties.sortDetails);
+		assert.isFunction(widgetBaseSpy.getCall(0).args[0].properties.onSortRequest);
+
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].properties.key, 'bar');
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].properties.id, 'bar');
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].properties.column, { id: 'bar', label: 'bar' });
+		assert.isUndefined(widgetBaseSpy.getCall(1).args[0].properties.sortDetails);
+		assert.isFunction(widgetBaseSpy.getCall(1).args[0].properties.onSortRequest);
 	}
 });

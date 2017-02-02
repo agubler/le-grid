@@ -2,7 +2,6 @@ import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@do
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { v } from '@dojo/widget-core/d';
-import outerNodeTheme from './mixins/outerNodeTheme';
 import { Column, SortDetails } from './createGrid';
 
 import css from './styles/gridHeaderCell';
@@ -24,7 +23,6 @@ export interface GridHeaderFactory extends WidgetFactory<GridHeader, GridHeaderP
 
 const createGridHeader: GridHeaderFactory = createWidgetBase
 	.mixin(themeable)
-	.mixin(outerNodeTheme)
 	.mixin({
 		mixin: {
 			baseClasses: css,
@@ -40,7 +38,7 @@ const createGridHeader: GridHeaderFactory = createWidgetBase
 				}
 				const onclick = column.sortable ? { onclick: this.onSortRequest } : {};
 
-				return v('th', { ...onclick, ...{ role: 'columnheader' } }, [
+				return v('th', { ...onclick, ...{ classes: this.classes(css.classes.cell).get(), role: 'columnheader' } }, [
 					v('span', [ column.label ]),
 					sortDetails && sortDetails.columnId === id ?
 						v('div', { classes: this.classes(...classes).get(), role: 'presentation' }) :

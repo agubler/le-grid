@@ -6,6 +6,7 @@ import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
+import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import createBody from '../../src/createBody';
 import css from '../../src/styles/gridBody';
@@ -49,21 +50,19 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.deepEqual(vnode.properties!.classes, { [css.classes.scroller]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![0].properties!.classes, { [css.classes.content]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 1);
 			assert.isTrue(widgetBaseSpy.calledOnce);
 			const args = widgetBaseSpy.getCall(0).args[0];
-			assert.deepEqual(args, { properties: {
-				id: 'id',
-				key: 'id',
-				dataProvider,
-				registry: mockRegistry,
-				columns: properties.columns,
-				item: { id: 'id', foo: 'bar' }
-			}});
+
+			assert.deepEqual(args.properties.key, 'id');
+			assert.deepEqual(args.properties.id, 'id');
+			assert.deepEqual(args.properties.item, { id: 'id', foo: 'bar' });
+			assert.deepEqual(args.properties.registry, mockRegistry);
+			assert.deepEqual(args.properties.dataProvider, dataProvider);
 		});
 	},
 	'render with no items'() {
@@ -85,10 +84,10 @@ registerSuite({
 			const vnode = <VNode> row.__render__();
 
 			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.deepEqual(vnode.properties!.classes, { [css.classes.scroller]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.scroller], vnode.properties!.classes));
 			assert.lengthOf(vnode.children, 1);
 			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.deepEqual(vnode.children![0].properties!.classes, { [css.classes.content]: true });
+			assert.isTrue(assertAppliedClasses([css.classes.content], vnode.children![0].properties!.classes));
 			assert.lengthOf(vnode.children![0].children, 0);
 			assert.isTrue(widgetBaseSpy.notCalled);
 		});

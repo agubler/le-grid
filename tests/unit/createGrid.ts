@@ -210,7 +210,7 @@ registerSuite({
 		const customCell = createWidgetBase.override({});
 		const grid = createGrid({ properties });
 		assert.notEqual(grid.registry!.get('grid-cell'), customCell);
-		grid.setProperties(assign({ customCell }, properties));
+		grid.setProperties(assign({ customCell: () => { return customCell; } }, properties));
 		assert.strictEqual(grid.registry!.get('grid-cell'), customCell);
 	},
 	'external state updated on property change'(this: any) {
