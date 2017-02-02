@@ -10,11 +10,11 @@ import {
 import Observable, { Observer } from '@dojo/core/Observable';
 import { List, Iterable, fromJS, Map as ImmutableMap } from 'immutable';
 
-export default class ArrayDataProvider<T extends BaseItem> implements DataProvider<T> {
+export default class ArrayDataProvider<T extends BaseItem> implements DataProvider<ImmutableMap<string, any>, T> {
 
 	private currentState: DataProviderState<T>;
 	private observers: Map<string, Observer<T>>;
-	private storeObservers: Observer<ObserverPayload<T>>[];
+	private storeObservers: Observer<ObserverPayload<ImmutableMap<string, any>, T>>[];
 	private data: List<ImmutableMap<string, any>>;
 
 	constructor(data: T[] = []) {
@@ -65,7 +65,7 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 			observer.next({
 				totalCount: this.data.size,
 				state: this.currentState,
-				items: data.toJS()
+				items: data.toArray()
 			});
 		});
 	}
@@ -116,8 +116,8 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 		});
 	}
 
-	observe(): Observable<ObserverPayload<T>> {
-		return new Observable((observer: Observer<ObserverPayload<T>>) => {
+	observe(): Observable<ObserverPayload<ImmutableMap<string, any>, T>> {
+		return new Observable((observer: Observer<ObserverPayload<ImmutableMap<string, any>, T>>) => {
 			this.storeObservers.push(observer);
 			this.dispatch({
 				data: this.data,

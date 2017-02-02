@@ -28,9 +28,12 @@ const createGridBody: GridBodyFactory = createWidgetBase
 			const { properties: { items = [], dataProvider, columns, registry } } = this;
 
 			return v('div', { classes: this.classes(css.classes.scroller).get() }, [
-			v('div', { classes: this.classes(css.classes.content).get() }, items.map((item: any) =>
-				w('grid-row', { key: item.id, id: item.id, item, columns, dataProvider, registry })
-			))]);
+				v('div', { classes: this.classes(css.classes.content).get() }, items.map((item: any) => {
+						const key = item.get ? item.get('id') : item.id;
+						return w('grid-row', { key, id: key, item, columns, dataProvider, registry });
+					})
+				)
+			]);
 		}
 	}
 });

@@ -11,11 +11,11 @@ import Observable, { Observer } from '@dojo/core/Observable';
 import { createQueryStore, QueryStore } from '@dojo/stores/store/mixins/createQueryTransformMixin';
 import createSort from '@dojo/stores/query/createSort';
 
-export default class StoreDataProvider<T extends BaseItem> implements DataProvider<T> {
+export default class StoreDataProvider<T extends BaseItem> implements DataProvider<T, T> {
 
 	private currentState: DataProviderState<T>;
 	private observers: Map<string, Observer<T>>;
-	private storeObservers: Observer<ObserverPayload<T>>[];
+	private storeObservers: Observer<ObserverPayload<T, T>>[];
 	private store: QueryStore<any, any>;
 	private subscription: any;
 	private totalCount: number;
@@ -101,8 +101,8 @@ export default class StoreDataProvider<T extends BaseItem> implements DataProvid
 		});
 	}
 
-	observe(): Observable<ObserverPayload<T>> {
-		return new Observable((observer: Observer<ObserverPayload<T>>) => {
+	observe(): Observable<ObserverPayload<T, T>> {
+		return new Observable((observer: Observer<ObserverPayload<T, T>>) => {
 			this.storeObservers.push(observer);
 			this.dispatch({
 				data: this.store,

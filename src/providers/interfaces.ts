@@ -44,16 +44,16 @@ export interface DispatchPayload<T extends BaseItem, D> {
 /**
  *
  */
-export interface ObserverPayload<T extends BaseItem> {
+export interface ObserverPayload<I, T> {
 	totalCount: number;
 	state: DataProviderState<T>;
-	items: T[];
+	items: I[];
 }
 
 /**
  *
  */
-export interface DataProvider<T extends BaseItem> {
+export interface DataProvider<I, T extends BaseItem> {
 
 	configure(state: DataProviderState<T>): void;
 
@@ -80,5 +80,5 @@ export interface DataProvider<T extends BaseItem> {
 	/**
 	 *
 	 */
-	observe(): Observable<ObserverPayload<T>>;
+	observe(): Observable<ObserverPayload<I, T>>;
 }

@@ -1,4 +1,4 @@
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
+import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, PropertyChangeRecord } from '@dojo/widget-core/interfaces';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/registryMixin';
 import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
@@ -24,8 +24,23 @@ const createGridRow: GridRowFactory = createWidgetBase
 	.mixin({
 		mixin: {
 			baseClasses: css,
+			diffPropertyItem(this: GridRow, previousProperty: any, newProperty: any): PropertyChangeRecord {
+				let changed;
+				if (typeof newProperty.equals === 'function') {
+					changed = !newProperty.equals(previousProperty);
+				}
+				else {
+					changed = newProperty !== previousProperty;
+				}
+
+				return {
+					changed,
+					value: newProperty
+				};
+			},
 			render(this: GridRow): DNode {
-				const { properties: { item, columns = [] } } = this;
+				const { properties: { columns = [] } } = this;
+				const item = this.properties.item.get ? this.properties.item.toObject() : this.properties.item;
 
 				return v('div', { classes: this.classes(css.classes.gridRow).get(), role: 'row' }, [
 					v('table', { classes: this.classes(css.classes.gridRowTable).get(), styles: { 'background-color': item.color } }, [

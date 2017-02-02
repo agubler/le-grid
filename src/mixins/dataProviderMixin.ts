@@ -2,7 +2,7 @@ import compose from '@dojo/compose/compose';
 import { DataProvider, BaseItem } from './../providers/interfaces';
 
 export interface DataProviderMixinProperties {
-	dataProvider: DataProvider<any>;
+	dataProvider: DataProvider<any, any>;
 }
 
 export interface DataProviderOptions {
@@ -16,7 +16,7 @@ export interface DataProviderMixin {
 }
 
 interface InternalState {
-	dataProvider?: DataProvider<any>;
+	dataProvider?: DataProvider<any, any>;
 }
 
 const dataMap = new Map<DataProviderMixin, BaseItem | BaseItem[]>();
