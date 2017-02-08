@@ -4,7 +4,7 @@ import { v } from '@dojo/widget-core/d';
 import uuid from '@dojo/core/uuid';
 import createCustomCell from './createCustomCell';
 
-import createGrid from './../createGrid';
+import createGrid from './../createLeGrid';
 import ArrayDataProvider from './../providers/ArrayDataProvider';
 import StoreDataProvider from './../providers/StoreDataProvider';
 

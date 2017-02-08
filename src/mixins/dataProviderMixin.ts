@@ -1,4 +1,5 @@
 import compose, { ComposeFactory } from '@dojo/compose/compose';
+import { PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
 import { DataProvider, BaseItem } from './../providers/interfaces';
 
 export interface DataProviderMixinProperties {
@@ -50,8 +51,14 @@ const dataProviderFactory: DataProviderMixinFactory = compose({
 		}
 	})
 	.mixin({
-		initialize(instance: DataProviderMixin, options: DataProviderOptions) {
+		initialize(instance: any, options: DataProviderOptions) {
 			const { properties: { dataProvider } } = options;
+
+			instance.own(instance.on('properties:changed', (evt: PropertiesChangeEvent<any, DataProviderMixinProperties>) => {
+				if (evt.changedPropertyKeys.indexOf('dataProvider') !== -1) {
+					wire(instance);
+				}
+			}));
 
 			internalStateMap.set(instance, { dataProvider });
 			wire(instance);

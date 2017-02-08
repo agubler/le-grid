@@ -2,7 +2,7 @@ import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@do
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { v } from '@dojo/widget-core/d';
-import { PaginationDetails }  from './createGrid';
+import { PaginationDetails }  from './createLeGrid';
 
 import * as css from './styles/gridFooter.css';
 

@@ -3,7 +3,7 @@ import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import registryMixin, { RegistryMixin, RegistryMixinProperties }  from '@dojo/widget-core/mixins/registryMixin';
 import { v, w } from '@dojo/widget-core/d';
 import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
-import { Column, SortDetails } from './createGrid';
+import { Column, SortDetails } from './createLeGrid';
 
 import * as css from './styles/gridHeader.css';
 

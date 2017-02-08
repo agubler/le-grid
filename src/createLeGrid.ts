@@ -122,6 +122,13 @@ const createGrid: GridFactory = createWidgetBase
 					instance.registry = createRegistry(evt.properties);
 				}
 
+				if (includes(evt.changedPropertyKeys, 'pagination')) {
+					const internalState = internalStateMap.get(instance);
+
+					internalState.paginationDetails.dataRangeCount = evt.properties!.pagination!.itemsPerPage;
+					internalStateMap.set(instance, internalState);
+				}
+
 				// TODO add changed of items per page
 			}));
 

@@ -4,7 +4,7 @@ import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
 import { v, w } from '@dojo/widget-core/d';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 import { DataProviderMixinProperties } from './mixins/dataProviderMixin';
-import { Column } from './createGrid';
+import { Column } from './createLeGrid';
 
 import * as css from './styles/gridBody.css';
 

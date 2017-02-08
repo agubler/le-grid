@@ -8,7 +8,7 @@ import * as compose from '@dojo/compose/compose';
 import createWidgetBase from '@dojo/widget-core/createWidgetBase';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
-import createGrid from '../../src/createGrid';
+import createGrid from '../../src/createLeGrid';
 import * as css from '../../src/styles/grid.css';
 
 let headerSpy: SinonSpy;

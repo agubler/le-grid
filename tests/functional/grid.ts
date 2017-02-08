@@ -5,7 +5,7 @@ import { v } from '@dojo/widget-core/d';
 import createCustomCell from './../../src/examples/createCustomCell';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
-import createGrid from './../../src/createGrid';
+import createGrid from './../../src/createLeGrid';
 
 const store = new ArrayDataProvider<any>([
 		{ id: uuid(), age: 1, gender: 'A', location: 'Out' },
