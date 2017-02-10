@@ -1,13 +1,13 @@
 import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
-import createHeaderCell from '../../src/createHeaderCell';
+import GridHeaderCell from '../../src/GridHeaderCell';
 import { assertAppliedClasses } from './../support/classHelper';
 
 import * as css from '../../src/styles/gridHeaderCell.css';
 
 registerSuite({
-	name: 'createHeaderCell',
+	name: 'GridHeaderCell',
 	render: {
 		'renders non sortable header cell'() {
 			let clicked = false;
@@ -20,7 +20,7 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = createHeaderCell({ properties });
+			const headerCell = new GridHeaderCell(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'th');
@@ -42,7 +42,7 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = createHeaderCell({ properties });
+			const headerCell = new GridHeaderCell(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
@@ -71,7 +71,7 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = createHeaderCell({ properties });
+			const headerCell = new GridHeaderCell(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
@@ -103,7 +103,7 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = createHeaderCell({ properties });
+			const headerCell = new GridHeaderCell(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);

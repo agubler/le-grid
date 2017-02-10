@@ -1,11 +1,11 @@
-import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
+import WidgetBase from '@dojo/widget-core/WidgetBase';
 import uuid from '@dojo/core/uuid';
 import { v } from '@dojo/widget-core/d';
-import createCustomCell from './../../src/examples/createCustomCell';
+import CustomCell from './../../src/examples/CustomCell';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
-import createGrid from './../../src/createGrid';
+import LeGrid from './../../src/LeGrid';
 
 const store = new ArrayDataProvider<any>([
 		{ id: uuid(), age: 1, gender: 'A', location: 'Out' },
@@ -87,14 +87,12 @@ const columns = [
 	}
 ];
 
-const grid = createGrid.mixin(createProjectorMixin)({
-	properties: {
-		dataProvider: store,
-		pagination: {
-			itemsPerPage: 5
-		},
-		columns
-	}
+const grid = new (ProjectorMixin(LeGrid))({
+	dataProvider: store,
+	pagination: {
+		itemsPerPage: 5
+	},
+	columns
 });
 
 let cellToggle = true;
@@ -106,17 +104,19 @@ function onclick() {
 		pagination: {
 			itemsPerPage: 5
 		},
-		customCell: cellToggle ? () => { return createCustomCell; } : false
+		customCell: cellToggle ? () => { return CustomCell; } : false
 	};
 	cellToggle = !cellToggle;
 	grid.setProperties(props);
 }
 
-const button = createWidgetBase.mixin(createProjectorMixin).override({
+class Button extends ProjectorMixin(WidgetBase)<any> {
 	render() {
 		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick } );
 	}
-})();
+}
+
+const button = new Button({});
 
 button.append();
 grid.append();

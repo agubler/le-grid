@@ -3,35 +3,29 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
-import * as compose from '@dojo/compose/compose';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import WidgetBase from '@dojo/widget-core/WidgetBase';
 
 import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
-import createBody from '../../src/createBody';
+import GridBody from '../../src/GridBody';
 import * as css from '../../src/styles/gridBody.css';
 import { Map as ImmutableMap } from 'immutable';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
-let isComposeFactoryStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
-	name: 'createBody',
+	name: 'GridBody',
 	beforeEach() {
-		widgetBaseSpy = spy(createWidgetBase);
+		widgetBaseSpy = spy(WidgetBase);
 		getStub = stub().withArgs('grid-row').returns(widgetBaseSpy);
-		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
 			has() {
 				return true;
 			}
 		};
-	},
-	afterEach() {
-		isComposeFactoryStub.restore();
 	},
 	'render with items'() {
 		const dataProvider = new ArrayDataProvider<any>([{ id: 'id', foo: 'bar' }]);
@@ -44,27 +38,22 @@ registerSuite({
 			]
 		};
 
-		const row = createBody({ properties });
-		/*const promise = new Promise((resolve) => setTimeout(resolve, 10));*/
+		const row = new GridBody(properties);
+		const vnode = <VNode> row.__render__();
 
-		/*return promise.then(() => {*/
-			const vnode = <VNode> row.__render__();
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
+		assert.lengthOf(vnode.children, 1);
+		assert.equal(vnode.children![0].vnodeSelector, 'div');
+		assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
+		assert.lengthOf(vnode.children![0].children, 1);
+		assert.isTrue(widgetBaseSpy.calledOnce);
+		const args = widgetBaseSpy.getCall(0).args[0];
 
-			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
-			assert.lengthOf(vnode.children, 1);
-			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
-			assert.lengthOf(vnode.children![0].children, 1);
-			assert.isTrue(widgetBaseSpy.calledOnce);
-			const args = widgetBaseSpy.getCall(0).args[0];
-
-			assert.deepEqual(args.properties.key, 'id');
-			assert.deepEqual(args.properties.id, 'id');
-			assert.deepEqual(args.properties.item, { id: 'id', foo: 'bar' });
-			assert.deepEqual(args.properties.registry, mockRegistry);
-			assert.deepEqual(args.properties.dataProvider, dataProvider);
-		/*});*/
+		assert.deepEqual(args.key, 'id');
+		assert.deepEqual(args.id, 'id');
+		assert.deepEqual(args.item, { id: 'id', foo: 'bar' });
+		assert.deepEqual(args.registry, mockRegistry);
 	},
 	'render with no items'() {
 		const dataProvider = new ArrayDataProvider();
@@ -78,7 +67,7 @@ registerSuite({
 			]
 		};
 
-		const row = createBody({ properties });
+		const row = new GridBody(properties);
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 
 		return promise.then(() => {
@@ -106,7 +95,7 @@ registerSuite({
 			]
 		};
 
-		const row = createBody({ properties });
+		const row = new GridBody(properties);
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 
 		return promise.then(() => {
@@ -120,11 +109,10 @@ registerSuite({
 			assert.lengthOf(vnode.children![0].children, 1);
 			const args = widgetBaseSpy.getCall(0).args[0];
 
-			assert.deepEqual(args.properties.key, 'id');
-			assert.deepEqual(args.properties.id, 'id');
-			assert.deepEqual(args.properties.item, item);
-			assert.deepEqual(args.properties.registry, mockRegistry);
-			assert.deepEqual(args.properties.dataProvider, dataProvider);
+			assert.deepEqual(args.key, 'id');
+			assert.deepEqual(args.id, 'id');
+			assert.deepEqual(args.item, item);
+			assert.deepEqual(args.registry, mockRegistry);
 		});
 	}
 });

@@ -1,1 +1,1 @@
-import './dataProviderMixin';
+import './DataProvider';
