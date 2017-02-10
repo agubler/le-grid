@@ -1,15 +1,15 @@
 import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
-import createCell from '../../src/createCell';
+import GridCell from '../../src/GridCell';
 import { assertAppliedClasses } from './../support/classHelper';
 import * as css from '../../src/styles/gridCell.css';
 
 registerSuite({
-	name: 'createCell',
+	name: 'GridCell',
 	render: {
 		'data property used as cell text node'() {
-			const cell = createCell({ properties: { data: 'Hello, World!' } });
+			const cell = new GridCell({ data: 'Hello, World!' });
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
@@ -20,7 +20,7 @@ registerSuite({
 			const renderer = (value: any) => {
 				return value.replace('World', 'Dojo');
 			};
-			const cell = createCell({ properties: { data: 'Hello, World!', renderer } });
+			const cell = new GridCell({ data: 'Hello, World!', renderer });
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
@@ -28,7 +28,7 @@ registerSuite({
 			assert.strictEqual(vnode.text, 'Hello, Dojo!');
 		},
 		'null is returned when no data property'() {
-			const cell = createCell({});
+			const cell = new GridCell(<any> {});
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
@@ -36,7 +36,7 @@ registerSuite({
 			assert.isUndefined(vnode.text);
 		},
 		'cell data is stringified'() {
-			const cell = createCell({ properties: { data: <any> 1234 } });
+			const cell = new GridCell({ data: <any> 1234 });
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');

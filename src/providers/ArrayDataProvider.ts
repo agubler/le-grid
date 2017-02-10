@@ -7,6 +7,8 @@ import {
 	SortState,
 	FetchState
 } from './interfaces';
+import Map from '@dojo/shim/Map';
+import { assign } from '@dojo/core/lang';
 import Observable, { Observer } from '@dojo/core/Observable';
 import { List, Iterable, fromJS, Map as ImmutableMap } from 'immutable';
 
@@ -26,10 +28,10 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 
 	configure(configuration: { sort?: Partial<SortState<T>>, size?: Partial<FetchState> }): void {
 		if (configuration.size) {
-			this.currentState.size = Object.assign({}, configuration.size);
+			this.currentState.size = <FetchState> assign({}, configuration.size);
 		}
 		if (configuration.sort) {
-			this.currentState.sort = Object.assign({}, configuration.sort);
+			this.currentState.sort = <SortState<T>> assign({}, configuration.sort);
 		}
 		this.dispatch({
 			data: this.data,
@@ -99,8 +101,8 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 	}
 
 	fetch(fetchRequest: FetchState) {
-		this.currentState = Object.assign({}, this.currentState);
-		this.currentState.size = Object.assign({}, this.currentState.size, fetchRequest);
+		this.currentState = assign({}, this.currentState);
+		this.currentState.size = assign({}, this.currentState.size, fetchRequest);
 		this.dispatch({
 			data: this.data,
 			state: this.currentState
@@ -108,8 +110,8 @@ export default class ArrayDataProvider<T extends BaseItem> implements DataProvid
 	}
 
 	sort(sortRequest: SortState<T>) {
-		this.currentState = Object.assign({}, this.currentState);
-		this.currentState.sort = Object.assign({}, this.currentState.sort, sortRequest);
+		this.currentState = assign({}, this.currentState);
+		this.currentState.sort = assign({}, this.currentState.sort, sortRequest);
 		this.dispatch({
 			data: this.data,
 			state: this.currentState

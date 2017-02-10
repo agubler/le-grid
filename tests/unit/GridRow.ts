@@ -3,35 +3,29 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
-import * as compose from '@dojo/compose/compose';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 
 import { Map as ImmutableMap } from 'immutable';
 import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
-import createRow from '../../src/createRow';
+import GridRow from '../../src/GridRow';
 import * as css from '../../src/styles/gridRow.css';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
-let isComposeFactoryStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
-	name: 'createRow',
+	name: 'GridRow',
 	beforeEach() {
-		widgetBaseSpy = spy(createWidgetBase);
+		widgetBaseSpy = spy(WidgetBase);
 		getStub = stub().withArgs('grid-cell').returns(widgetBaseSpy);
-		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
 			has() {
 				return true;
 			}
 		};
-	},
-	afterEach() {
-		isComposeFactoryStub.restore();
 	},
 	render() {
 		const renderer = (value: string) => { return value; };
@@ -46,7 +40,7 @@ registerSuite({
 			]
 		};
 
-		const row = createRow({ properties });
+		const row = new GridRow(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -61,14 +55,14 @@ registerSuite({
 		assert.isTrue(widgetBaseSpy.calledTwice);
 
 		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
-		assert.deepEqual(callOneArgs.properties.key, 'foo');
-		assert.deepEqual(callOneArgs.properties.data, 'bar');
-		assert.isUndefined(callOneArgs.properties.renderer);
+		assert.deepEqual(callOneArgs.key, 'foo');
+		assert.deepEqual(callOneArgs.data, 'bar');
+		assert.isUndefined(callOneArgs.renderer);
 
 		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
-		assert.deepEqual(callTwoArgs.properties.key, 'bar');
-		assert.deepEqual(callTwoArgs.properties.data, 'foo');
-		assert.isFunction(callTwoArgs.properties.renderer);
+		assert.deepEqual(callTwoArgs.key, 'bar');
+		assert.deepEqual(callTwoArgs.data, 'foo');
+		assert.isFunction(callTwoArgs.renderer);
 	},
 	'render with Immutable item'() {
 		const properties = {
@@ -82,7 +76,7 @@ registerSuite({
 			]
 		};
 
-		const row = createRow({ properties });
+		const row = new GridRow(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -97,12 +91,12 @@ registerSuite({
 		assert.isTrue(widgetBaseSpy.calledTwice);
 
 		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
-		assert.deepEqual(callOneArgs.properties.key, 'foo');
-		assert.deepEqual(callOneArgs.properties.data, 'bar');
+		assert.deepEqual(callOneArgs.key, 'foo');
+		assert.deepEqual(callOneArgs.data, 'bar');
 
 		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
-		assert.deepEqual(callTwoArgs.properties.key, 'bar');
-		assert.deepEqual(callTwoArgs.properties.data, 'foo');
+		assert.deepEqual(callTwoArgs.key, 'bar');
+		assert.deepEqual(callTwoArgs.data, 'foo');
 	},
 	'render with no columns'() {
 		const properties = {
@@ -112,7 +106,7 @@ registerSuite({
 			item: { id: 'id', foo: 'bar', bar: 'foo' },
 			columns: <any> undefined
 		};
-		const row = createRow({ properties });
+		const row = new GridRow(properties);
 
 		row.__render__();
 		assert.isTrue(widgetBaseSpy.notCalled);

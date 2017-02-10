@@ -3,6 +3,7 @@ import * as gridFooter from '../../src/styles/gridFooter.css';
 import * as gridCell from '../../src/styles/gridCell.css';
 import * as gridHeaderCell from '../../src/styles/gridHeaderCell.css';
 import * as gridRow from '../../src/styles/gridRow.css';
+import Promise from '@dojo/shim/Promise';
 
 export default class Page {
 	private remote: any;
