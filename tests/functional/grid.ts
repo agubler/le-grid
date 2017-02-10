@@ -2,7 +2,7 @@ import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
 import WidgetBase from '@dojo/widget-core/WidgetBase';
 import uuid from '@dojo/core/uuid';
 import { v } from '@dojo/widget-core/d';
-import createCustomCell from './../../src/examples/createCustomCell';
+import CustomCell from './../../src/examples/CustomCell';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import LeGrid from './../../src/LeGrid';
@@ -104,7 +104,7 @@ function onclick() {
 		pagination: {
 			itemsPerPage: 5
 		},
-		customCell: cellToggle ? () => { return createCustomCell; } : false
+		customCell: cellToggle ? () => { return CustomCell; } : false
 	};
 	cellToggle = !cellToggle;
 	grid.setProperties(props);
