@@ -7,7 +7,7 @@ import { assertAppliedClasses } from './../support/classHelper';
 import * as css from '../../src/styles/gridHeaderCell.css';
 
 registerSuite({
-	name: 'createHeaderCell',
+	name: 'GridHeaderCell',
 	render: {
 		'renders non sortable header cell'() {
 			let clicked = false;

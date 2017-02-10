@@ -14,7 +14,7 @@ let getStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
-	name: 'createHeader',
+	name: 'GridHeader',
 	beforeEach() {
 		widgetBaseSpy = spy(WidgetBase);
 		getStub = stub().withArgs('grid-row-view').returns(widgetBaseSpy);

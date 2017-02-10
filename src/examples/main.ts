@@ -2,7 +2,7 @@ import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { v } from '@dojo/widget-core/d';
 import uuid from '@dojo/core/uuid';
-import CustomCell from './createCustomCell';
+import CustomCell from './CustomCell';
 
 import LeGrid from './../LeGrid';
 import ArrayDataProvider from './../providers/ArrayDataProvider';

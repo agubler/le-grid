@@ -6,7 +6,7 @@ import { assertAppliedClasses } from './../support/classHelper';
 import * as css from '../../src/styles/gridCell.css';
 
 registerSuite({
-	name: 'createCell',
+	name: 'GridCell',
 	render: {
 		'data property used as cell text node'() {
 			const cell = new GridCell({ data: 'Hello, World!' });

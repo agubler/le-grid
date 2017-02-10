@@ -16,7 +16,7 @@ let footerSpy: SinonSpy;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
-	name: 'createGrid',
+	name: 'LeGrid',
 	beforeEach() {
 		headerSpy = spy(class extends WidgetBase<any> { static header = true; });
 		bodySpy = spy(class extends WidgetBase<any> { static body = true; });

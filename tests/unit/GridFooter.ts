@@ -7,7 +7,7 @@ import { assertAppliedClasses } from './../support/classHelper';
 import * as css from '../../src/styles/gridFooter.css';
 
 registerSuite({
-	name: 'createFooter',
+	name: 'GridFooter',
 	render: {
 		'renders footer without pagination'() {
 			const properties = {

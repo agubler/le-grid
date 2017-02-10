@@ -17,7 +17,7 @@ class TestClass extends DataProviderMixin(WidgetBase)<any> {
 let dataProvider: DataProvider<any, any>;
 
 registerSuite({
-	name: 'mixins/dataProviderMixin',
+	name: 'mixins/DataProvider',
 	beforeEach() {
 		invalidateCalled = false;
 		dataProvider = new ArrayDataProvider<any>([{ id: 'id', foo: 'bar' }]);

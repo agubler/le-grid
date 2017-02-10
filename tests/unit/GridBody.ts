@@ -16,7 +16,7 @@ let getStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
-	name: 'createBody',
+	name: 'GridBody',
 	beforeEach() {
 		widgetBaseSpy = spy(WidgetBase);
 		getStub = stub().withArgs('grid-row').returns(widgetBaseSpy);
