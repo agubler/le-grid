@@ -1,11 +1,12 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
-import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { DNode } from '@dojo/widget-core/interfaces';
 import { includes } from '@dojo/shim/array';
 import { w, v } from '@dojo/widget-core/d';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 
-import { DataProviderMixinProperties, DataProviderMixin } from './mixins/DataProvider';
+import { DataProviderMixinProperties, DataProviderMixin, DataProviderInterface } from './mixins/DataProvider';
 import GridBody from './GridBody';
 import GridRow from './GridRow';
 import GridCell from './GridCell';
@@ -62,7 +63,7 @@ interface InternalState {
 }
 
 @theme(css)
-export default class LeGrid extends DataProviderMixin(ThemeableMixin(WidgetBase))<GridProperties> {
+export default class LeGrid extends DataProviderMixin(ThemeableMixin(WidgetBase))<GridProperties> implements DataProviderInterface, ThemeableMixinInterface {
 
 	private sortDetails: SortDetails;
 	private paginationDetails: PaginationDetails;
@@ -116,7 +117,7 @@ export default class LeGrid extends DataProviderMixin(ThemeableMixin(WidgetBase)
 		this.paginationDetails = { dataRangeStart, dataRangeCount };
 	}
 
-	render() {
+	render(): DNode {
 		const { paginationDetails, sortDetails, data: { items, totalCount }, properties: { dataProvider, columns }, registry } = this;
 
 		return v('div', { classes: this.classes(css.grid).get(), role: 'grid' }, [

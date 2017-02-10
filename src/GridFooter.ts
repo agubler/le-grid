@@ -1,6 +1,7 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties } from '@dojo/widget-core/interfaces';
-import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { DNode } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import { PaginationDetails }  from './LeGrid';
 
@@ -13,12 +14,12 @@ export interface GridFooterProperties extends WidgetProperties, ThemeablePropert
 }
 
 @theme(css)
-export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterProperties> {
+export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterProperties> implements ThemeableMixinInterface {
 		onClick(evt: any) {
 			this.properties.onPaginationRequest && this.properties.onPaginationRequest(evt.target.attributes['page'].value);
 		}
 
-		createPageLink(page: string, visable: boolean, disabled: boolean, extraClasses?: string, overrideLabel?: string) {
+		createPageLink(page: string, visable: boolean, disabled: boolean, extraClasses?: string, overrideLabel?: string): DNode {
 			if (visable) {
 				const classes = [css.pageLink];
 
@@ -40,7 +41,7 @@ export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterPro
 			return null;
 		}
 
-		render() {
+		render(): DNode {
 			const { properties: { totalCount, paginationDetails: { dataRangeStart = 0, dataRangeCount = Infinity } = {} } } = this;
 			const totalPages = Math.ceil(totalCount / dataRangeCount);
 			const pageNumber = dataRangeStart === 0 ? 1 : (dataRangeStart / dataRangeCount) + 1;

@@ -1,8 +1,9 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties } from '@dojo/widget-core/interfaces';
 import { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/Registry';
-import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { v, w } from '@dojo/widget-core/d';
+import { DNode } from '@dojo/widget-core/interfaces';
 import { Column } from './LeGrid';
 
 import * as css from './styles/gridBody.css';
@@ -13,8 +14,8 @@ export interface GridBodyProperties extends WidgetProperties, RegistryMixinPrope
 }
 
 @theme(css)
-export default class GridBody extends ThemeableMixin(RegistryMixin(WidgetBase))<GridBodyProperties> {
-		render() {
+export default class GridBody extends ThemeableMixin(RegistryMixin(WidgetBase))<GridBodyProperties> implements ThemeableMixinInterface {
+		render(): DNode {
 			const { properties: { items = [], columns, registry } } = this;
 
 			return v('div', { classes: this.classes(css.scroller).get() }, [
