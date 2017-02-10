@@ -1,58 +1,41 @@
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode, PropertyChangeRecord } from '@dojo/widget-core/interfaces';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/registryMixin';
-import themeable, { Themeable } from '@dojo/widget-core/mixins/themeable';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { WidgetProperties, PropertyChangeRecord } from '@dojo/widget-core/interfaces';
+import { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/Registry';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { v, w } from '@dojo/widget-core/d';
-import { Column } from './createLeGrid';
+import { Column } from './LeGrid';
 
 import * as css from './styles/gridRow.css';
 
-export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties {
+export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties, ThemeableProperties {
 	columns: Column[];
 	item: any;
 }
 
-export interface GridRowMixin extends WidgetMixin<GridRowProperties>, RegistryMixin { }
+@theme(css)
+export default class GridRow extends ThemeableMixin(RegistryMixin(WidgetBase))<GridRowProperties> {
+	diffPropertyItem(previousProperty: any, newProperty: any): PropertyChangeRecord {
+		let changed = newProperty !== previousProperty;
 
-export type GridRow = Widget<GridRowProperties> & Themeable
-
-export interface GridRowFactory extends WidgetFactory<GridRowMixin, GridRowProperties> { }
-
-const createGridRow: GridRowFactory = createWidgetBase
-	.mixin(registryMixin)
-	.mixin(themeable)
-	.mixin({
-		mixin: {
-			baseClasses: css,
-			diffPropertyItem(this: GridRow, previousProperty: any, newProperty: any): PropertyChangeRecord {
-				let changed;
-				if (typeof newProperty.equals === 'function') {
-					changed = !newProperty.equals(previousProperty);
-				}
-				else {
-					changed = newProperty !== previousProperty;
-				}
-
-				return {
-					changed,
-					value: newProperty
-				};
-			},
-			render(this: GridRow): DNode {
-				const { properties: { columns = [] } } = this;
-				const item = this.properties.item.get ? this.properties.item.toObject() : this.properties.item;
-
-				return v('div', { classes: this.classes(css.gridRow).get(), role: 'row' }, [
-					v('table', { classes: this.classes(css.gridRowTable).get(), styles: { 'background-color': item.color } }, [
-						v('tr', { classes: this.classes(css.gridRow).get(), role: 'row' },
-							columns.map(({ id, renderer }) => {
-								return w('grid-cell', { key: id, data: item[id], renderer });
-							})
-						)
-					])
-				]);
-			}
+		if (typeof newProperty.equals === 'function') {
+			changed = !newProperty.equals(previousProperty);
 		}
-	});
 
-export default createGridRow;
+		return { changed, value: newProperty };
+	}
+
+	render() {
+		const { properties: { columns = [] } } = this;
+		const item = this.properties.item.get ? this.properties.item.toObject() : this.properties.item;
+
+		return v('div', { classes: this.classes(css.gridRow).get(), role: 'row' }, [
+			v('table', { classes: this.classes(css.gridRowTable).get(), styles: { 'background-color': item.color } }, [
+				v('tr', { classes: this.classes(css.gridRow).get(), role: 'row' },
+					columns.map(({ id, renderer }) => {
+						return w('grid-cell', { key: id, data: item[id], renderer });
+					})
+				)
+			])
+		]);
+	}
+}

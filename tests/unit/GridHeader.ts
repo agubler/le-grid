@@ -3,33 +3,27 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
-import * as compose from '@dojo/compose/compose';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import WidgetBase from '@dojo/widget-core/WidgetBase';
 
 import { assertAppliedClasses } from './../support/classHelper';
-import createHeader from '../../src/createHeader';
+import GridHeader from '../../src/GridHeader';
 import * as css from '../../src/styles/gridHeader.css';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
-let isComposeFactoryStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
 	name: 'createHeader',
 	beforeEach() {
-		widgetBaseSpy = spy(createWidgetBase);
+		widgetBaseSpy = spy(WidgetBase);
 		getStub = stub().withArgs('grid-row-view').returns(widgetBaseSpy);
-		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
 		mockRegistry = <any> {
 			get: getStub,
 			has() {
 				return true;
 			}
 		};
-	},
-	afterEach() {
-		isComposeFactoryStub.restore();
 	},
 	render() {
 		const onSortRequest = (columnId: string, descending: boolean): void => {};
@@ -42,7 +36,7 @@ registerSuite({
 			onSortRequest
 		};
 
-		const row = createHeader({ properties });
+		const row = new GridHeader(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -57,27 +51,16 @@ registerSuite({
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
 		assert.isTrue(widgetBaseSpy.calledTwice);
 
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].properties.key, 'foo');
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].properties.id, 'foo');
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].properties.column, { id: 'foo', label: 'foo' });
-		assert.isUndefined(widgetBaseSpy.getCall(0).args[0].properties.sortDetails);
-		assert.isFunction(widgetBaseSpy.getCall(0).args[0].properties.onSortRequest);
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].key, 'foo');
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].id, 'foo');
+		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].column, { id: 'foo', label: 'foo' });
+		assert.isUndefined(widgetBaseSpy.getCall(0).args[0].sortDetails);
+		assert.isFunction(widgetBaseSpy.getCall(0).args[0].onSortRequest);
 
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].properties.key, 'bar');
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].properties.id, 'bar');
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].properties.column, { id: 'bar', label: 'bar' });
-		assert.isUndefined(widgetBaseSpy.getCall(1).args[0].properties.sortDetails);
-		assert.isFunction(widgetBaseSpy.getCall(1).args[0].properties.onSortRequest);
-	},
-	'render with no columns'() {
-		const properties = {
-			registry: mockRegistry,
-			columns: <any> undefined,
-			onSortRequest: (columnId: string, descending: boolean): void => {}
-		};
-		const row = createHeader({ properties });
-
-		row.__render__();
-		assert.isTrue(widgetBaseSpy.notCalled);
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].key, 'bar');
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].id, 'bar');
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].column, { id: 'bar', label: 'bar' });
+		assert.isUndefined(widgetBaseSpy.getCall(1).args[0].sortDetails);
+		assert.isFunction(widgetBaseSpy.getCall(1).args[0].onSortRequest);
 	}
 });

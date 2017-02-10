@@ -3,27 +3,25 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import { assign } from '@dojo/core/lang';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
-import { spy, stub, SinonSpy, SinonStub } from 'sinon';
-import * as compose from '@dojo/compose/compose';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { spy, SinonSpy } from 'sinon';
+import WidgetBase from '@dojo/widget-core/WidgetBase';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
-import createGrid from '../../src/createLeGrid';
+import LeGrid from '../../src/LeGrid';
 import * as css from '../../src/styles/grid.css';
 
 let headerSpy: SinonSpy;
 let bodySpy: SinonSpy;
 let footerSpy: SinonSpy;
-let isComposeFactoryStub: SinonStub;
 let mockRegistry: FactoryRegistry;
 
 registerSuite({
 	name: 'createGrid',
 	beforeEach() {
-		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
-		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
-		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
-		isComposeFactoryStub = stub(compose, 'isComposeFactory').returns(true);
+		headerSpy = spy(class extends WidgetBase<any> { static header = true; });
+		bodySpy = spy(class extends WidgetBase<any> { static body = true; });
+		footerSpy = spy(class extends WidgetBase<any> { static footer = true; });
+
 		mockRegistry = <any> {
 			get(value: string) {
 				if (value === 'grid-header') {
@@ -41,9 +39,6 @@ registerSuite({
 			}
 		};
 	},
-	afterEach() {
-		isComposeFactoryStub.restore();
-	},
 	'grid without pagination'() {
 		const properties = {
 			dataProvider: new ArrayDataProvider(),
@@ -52,8 +47,8 @@ registerSuite({
 			]
 		};
 
-		const grid = createGrid({ properties });
-		grid.registry = mockRegistry;
+		const grid = new LeGrid(properties);
+		(<any> grid).registry = mockRegistry;
 		const vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -61,15 +56,13 @@ registerSuite({
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
-		const headerProperties = headerSpy.getCall(0).args[0].properties;
+		const headerProperties = headerSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
 		assert.isUndefined(headerProperties.sortDetails);
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
 
 		assert.isTrue(bodySpy.calledOnce);
 		assert.isTrue(footerSpy.calledOnce);
-
-		// TODO more assert on params
 	},
 	'grid with pagination'() {
 		const properties = {
@@ -82,8 +75,8 @@ registerSuite({
 			]
 		};
 
-		const grid = createGrid({ properties });
-		grid.registry = mockRegistry;
+		const grid = new LeGrid(properties);
+		(<any> grid).registry = mockRegistry;
 		const vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -91,7 +84,7 @@ registerSuite({
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
-		const headerProperties = headerSpy.getCall(0).args[0].properties;
+		const headerProperties = headerSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
 		assert.isUndefined(headerProperties.sortDetails);
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
@@ -112,10 +105,10 @@ registerSuite({
 			]
 		};
 
-		const grid = createGrid({ properties });
+		const grid = new LeGrid(properties);
+		(<any> grid).registry = mockRegistry;
 		spy(grid, 'invalidate');
 
-		grid.registry = mockRegistry;
 		let vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -123,7 +116,7 @@ registerSuite({
 		assert.strictEqual(vnode.properties!['role'], 'grid');
 		assert.isTrue(headerSpy.calledOnce);
 
-		let headerProperties = headerSpy.getCall(0).args[0].properties;
+		let headerProperties = headerSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
 		assert.isUndefined(headerProperties.sortDetails);
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
@@ -131,9 +124,9 @@ registerSuite({
 		assert.isTrue(bodySpy.calledOnce);
 		assert.isTrue(footerSpy.calledOnce);
 
-		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
-		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
-		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
+		headerSpy = spy(class extends WidgetBase<any> { static header = true; });
+		bodySpy = spy(class extends WidgetBase<any> { static body = true; });
+		footerSpy = spy(class extends WidgetBase<any> { static footer = true; });
 
 		grid.onSortRequest('foo', true);
 		vnode = <VNode> grid.__render__();
@@ -141,7 +134,7 @@ registerSuite({
 		assert.isTrue((<any> grid).invalidate.called);
 		assert.isTrue(headerSpy.calledOnce);
 
-		headerProperties = headerSpy.getCall(0).args[0].properties;
+		headerProperties = headerSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
 		assert.deepEqual(headerProperties.sortDetails, { columnId: 'foo', descending: true });
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
@@ -149,9 +142,9 @@ registerSuite({
 		assert.isTrue(bodySpy.calledOnce);
 		assert.isTrue(footerSpy.calledOnce);
 
-		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
-		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
-		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
+		headerSpy = spy(class extends WidgetBase<any> { static header = true; });
+		bodySpy = spy(class extends WidgetBase<any> { static body = true; });
+		footerSpy = spy(class extends WidgetBase<any> { static footer = true; });
 
 		grid.onSortRequest('foo', false);
 		vnode = <VNode> grid.__render__();
@@ -159,7 +152,7 @@ registerSuite({
 		assert.isTrue((<any> grid).invalidate.called);
 		assert.isTrue(headerSpy.calledOnce);
 
-		headerProperties = headerSpy.getCall(0).args[0].properties;
+		headerProperties = headerSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
 		assert.deepEqual(headerProperties.sortDetails, { columnId: 'foo', descending: false });
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
@@ -178,10 +171,10 @@ registerSuite({
 			]
 		};
 
-		const grid = createGrid({ properties });
+		const grid = new LeGrid(properties);
+		(<any> grid).registry = mockRegistry;
 		spy(grid, 'invalidate');
 
-		grid.registry = mockRegistry;
 		let vnode = <VNode> grid.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -191,14 +184,14 @@ registerSuite({
 
 		assert.isTrue(bodySpy.calledOnce);
 		assert.isTrue(footerSpy.calledOnce);
-		let footerProperties = footerSpy.getCall(0).args[0].properties;
+		let footerProperties = footerSpy.getCall(0).args[0];
 
 		assert.strictEqual(footerProperties.totalCount, 0);
 		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 0, dataRangeCount: 10 });
 
-		headerSpy = spy(createWidgetBase.mixin({ mixin: { header: true }}));
-		bodySpy = spy(createWidgetBase.mixin({ mixin: { body: true }}));
-		footerSpy = spy(createWidgetBase.mixin({ mixin: { footer: true }}));
+		headerSpy = spy(class extends WidgetBase<any> { static header = true; });
+		bodySpy = spy(class extends WidgetBase<any> { static body = true; });
+		footerSpy = spy(class extends WidgetBase<any> { static footer = true; });
 
 		grid.onPaginationRequest('2');
 		vnode = <VNode> grid.__render__();
@@ -208,7 +201,7 @@ registerSuite({
 		assert.isTrue(headerSpy.calledOnce);
 		assert.isTrue(bodySpy.calledOnce);
 		assert.isTrue(footerSpy.calledOnce);
-		footerProperties = footerSpy.getCall(0).args[0].properties;
+		footerProperties = footerSpy.getCall(0).args[0];
 		assert.strictEqual(footerProperties.totalCount, 0);
 		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 10, dataRangeCount: 10 });
 	},
@@ -223,14 +216,14 @@ registerSuite({
 			]
 		};
 
-		const customCell = createWidgetBase.override({});
-		const customCellWrapper = () => { return customCell; };
-		const grid = createGrid({ properties });
-		assert.notEqual(grid.registry!.get('grid-cell'), customCell);
+		class CustomCell extends WidgetBase<any> {}
+		const customCellWrapper = () => { return CustomCell; };
+		const grid: any = new LeGrid(properties);
+		assert.notEqual(grid.registry!.get('grid-cell'), CustomCell);
 		grid.setProperties(assign({ customCell: customCellWrapper }, properties));
-		assert.strictEqual(grid.registry!.get('grid-cell'), customCell);
+		assert.strictEqual(grid.registry!.get('grid-cell'), CustomCell);
 		grid.setProperties(assign(<any> { customCell: customCellWrapper }, properties, { pagination: { itemsPerPage: 15 }}));
-		assert.strictEqual(grid.registry!.get('grid-cell'), customCell);
+		assert.strictEqual(grid.registry!.get('grid-cell'), CustomCell);
 	},
 	'data provider updated on property change'(this: any) {
 		this.skip();
@@ -244,7 +237,7 @@ registerSuite({
 			]
 		};
 
-		const grid = createGrid({ properties });
+		const grid = new LeGrid(properties);
 		const promise = new Promise((resolve) => setTimeout(resolve, 10));
 		return promise.then(() => {
 			assert.deepEqual(grid.data, {

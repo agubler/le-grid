@@ -1,35 +1,24 @@
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { WidgetProperties } from '@dojo/widget-core/interfaces';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { v } from '@dojo/widget-core/d';
-import { PaginationDetails }  from './createLeGrid';
+import { PaginationDetails }  from './LeGrid';
 
 import * as css from './styles/gridFooter.css';
 
-export interface GridFooterProperties extends WidgetProperties {
+export interface GridFooterProperties extends WidgetProperties, ThemeableProperties {
 	onPaginationRequest(pageNumber: string): void;
 	paginationDetails?: PaginationDetails;
 	totalCount: number;
 }
 
-export interface GridFooterMixin extends WidgetMixin<GridFooterProperties>, ThemeableMixin {
-	onClick(this: GridFooter, evt: MouseEvent): void;
-	createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean, extraClasses?: any, overrideLabel?: string): DNode;
-}
-
-export type GridFooter = Widget<GridFooterProperties> & GridFooterMixin
-
-export interface GridFooterFactory extends WidgetFactory<GridFooterMixin, GridFooterProperties> { }
-
-const createGridFooter: GridFooterFactory = createWidgetBase
-.mixin(themeable)
-.mixin({
-	mixin: {
-		baseClasses: css,
-		onClick(this: GridFooter, evt: any) {
+@theme(css)
+export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterProperties> {
+		onClick(evt: any) {
 			this.properties.onPaginationRequest && this.properties.onPaginationRequest(evt.target.attributes['page'].value);
-		},
-		createPageLink(this: GridFooter, page: string, visable: boolean, disabled: boolean, extraClasses: string, overrideLabel?: string): DNode {
+		}
+
+		createPageLink(page: string, visable: boolean, disabled: boolean, extraClasses?: string, overrideLabel?: string) {
 			if (visable) {
 				const classes = [css.pageLink];
 
@@ -49,8 +38,9 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 				return v('span', properties, [ overrideLabel || page ]);
 			}
 			return null;
-		},
-		render(this: GridFooter): DNode {
+		}
+
+		render() {
 			const { properties: { totalCount, paginationDetails: { dataRangeStart = 0, dataRangeCount = Infinity } = {} } } = this;
 			const totalPages = Math.ceil(totalCount / dataRangeCount);
 			const pageNumber = dataRangeStart === 0 ? 1 : (dataRangeStart / dataRangeCount) + 1;
@@ -76,7 +66,4 @@ const createGridFooter: GridFooterFactory = createWidgetBase
 				]) : v('div', { classes: this.classes(css.status).get() }, [ `${totalCount} results` ])
 			]);
 		}
-	}
-});
-
-export default createGridFooter;
+}

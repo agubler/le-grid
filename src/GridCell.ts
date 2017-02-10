@@ -1,31 +1,20 @@
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { WidgetProperties } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
-import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 
 import * as css from './styles/gridCell.css';
 
-export interface GridCellProperties extends WidgetProperties {
-	data: string;
+export interface GridCellProperties extends WidgetProperties, ThemeableProperties {
+	data: any;
+	renderer?: Function;
 }
 
-export interface GridCellMixin extends WidgetMixin<GridCellProperties>, ThemeableMixin { }
-
-export type GridCell = Widget<GridCellProperties> & GridCellMixin
-
-export interface GridCellFactory extends WidgetFactory<GridCellMixin, GridCellProperties> { }
-
-const createGridCell: GridCellFactory = createWidgetBase
-	.mixin(themeable)
-	.mixin({
-		mixin: {
-			baseClasses: css,
-			render(this: GridCell): DNode {
-				const { properties: { data, renderer } } = this;
-				const value = renderer ? renderer(data) : data;
-				return v('td', { classes: this.classes(css.cell).get() }, [ value ? value.toString() : null ]);
-			}
-		}
-	});
-
-export default createGridCell;
+@theme(css)
+export default class GridCell extends ThemeableMixin(WidgetBase)<GridCellProperties> {
+	render() {
+		const { properties: { data, renderer } } = this;
+		const value = renderer ? renderer(data) : data;
+		return v('td', { classes: this.classes(css.cell).get() }, [ value ? value.toString() : null ]);
+	}
+}

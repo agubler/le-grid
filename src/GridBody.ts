@@ -1,41 +1,28 @@
-import { Widget, WidgetMixin, WidgetProperties, WidgetFactory, DNode } from '@dojo/widget-core/interfaces';
-import registryMixin, { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/registryMixin';
-import themeable, { ThemeableMixin } from '@dojo/widget-core/mixins/themeable';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { WidgetProperties } from '@dojo/widget-core/interfaces';
+import { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/Registry';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { v, w } from '@dojo/widget-core/d';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
-import { DataProviderMixinProperties } from './mixins/dataProviderMixin';
-import { Column } from './createLeGrid';
+import { Column } from './LeGrid';
 
 import * as css from './styles/gridBody.css';
 
-export interface GridBodyProperties extends WidgetProperties, RegistryMixinProperties, DataProviderMixinProperties {
+export interface GridBodyProperties extends WidgetProperties, RegistryMixinProperties, ThemeableProperties {
 	columns: Column[];
+	items: any[];
 }
 
-export interface GridBodyMixin extends WidgetMixin<GridBodyProperties>, RegistryMixin, ThemeableMixin {}
-
-export type GridBody = Widget<GridBodyProperties> & GridBodyMixin
-
-export interface GridBodyFactory extends WidgetFactory<GridBodyMixin, GridBodyProperties> { }
-
-const createGridBody: GridBodyFactory = createWidgetBase
-.mixin(registryMixin)
-.mixin(themeable)
-.mixin({
-	mixin: {
-		baseClasses: css,
-		render(this: GridBody): DNode {
-			const { properties: { items = [], dataProvider, columns, registry } } = this;
+@theme(css)
+export default class GridBody extends ThemeableMixin(RegistryMixin(WidgetBase))<GridBodyProperties> {
+		render() {
+			const { properties: { items = [], columns, registry } } = this;
 
 			return v('div', { classes: this.classes(css.scroller).get() }, [
 				v('div', { classes: this.classes(css.content).get() }, items.map((item: any) => {
 						const key = item.get ? item.get('id') : item.id;
-						return w('grid-row', { key, id: key, item, columns, dataProvider, registry });
+						return w('grid-row', { key, id: key, item, columns, registry });
 					})
 				)
 			]);
 		}
-	}
-});
-
-export default createGridBody;
+}

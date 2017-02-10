@@ -1,7 +1,7 @@
 import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
-import createFooter from '../../src/createFooter';
+import GridFooter from '../../src/GridFooter';
 import { assertAppliedClasses } from './../support/classHelper';
 
 import * as css from '../../src/styles/gridFooter.css';
@@ -14,7 +14,7 @@ registerSuite({
 				totalCount: 100,
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = createFooter({ properties });
+			const footer = new GridFooter(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -34,7 +34,7 @@ registerSuite({
 				},
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = createFooter({ properties });
+			const footer = new GridFooter(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -73,7 +73,7 @@ registerSuite({
 				},
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = createFooter({ properties });
+			const footer = new GridFooter(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -115,7 +115,7 @@ registerSuite({
 				},
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = createFooter({ properties });
+			const footer = new GridFooter(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -158,7 +158,7 @@ registerSuite({
 				requestedPageNumber = pageNumber;
 			}
 		};
-		const footer = createFooter({ properties });
+		const footer = new GridFooter(properties);
 		footer.onClick(<any> { target: { attributes: { page: { value: 8 } } } });
 		assert.equal(requestedPageNumber, 8);
 	}

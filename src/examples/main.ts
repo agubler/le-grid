@@ -1,10 +1,10 @@
-import createProjectorMixin from '@dojo/widget-core/mixins/createProjectorMixin';
-import createWidgetBase from '@dojo/widget-core/createWidgetBase';
+import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { v } from '@dojo/widget-core/d';
 import uuid from '@dojo/core/uuid';
-import createCustomCell from './createCustomCell';
+import CustomCell from './createCustomCell';
 
-import createGrid from './../createLeGrid';
+import LeGrid from './../LeGrid';
 import ArrayDataProvider from './../providers/ArrayDataProvider';
 import StoreDataProvider from './../providers/StoreDataProvider';
 
@@ -86,69 +86,51 @@ const columns = [
 
 const root = document.getElementsByTagName('store-data-grid')[0];
 
-const storeButton = createWidgetBase.mixin(createProjectorMixin).override({
+class Button extends ProjectorMixin(WidgetBase)<any> {
 	render() {
-		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(storeDataProvider, storeGrid) } );
+		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(this.properties.dataProvider, this.properties.grid) } );
 	}
-})({
-	root
+}
+
+const paginatedStoreGrid = new (ProjectorMixin(LeGrid))({
+	dataProvider: storeDataProviderPaginated,
+	pagination: {
+		itemsPerPage: 10
+	},
+	columns
 });
 
-const paginatedStoreGrid = createGrid.mixin(createProjectorMixin)({
-	root,
-	properties: {
-		dataProvider: storeDataProviderPaginated,
-		pagination: {
-			itemsPerPage: 10
-		},
-		columns
-	}
+const storeGrid = new (ProjectorMixin(LeGrid))({
+	dataProvider: storeDataProvider,
+	columns
 });
 
-const storeGrid = createGrid.mixin(createProjectorMixin)({
-	root,
-	properties: {
-		dataProvider: storeDataProvider,
-		columns
-	}
-});
+const storeButton = new Button({ dataProvider: storeDataProvider, grid: storeGrid });
 
-storeButton.append();
-storeGrid.append();
-paginatedStoreGrid.append();
+storeButton.append(root);
+storeGrid.append(root);
+paginatedStoreGrid.append(root);
 
 const arrayGridRoot = document.getElementsByTagName('array-data-grid')[0];
 
-const arrayButton = createWidgetBase.mixin(createProjectorMixin).override({
-	render() {
-		return v('button', { innerHTML: 'Use custom cell', classes: { button: true }, onclick: buttonClick(arrayDataProvider, arrayGrid) } );
-	}
-})({
-	root: arrayGridRoot
+const paginatedArrayGrid = new (ProjectorMixin(LeGrid))({
+	dataProvider: arrayDataProviderPaginated,
+	pagination: {
+		itemsPerPage: 10
+	},
+	columns
 });
 
-const paginatedArrayGrid = createGrid.mixin(createProjectorMixin)({
-	root: arrayGridRoot,
-	properties: {
-		dataProvider: arrayDataProviderPaginated,
-		pagination: {
-			itemsPerPage: 10
-		},
-		columns
-	}
+const arrayGrid = new (ProjectorMixin(LeGrid))({
+	dataProvider: arrayDataProvider,
+	columns
 });
 
-const arrayGrid = createGrid.mixin(createProjectorMixin)({
-	root: arrayGridRoot,
-	properties: {
-		dataProvider: arrayDataProvider,
-		columns
-	}
-});
+const arrayButton = new Button({ root: arrayGridRoot, dataProvider: arrayDataProvider, grid: arrayGrid });
 
-arrayButton.append();
-arrayGrid.append();
-paginatedArrayGrid.append();
+arrayButton.append(arrayGridRoot);
+arrayGrid.append(arrayGridRoot);
+paginatedArrayGrid.append(arrayGridRoot);
 
 function buttonClick(provider: any, grid: any) {
 	let cellToggle = true;
@@ -156,7 +138,7 @@ function buttonClick(provider: any, grid: any) {
 		const props = {
 			dataProvider: provider,
 			columns,
-			customCell: cellToggle ? () => { return createCustomCell; } : false
+			customCell: cellToggle ? () => { return CustomCell; } : false
 		};
 		cellToggle = !cellToggle;
 		grid.setProperties(props);
