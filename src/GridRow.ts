@@ -1,7 +1,7 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties, PropertyChangeRecord } from '@dojo/widget-core/interfaces';
 import { RegistryMixin, RegistryMixinProperties } from '@dojo/widget-core/mixins/Registry';
-import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { v, w } from '@dojo/widget-core/d';
 import { Column } from './LeGrid';
@@ -14,7 +14,7 @@ export interface GridRowProperties extends WidgetProperties, RegistryMixinProper
 }
 
 @theme(css)
-export default class GridRow extends ThemeableMixin(RegistryMixin(WidgetBase))<GridRowProperties> implements ThemeableMixinInterface {
+export default class GridRow extends ThemeableMixin(RegistryMixin(WidgetBase))<GridRowProperties> {
 	diffPropertyItem(previousProperty: any, newProperty: any): PropertyChangeRecord {
 		let changed = newProperty !== previousProperty;
 

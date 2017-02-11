@@ -1,16 +1,16 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { PropertiesChangeEvent, WidgetProperties, Constructor } from '@dojo/widget-core/interfaces';
-import { DataProvider, ObserverPayload } from './../providers/interfaces';
+import { DataProvider , ObserverPayload } from './../providers/interfaces';
 
 export interface DataProviderMixinProperties {
 	dataProvider: DataProvider<any, any>;
 }
 
-export interface DataProviderInterface {
+export interface DataProviderMixin {
 	data: ObserverPayload<any, any>;
 }
 
-export function DataProviderMixin<T extends Constructor<WidgetBase<WidgetProperties>>>(base: T): T & Constructor<DataProviderInterface> {
+export function DataProviderMixin<T extends Constructor<WidgetBase<WidgetProperties>>>(base: T): T & Constructor<DataProviderMixin> {
 
 	return class extends base {
 		properties: DataProviderMixinProperties;

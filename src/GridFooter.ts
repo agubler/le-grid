@@ -1,6 +1,6 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties } from '@dojo/widget-core/interfaces';
-import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import { PaginationDetails }  from './LeGrid';
@@ -14,7 +14,7 @@ export interface GridFooterProperties extends WidgetProperties, ThemeablePropert
 }
 
 @theme(css)
-export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterProperties> implements ThemeableMixinInterface {
+export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterProperties> {
 		onClick(evt: any) {
 			this.properties.onPaginationRequest && this.properties.onPaginationRequest(evt.target.attributes['page'].value);
 		}

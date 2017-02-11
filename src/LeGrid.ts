@@ -1,12 +1,12 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
-import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { includes } from '@dojo/shim/array';
 import { w, v } from '@dojo/widget-core/d';
 import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
 
-import { DataProviderMixinProperties, DataProviderMixin, DataProviderInterface } from './mixins/DataProvider';
+import { DataProviderMixinProperties, DataProviderMixin } from './mixins/DataProvider';
 import GridBody from './GridBody';
 import GridRow from './GridRow';
 import GridCell from './GridCell';
@@ -63,7 +63,7 @@ interface InternalState {
 }
 
 @theme(css)
-export default class LeGrid extends DataProviderMixin(ThemeableMixin(WidgetBase))<GridProperties> implements DataProviderInterface, ThemeableMixinInterface {
+export default class LeGrid extends DataProviderMixin(ThemeableMixin(WidgetBase))<GridProperties> {
 
 	private sortDetails: SortDetails;
 	private paginationDetails: PaginationDetails;
