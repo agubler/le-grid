@@ -1,6 +1,6 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
-import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { includes } from '@dojo/shim/array';
 import { w, v } from '@dojo/widget-core/d';
@@ -68,7 +68,7 @@ interface InternalState {
 export const LeGridBase = DataProviderMixin(ThemeableMixin(WidgetBase));
 
 @theme(css)
-export default class LeGrid extends LeGridBase<GridProperties> {
+export default class LeGrid extends LeGridBase<GridProperties> implements ThemeableMixinInterface {
 
 	private sortDetails: SortDetails;
 	private paginationDetails: PaginationDetails;

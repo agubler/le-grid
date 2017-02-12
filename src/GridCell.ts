@@ -1,7 +1,7 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
-import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 
 import * as css from './styles/gridCell.css';
@@ -17,7 +17,7 @@ export interface GridCellProperties extends WidgetProperties, ThemeablePropertie
 export const GridCellBase = ThemeableMixin(WidgetBase);
 
 @theme(css)
-export default class GridCell extends GridCellBase<GridCellProperties> {
+export default class GridCell extends GridCellBase<GridCellProperties> implements ThemeableMixinInterface {
 	render(): DNode {
 		const { properties: { data, renderer } } = this;
 		const value = renderer ? renderer(data) : data;
