@@ -13,8 +13,13 @@ export interface GridFooterProperties extends WidgetProperties, ThemeablePropert
 	totalCount: number;
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const GridFooterBase = ThemeableMixin(WidgetBase);
+
 @theme(css)
-export default class GridFooter extends ThemeableMixin(WidgetBase)<GridFooterProperties> {
+export default class GridFooter extends GridFooterBase<GridFooterProperties> {
 		onClick(evt: any) {
 			this.properties.onPaginationRequest && this.properties.onPaginationRequest(evt.target.attributes['page'].value);
 		}

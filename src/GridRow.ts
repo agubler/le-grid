@@ -13,8 +13,13 @@ export interface GridRowProperties extends WidgetProperties, RegistryMixinProper
 	item: any;
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const GridRowBase = ThemeableMixin(RegistryMixin(WidgetBase));
+
 @theme(css)
-export default class GridRow extends ThemeableMixin(RegistryMixin(WidgetBase))<GridRowProperties> {
+export default class GridRow extends GridRowBase<GridRowProperties> {
 	diffPropertyItem(previousProperty: any, newProperty: any): PropertyChangeRecord {
 		let changed = newProperty !== previousProperty;
 

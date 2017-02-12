@@ -13,8 +13,13 @@ export interface GridBodyProperties extends WidgetProperties, RegistryMixinPrope
 	items: any[];
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const GridBodyBase = ThemeableMixin(RegistryMixin(WidgetBase));
+
 @theme(css)
-export default class GridBody extends ThemeableMixin(RegistryMixin(WidgetBase))<GridBodyProperties> {
+export default class GridBody extends GridBodyBase<GridBodyProperties> {
 		render(): DNode {
 			const { properties: { items = [], columns, registry } } = this;
 

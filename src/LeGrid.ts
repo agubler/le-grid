@@ -62,8 +62,13 @@ interface InternalState {
 	paginationDetails: PaginationDetails;
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const LeGridBase = DataProviderMixin(ThemeableMixin(WidgetBase));
+
 @theme(css)
-export default class LeGrid extends DataProviderMixin(ThemeableMixin(WidgetBase))<GridProperties> {
+export default class LeGrid extends LeGridBase<GridProperties> {
 
 	private sortDetails: SortDetails;
 	private paginationDetails: PaginationDetails;

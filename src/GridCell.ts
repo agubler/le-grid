@@ -11,8 +11,13 @@ export interface GridCellProperties extends WidgetProperties, ThemeablePropertie
 	renderer?: Function;
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const GridCellBase = ThemeableMixin(WidgetBase);
+
 @theme(css)
-export default class GridCell extends ThemeableMixin(WidgetBase)<GridCellProperties> {
+export default class GridCell extends GridCellBase<GridCellProperties> {
 	render(): DNode {
 		const { properties: { data, renderer } } = this;
 		const value = renderer ? renderer(data) : data;

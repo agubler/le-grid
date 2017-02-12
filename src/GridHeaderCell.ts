@@ -14,8 +14,13 @@ export interface GridHeaderProperties extends ThemeableProperties, WidgetPropert
 	id: string;
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const GridHeaderCellBase = ThemeableMixin(WidgetBase);
+
 @theme(css)
-export default class GridHeaderCell extends ThemeableMixin(WidgetBase)<GridHeaderProperties> {
+export default class GridHeaderCell extends GridHeaderCellBase<GridHeaderProperties> {
 	onSortRequest(event: MouseEvent): void {
 		const { id, sortDetails: { descending = false } = {} } = this.properties;
 		this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);

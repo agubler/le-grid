@@ -14,8 +14,13 @@ export interface GridHeaderProperties extends WidgetProperties, ThemeablePropert
 	sortDetails?: SortDetails;
 }
 
+/**
+ * create base const, work around for typescript issue https://github.com/Microsoft/TypeScript/issues/14017
+ */
+export const GridHeaderBase = ThemeableMixin(RegistryMixin(WidgetBase));
+
 @theme(css)
-export default class GridHeader extends ThemeableMixin(RegistryMixin(WidgetBase))<GridHeaderProperties> {
+export default class GridHeader extends GridHeaderBase<GridHeaderProperties> {
 	render(): DNode {
 		const { properties: { onSortRequest, columns, sortDetails } } = this;
 
