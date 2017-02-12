@@ -17,6 +17,8 @@ A reactive lightweight, customisable grid implementation built using [@dojo/widg
 
 Supports cell customisation, configurable columns and pagination.
 
+A running example can be seen [here](https://agubler.github.io/le-grid/).
+
 <img src="https://cdn.rawgit.com/agubler/le-grid/master/docs/le-grid.gif">
 
 ### Installation

@@ -6,6 +6,8 @@ env:
   global:
   - BROWSERSTACK_USERNAME: anthonygubler1
   - BROWSERSTACK_ACCESS_KEY: hgyZkatVxo4WxGJLzmhq
+  - secure: mm6Or3AsDonaFhTXhFdUA1RtTODmI9BCAAK56PDr45N3+FJ1FwxvlqHtXWTqNYuB+0UCJWvQKmCRdZnL1KOLZswczoygDNvJQAOD4c90Bb4g/ECT9DfVNAPUxaa4qQ1dDDqVbpk/aexdY/FM+Gj/YTmj7qDwwzU3B+i/nA4mlEMLz5LL197E4EDmoHN/R4TwAe2EOC1IShBDNSIbGlWyE8hTXEKwxMIootLj/z3vY4vlML2wxXm27zMw1Ae/U5Eh5OPNGqlFCKhkerbDKfrGGXEBmnHLHSJcrOr610VTQHfrUxHY76f6zz6v0VDkuApFs1uXFDmigtCBgD6opt+wqJcRzo1iHYmni2MSyDwgXipc87St4mTREzi0WssM6t9np+a7IMTA4KxnpCkxMYTVH7Y/H6zB/QY8amx+fp7HUY3YKn8+foyfaeTBKfNXoUBFIbqtS4kKzZhNbWt0CKlIw9ZjvKw6ZajWtu8B2a4hV2heJ+JU3DY7IDdn9f+kznfUhqzthp4C91zCXhuPTvUsJB0nsyNT+WTbY9kUn9N8tgmxcbOUauXU8G7gE43BtinlJTU1epKZ+RcTJFL/PMRJMkxUEhiERNZI2r06zPXXMEuXR01xJ+mLWmgFvAgpwW9j41naPH8jUOuZYL/FxluygVRtyHcyXhuejB7sjquNadM=
+  - secure: cSyZl/vHj/kduZKOhvp3uTWfNtYL5KvlDdwx0IgTaFk+3WOQJcFXMZZwmT38PvZsYn67ZdRrj0eYGU+V1DXMLqwgP0o47BvaWB2EIQJiUK8Cfbl4go6fJxx+FczUp+Oqo6z5heYfFss2508ElmDoTeis6P9Tdy8sXJQlEiHdlBjE7GNAXhTKOwcSgstEJ1bDz3GkAHtvUrKCPgJJTJo9xYqgjqpcrNalW2+2InPW+ALcOieQNuSgos54TN4mP68rOMJ+o6/K58FBc/1Cs5uWkslPZwLSxn1ehAorSsQVwalLMRREwieCQgsdT7ruZzczm+LRzim0gfI5hLVw4DGm0itUEioFBF0hhL/mJK0WFfbUSAzq/QCA/2Oyqnv8ugYTHVCgS4iGDfEY/ChM6fTDVdzfgPfq3/AgIR5VVblc+jk9EopUTth43Z+mkGa9OGA3ysVOkd31DLto4a/j6r+/QLOYweJq3Gcrrksj9Z0vC29qBRhKhAZ7Xa1WvfK8jGjCfKKxT08PPQHtYpAxDGMapjv5ohoFy0IPXZdztLBVw9x+hQ+vjPn0IhHAzJ3xCvkHB4zjZjJQCL75v88KCmTSL7ncsuI8ro5Zu7ixDR0NvFu/wAnmYzJMdQm99AeeObPsT5jgxg9Qu/8Z2HHUasY9WHuiZAGbzBgHw7L9ecHtLX8=
 install:
 - travis_retry npm install grunt-cli
 - travis_retry npm install
@@ -15,3 +17,9 @@ script:
 - grunt intern:browserstack --combined
 - grunt remapIstanbul:ci
 - grunt uploadCoverage
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    branch: master

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>le-grid</title>
+		<style>
+			body {
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size: 10px;
+			}
+
+			table {
+				width: 600px;
+			}
+
+			thead {
+				border: 1px solid blue;
+				height: 30px;
+				display: block;
+			}
+
+			tbody {
+				border: 1px solid green;
+				height: 300px;
+				display: block;
+			}
+
+			.thead-focused, .tbody-focused {
+				border-width: 3px;
+			}
+
+			.custom-cell {
+				height: 100px;
+				background: url('http://www.nyan.cat/cats/original.gif');
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: 50%;
+			}
+
+			.button {
+				background: #bada55;
+				border: none;
+				height: 30px;
+				margin-top: 10px;
+				margin-bottom: 20px;
+				width: 200px;
+				border-radius: 5px;
+			}
+
+			.layout-grid {
+				display: flex;
+			}
+
+			.layout-grid-cell {
+				flex: 1;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div class="layout-grid">
+			<div class="layout-grid-cell">
+				<h1>Store Provider</h1>
+				<store-data-grid/>
+			</div>
+			<div class="layout-grid-cell">
+				<h1>Array Provider</h1>
+				<array-data-grid/>
+			</div>
+		</div>
+	</body>
+</html>
