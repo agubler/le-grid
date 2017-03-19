@@ -5,7 +5,7 @@ import { CustomElementDescriptor } from '@dojo/widget-core/customElements';
 export default function createCallToActionElementDescriptor(): CustomElementDescriptor {
 	return {
 		tagName: 'le-grid',
-		widgetFactory: LeGrid,
+		widgetConstructor: LeGrid,
 		properties: [
 		{
 			propertyName: 'dataProvider'

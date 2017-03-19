@@ -17,6 +17,7 @@
   "author": "Anthony Gubler",
   "dependencies": {
     "@dojo/core": "^2.0.0-alpha.26",
+    "@dojo/compose": "latest",
     "@dojo/has": "^2.0.0-alpha.8",
     "@dojo/i18n": "^2.0.0-alpha.8",
     "@dojo/shim": "^2.0.0-beta.10",

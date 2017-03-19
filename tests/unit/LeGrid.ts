@@ -2,7 +2,7 @@ import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import { assign } from '@dojo/core/lang';
-import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
+import WidgetRegistry from '@dojo/widget-core/WidgetRegistry';
 import { spy, SinonSpy } from 'sinon';
 import WidgetBase from '@dojo/widget-core/WidgetBase';
 
@@ -16,7 +16,7 @@ let bodySpy: SinonSpy;
 let bodySetPropertiesSpy: SinonSpy;
 let footerSpy: SinonSpy;
 let footerSetPropertiesSpy: SinonSpy;
-let mockRegistry: FactoryRegistry;
+let mockRegistry: WidgetRegistry;
 
 function createSpies() {
 	headerSpy = spy(class extends WidgetBase<any> { static header = true; });

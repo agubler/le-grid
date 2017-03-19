@@ -1,7 +1,7 @@
 import * as registerSuite from 'intern/lib/interfaces/object';
 import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
-import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
+import WidgetRegistry from '@dojo/widget-core/WidgetRegistry';
 import { spy, stub, SinonSpy, SinonStub } from 'sinon';
 import WidgetBase from '@dojo/widget-core/WidgetBase';
 
@@ -13,7 +13,7 @@ import { Map as ImmutableMap } from 'immutable';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;
-let mockRegistry: FactoryRegistry;
+let mockRegistry: WidgetRegistry;
 
 registerSuite({
 	name: 'GridBody',

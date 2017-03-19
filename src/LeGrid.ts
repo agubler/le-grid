@@ -4,7 +4,7 @@ import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mi
 import { DNode } from '@dojo/widget-core/interfaces';
 import { includes } from '@dojo/shim/array';
 import { w, v } from '@dojo/widget-core/d';
-import FactoryRegistry from '@dojo/widget-core/FactoryRegistry';
+import WidgetRegistry from '@dojo/widget-core/WidgetRegistry';
 
 import { DataProviderMixinProperties, DataProviderMixin } from './mixins/DataProvider';
 import GridBody from './GridBody';
@@ -18,7 +18,7 @@ import * as css from './styles/grid.css';
 
 function createRegistry(props: any) {
 	const { customCell } = props;
-	const registry = new FactoryRegistry();
+	const registry = new WidgetRegistry();
 	registry.define('grid-body', GridBody);
 	registry.define('grid-row', GridRow);
 	registry.define('grid-cell', customCell ? customCell() : GridCell);
