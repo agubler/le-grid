@@ -23,13 +23,14 @@ registerSuite({
 		dataProvider = new ArrayDataProvider<any>([{ id: 'id', foo: 'bar' }]);
 	},
 	getData() {
-		const dataProviderTest = new TestClass({ dataProvider });
+		const dataProviderTest = new TestClass();
+		dataProviderTest.setProperties({ dataProvider });
 		assert.deepEqual(dataProviderTest.data.totalCount, 1);
 		assert.deepEqual(dataProviderTest.data.state, {});
 		assert.deepEqual(dataProviderTest.data.items[0].toJS(), { id: 'id', foo: 'bar' });
 	},
 	'no data provider'() {
-		const dataProviderTest = new TestClass({});
+		const dataProviderTest = new TestClass();
 		assert.deepEqual(dataProviderTest.data.totalCount, 0);
 		assert.deepEqual(dataProviderTest.data.state, {});
 		assert.deepEqual(dataProviderTest.data.items, []);

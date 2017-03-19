@@ -16,14 +16,17 @@ let mockRegistry: FactoryRegistry;
 registerSuite({
 	name: 'GridHeader',
 	beforeEach() {
-		widgetBaseSpy = spy(WidgetBase);
-		getStub = stub().withArgs('grid-row-view').returns(widgetBaseSpy);
+		widgetBaseSpy = spy(WidgetBase.prototype, 'setProperties');
+		getStub = stub().withArgs('grid-row-view').returns(WidgetBase);
 		mockRegistry = <any> {
 			get: getStub,
 			has() {
 				return true;
 			}
 		};
+	},
+	afterEach() {
+		widgetBaseSpy.restore();
 	},
 	render() {
 		const onSortRequest = (columnId: string, descending: boolean): void => {};
@@ -36,7 +39,8 @@ registerSuite({
 			onSortRequest
 		};
 
-		const row = new GridHeader(properties);
+		const row = new GridHeader();
+		row.setProperties(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -49,18 +53,18 @@ registerSuite({
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
-		assert.isTrue(widgetBaseSpy.calledTwice);
+		assert.isTrue(widgetBaseSpy.calledThrice);
 
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].key, 'foo');
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].id, 'foo');
-		assert.deepEqual(widgetBaseSpy.getCall(0).args[0].column, { id: 'foo', label: 'foo' });
-		assert.isUndefined(widgetBaseSpy.getCall(0).args[0].sortDetails);
-		assert.isFunction(widgetBaseSpy.getCall(0).args[0].onSortRequest);
-
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].key, 'bar');
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].id, 'bar');
-		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].column, { id: 'bar', label: 'bar' });
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].key, 'foo');
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].id, 'foo');
+		assert.deepEqual(widgetBaseSpy.getCall(1).args[0].column, { id: 'foo', label: 'foo' });
 		assert.isUndefined(widgetBaseSpy.getCall(1).args[0].sortDetails);
 		assert.isFunction(widgetBaseSpy.getCall(1).args[0].onSortRequest);
+
+		assert.deepEqual(widgetBaseSpy.getCall(2).args[0].key, 'bar');
+		assert.deepEqual(widgetBaseSpy.getCall(2).args[0].id, 'bar');
+		assert.deepEqual(widgetBaseSpy.getCall(2).args[0].column, { id: 'bar', label: 'bar' });
+		assert.isUndefined(widgetBaseSpy.getCall(2).args[0].sortDetails);
+		assert.isFunction(widgetBaseSpy.getCall(2).args[0].onSortRequest);
 	}
 });

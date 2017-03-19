@@ -87,7 +87,8 @@ const columns = [
 	}
 ];
 
-const grid = new (ProjectorMixin(LeGrid))({
+const grid = new (ProjectorMixin(LeGrid));
+grid.setProperties({
 	dataProvider: store,
 	pagination: {
 		itemsPerPage: 5
@@ -116,7 +117,7 @@ class Button extends ProjectorMixin(WidgetBase)<any> {
 	}
 }
 
-const button = new Button({});
+const button = new Button();
 
 button.append();
 grid.append();

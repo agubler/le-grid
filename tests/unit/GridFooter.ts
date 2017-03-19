@@ -14,7 +14,8 @@ registerSuite({
 				totalCount: 100,
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = new GridFooter(properties);
+			const footer = new GridFooter();
+			footer.setProperties(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -34,7 +35,8 @@ registerSuite({
 				},
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = new GridFooter(properties);
+			const footer = new GridFooter();
+			footer.setProperties(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -61,7 +63,7 @@ registerSuite({
 			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
 				css.pageLink,
-				css.previousPage
+				css.nextPage
 			], vnode.children![0].children![1].children![2].properties!.classes));
 		},
 		'renders footer with pagination - last page'() {
@@ -73,7 +75,8 @@ registerSuite({
 				},
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = new GridFooter(properties);
+			const footer = new GridFooter();
+			footer.setProperties(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -101,7 +104,7 @@ registerSuite({
 			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
 				css.pageLink,
-				css.previousPage,
+				css.nextPage,
 				css.disabledPageLink
 			], vnode.children![0].children![1].children![2].properties!.classes));
 		},
@@ -115,7 +118,8 @@ registerSuite({
 				},
 				onPaginationRequest(pageNumber: string) {}
 			};
-			const footer = new GridFooter(properties);
+			const footer = new GridFooter();
+			footer.setProperties(properties);
 
 			const vnode = <VNode> footer.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -141,7 +145,7 @@ registerSuite({
 			assert.strictEqual(vnode.children![0].children![1].children![2].vnodeSelector, 'span');
 			assert.isTrue(assertAppliedClasses([
 				css.pageLink,
-				css.previousPage
+				css.nextPage
 			], vnode.children![0].children![1].children![2].properties!.classes));
 		}
 	},
@@ -158,7 +162,8 @@ registerSuite({
 				requestedPageNumber = pageNumber;
 			}
 		};
-		const footer = new GridFooter(properties);
+		const footer = new GridFooter();
+		footer.setProperties(properties);
 		footer.onClick(<any> { target: { attributes: { page: { value: 8 } } } });
 		assert.equal(requestedPageNumber, 8);
 	}

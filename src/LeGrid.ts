@@ -1,6 +1,6 @@
-import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { WidgetBase, onPropertiesChanged } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties, PropertiesChangeEvent } from '@dojo/widget-core/interfaces';
-import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { includes } from '@dojo/shim/array';
 import { w, v } from '@dojo/widget-core/d';
@@ -68,42 +68,30 @@ interface InternalState {
 export const LeGridBase = DataProviderMixin(ThemeableMixin(WidgetBase));
 
 @theme(css)
-export default class LeGrid extends LeGridBase<GridProperties> implements ThemeableMixinInterface {
+export default class LeGrid extends LeGridBase<GridProperties> {
 
-	private sortDetails: SortDetails;
-	private paginationDetails: PaginationDetails;
+	private _sortDetails: SortDetails;
 
-	constructor(properties: GridProperties) {
-		super(properties);
-		const { dataProvider, pagination } = properties;
+	private _paginationDetails: PaginationDetails = { dataRangeStart: 0, dataRangeCount: Infinity };
 
-		this.registry = createRegistry(this.properties);
+	@onPropertiesChanged
+	protected onPropertiesChanged(evt: PropertiesChangeEvent<LeGrid, GridProperties>) {
+		const { dataProvider, pagination = { itemsPerPage: Infinity } } = evt.properties;
 
-		this.own(this.on('properties:changed', (evt: PropertiesChangeEvent<LeGrid, GridProperties>) => {
-			if (includes(evt.changedPropertyKeys, 'customCell')) {
-				this.registry = createRegistry(evt.properties);
-			}
-
-			if (includes(evt.changedPropertyKeys, 'pagination')) {
-				this.paginationDetails.dataRangeCount = evt.properties!.pagination!.itemsPerPage;
-			}
-
-			// TODO add changed of items per page
-		}));
-
-		if (pagination) {
-			dataProvider.configure({ size: { start: 0, count: pagination.itemsPerPage }});
-			this.paginationDetails = { dataRangeStart: 0, dataRangeCount: pagination.itemsPerPage };
+		if (!this.registry || includes(evt.changedPropertyKeys, 'customCell')) {
+			this.registry = createRegistry(evt.properties);
 		}
-		else {
-			this.paginationDetails = { dataRangeStart: 0, dataRangeCount: Infinity };
+
+		if (includes(evt.changedPropertyKeys, 'pagination')) {
+			this._paginationDetails.dataRangeCount = pagination.itemsPerPage;
+			dataProvider.configure({ size: { start: 0, count: pagination.itemsPerPage }});
 		}
 	}
 
 	onSortRequest(columnId: string, descending: boolean): void {
 		const { properties: { dataProvider } } = this;
 
-		this.sortDetails = { columnId, descending };
+		this._sortDetails = { columnId, descending };
 		dataProvider.sort({
 			columnId,
 			direction: descending ? 'desc' : 'asc'
@@ -111,7 +99,7 @@ export default class LeGrid extends LeGridBase<GridProperties> implements Themea
 	}
 
 	onPaginationRequest(pageNumber: string): void {
-		const { properties: { dataProvider }, paginationDetails: { dataRangeCount } } = this;
+		const { properties: { dataProvider }, _paginationDetails: { dataRangeCount } } = this;
 		const dataRangeStart = (parseInt(pageNumber, 10) - 1) * dataRangeCount;
 
 		dataProvider.fetch({
@@ -119,16 +107,16 @@ export default class LeGrid extends LeGridBase<GridProperties> implements Themea
 			count: dataRangeCount
 		});
 
-		this.paginationDetails = { dataRangeStart, dataRangeCount };
+		this._paginationDetails = { dataRangeStart, dataRangeCount };
 	}
 
-	render(): DNode {
-		const { paginationDetails, sortDetails, data: { items, totalCount }, properties: { dataProvider, columns }, registry } = this;
+	public render(): DNode {
+		const { _paginationDetails, _sortDetails, data: { items, totalCount }, properties: { dataProvider, columns }, registry } = this;
 
 		return v('div', { classes: this.classes(css.grid).get(), role: 'grid' }, [
-			w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
+			w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), _sortDetails, columns } ),
 			w('grid-body', { registry, dataProvider, columns, items } ),
-			w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, paginationDetails } )
+			w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, _paginationDetails } )
 		]);
 	}
 }

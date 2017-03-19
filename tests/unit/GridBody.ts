@@ -18,14 +18,17 @@ let mockRegistry: FactoryRegistry;
 registerSuite({
 	name: 'GridBody',
 	beforeEach() {
-		widgetBaseSpy = spy(WidgetBase);
-		getStub = stub().withArgs('grid-row').returns(widgetBaseSpy);
+		widgetBaseSpy = spy(WidgetBase.prototype, 'setProperties');
+		getStub = stub().withArgs('grid-row').returns(WidgetBase);
 		mockRegistry = <any> {
 			get: getStub,
 			has() {
 				return true;
 			}
 		};
+	},
+	afterEach() {
+		widgetBaseSpy.restore();
 	},
 	'render with items'() {
 		const dataProvider = new ArrayDataProvider<any>([{ id: 'id', foo: 'bar' }]);
@@ -38,7 +41,8 @@ registerSuite({
 			]
 		};
 
-		const row = new GridBody(properties);
+		const row = new GridBody();
+		row.setProperties(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -47,8 +51,8 @@ registerSuite({
 		assert.equal(vnode.children![0].vnodeSelector, 'div');
 		assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
 		assert.lengthOf(vnode.children![0].children, 1);
-		assert.isTrue(widgetBaseSpy.calledOnce);
-		const args = widgetBaseSpy.getCall(0).args[0];
+		assert.isTrue(widgetBaseSpy.calledTwice);
+		const args = widgetBaseSpy.getCall(1).args[0];
 
 		assert.deepEqual(args.key, 'id');
 		assert.deepEqual(args.id, 'id');
@@ -67,20 +71,17 @@ registerSuite({
 			]
 		};
 
-		const row = new GridBody(properties);
-		const promise = new Promise((resolve) => setTimeout(resolve, 10));
+		const row = new GridBody();
+		row.setProperties(properties);
+		const vnode = <VNode> row.__render__();
 
-		return promise.then(() => {
-			const vnode = <VNode> row.__render__();
-
-			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
-			assert.lengthOf(vnode.children, 1);
-			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
-			assert.lengthOf(vnode.children![0].children, 0);
-			assert.isTrue(widgetBaseSpy.notCalled);
-		});
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
+		assert.lengthOf(vnode.children, 1);
+		assert.equal(vnode.children![0].vnodeSelector, 'div');
+		assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
+		assert.lengthOf(vnode.children![0].children, 0);
+		assert.isTrue(widgetBaseSpy.calledOnce);
 	},
 	'render with immutable items'() {
 		const dataProvider = new ArrayDataProvider();
@@ -95,24 +96,21 @@ registerSuite({
 			]
 		};
 
-		const row = new GridBody(properties);
-		const promise = new Promise((resolve) => setTimeout(resolve, 10));
+		const row = new GridBody();
+		row.setProperties(properties);
+		const vnode = <VNode> row.__render__();
 
-		return promise.then(() => {
-			const vnode = <VNode> row.__render__();
+		assert.strictEqual(vnode.vnodeSelector, 'div');
+		assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
+		assert.lengthOf(vnode.children, 1);
+		assert.equal(vnode.children![0].vnodeSelector, 'div');
+		assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
+		assert.lengthOf(vnode.children![0].children, 1);
+		const args = widgetBaseSpy.getCall(1).args[0];
 
-			assert.strictEqual(vnode.vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.scroller], vnode.properties!.classes));
-			assert.lengthOf(vnode.children, 1);
-			assert.equal(vnode.children![0].vnodeSelector, 'div');
-			assert.isTrue(assertAppliedClasses([css.content], vnode.children![0].properties!.classes));
-			assert.lengthOf(vnode.children![0].children, 1);
-			const args = widgetBaseSpy.getCall(0).args[0];
-
-			assert.deepEqual(args.key, 'id');
-			assert.deepEqual(args.id, 'id');
-			assert.deepEqual(args.item, item);
-			assert.deepEqual(args.registry, mockRegistry);
-		});
+		assert.deepEqual(args.key, 'id');
+		assert.deepEqual(args.id, 'id');
+		assert.deepEqual(args.item, item);
+		assert.deepEqual(args.registry, mockRegistry);
 	}
 });

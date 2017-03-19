@@ -9,7 +9,8 @@ registerSuite({
 	name: 'GridCell',
 	render: {
 		'data property used as cell text node'() {
-			const cell = new GridCell({ data: 'Hello, World!' });
+			const cell = new GridCell();
+			cell.setProperties({ data: 'Hello, World!' });
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
@@ -20,7 +21,8 @@ registerSuite({
 			const renderer = (value: any) => {
 				return value.replace('World', 'Dojo');
 			};
-			const cell = new GridCell({ data: 'Hello, World!', renderer });
+			const cell = new GridCell();
+			cell.setProperties({ data: 'Hello, World!', renderer });
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
@@ -28,7 +30,7 @@ registerSuite({
 			assert.strictEqual(vnode.text, 'Hello, Dojo!');
 		},
 		'null is returned when no data property'() {
-			const cell = new GridCell(<any> {});
+			const cell = new GridCell();
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');
@@ -36,7 +38,8 @@ registerSuite({
 			assert.isUndefined(vnode.text);
 		},
 		'cell data is stringified'() {
-			const cell = new GridCell({ data: <any> 1234 });
+			const cell = new GridCell();
+			cell.setProperties({ data: <any> 1234 });
 
 			const vnode = <VNode> cell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'td');

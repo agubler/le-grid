@@ -54,7 +54,7 @@ export default class StoreDataProvider<T extends BaseItem> implements DataProvid
 		let filteredStore;
 
 		if (sort) {
-			filteredStore = store.sort(createSort([ sort.columnId ], [ sort.direction === 'desc' ]));
+			filteredStore = store.sort(createSort<T>([ sort.columnId ], [ sort.direction === 'desc' ]));
 		}
 
 		if (size) {

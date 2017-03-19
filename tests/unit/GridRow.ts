@@ -18,14 +18,17 @@ let mockRegistry: FactoryRegistry;
 registerSuite({
 	name: 'GridRow',
 	beforeEach() {
-		widgetBaseSpy = spy(WidgetBase);
-		getStub = stub().withArgs('grid-cell').returns(widgetBaseSpy);
+		widgetBaseSpy = spy(WidgetBase.prototype, 'setProperties');
+		getStub = stub().withArgs('grid-cell').returns(WidgetBase);
 		mockRegistry = <any> {
 			get: getStub,
 			has() {
 				return true;
 			}
 		};
+	},
+	afterEach() {
+		widgetBaseSpy.restore();
 	},
 	render() {
 		const renderer = (value: string) => { return value; };
@@ -40,7 +43,8 @@ registerSuite({
 			]
 		};
 
-		const row = new GridRow(properties);
+		const row = new GridRow();
+		row.setProperties(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -52,14 +56,14 @@ registerSuite({
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
-		assert.isTrue(widgetBaseSpy.calledTwice);
+		assert.isTrue(widgetBaseSpy.calledThrice);
 
-		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
+		const callOneArgs = widgetBaseSpy.getCall(1).args[0];
 		assert.deepEqual(callOneArgs.key, 'foo');
 		assert.deepEqual(callOneArgs.data, 'bar');
 		assert.isUndefined(callOneArgs.renderer);
 
-		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
+		const callTwoArgs = widgetBaseSpy.getCall(2).args[0];
 		assert.deepEqual(callTwoArgs.key, 'bar');
 		assert.deepEqual(callTwoArgs.data, 'foo');
 		assert.isFunction(callTwoArgs.renderer);
@@ -76,7 +80,8 @@ registerSuite({
 			]
 		};
 
-		const row = new GridRow(properties);
+		const row = new GridRow();
+		row.setProperties(properties);
 		const vnode = <VNode> row.__render__();
 
 		assert.strictEqual(vnode.vnodeSelector, 'div');
@@ -88,13 +93,13 @@ registerSuite({
 		assert.lengthOf(vnode.children![0].children, 1);
 		assert.strictEqual(vnode.children![0].children![0].vnodeSelector, 'tr');
 		assert.lengthOf(vnode.children![0].children![0].children, 2);
-		assert.isTrue(widgetBaseSpy.calledTwice);
+		assert.isTrue(widgetBaseSpy.calledThrice);
 
-		const callOneArgs = widgetBaseSpy.getCall(0).args[0];
+		const callOneArgs = widgetBaseSpy.getCall(1).args[0];
 		assert.deepEqual(callOneArgs.key, 'foo');
 		assert.deepEqual(callOneArgs.data, 'bar');
 
-		const callTwoArgs = widgetBaseSpy.getCall(1).args[0];
+		const callTwoArgs = widgetBaseSpy.getCall(2).args[0];
 		assert.deepEqual(callTwoArgs.key, 'bar');
 		assert.deepEqual(callTwoArgs.data, 'foo');
 	},
@@ -106,9 +111,10 @@ registerSuite({
 			item: { id: 'id', foo: 'bar', bar: 'foo' },
 			columns: <any> undefined
 		};
-		const row = new GridRow(properties);
+		const row = new GridRow();
+		row.setProperties(properties);
 
 		row.__render__();
-		assert.isTrue(widgetBaseSpy.notCalled);
+		assert.isTrue(widgetBaseSpy.calledOnce);
 	}
 });

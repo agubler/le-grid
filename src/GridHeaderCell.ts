@@ -1,6 +1,6 @@
 import { WidgetBase } from '@dojo/widget-core/WidgetBase';
 import { WidgetProperties } from '@dojo/widget-core/interfaces';
-import { ThemeableMixinInterface, ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
+import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import { Column, SortDetails } from './LeGrid';
@@ -20,7 +20,7 @@ export interface GridHeaderProperties extends ThemeableProperties, WidgetPropert
 export const GridHeaderCellBase = ThemeableMixin(WidgetBase);
 
 @theme(css)
-export default class GridHeaderCell extends GridHeaderCellBase<GridHeaderProperties> implements ThemeableMixinInterface {
+export default class GridHeaderCell extends GridHeaderCellBase<GridHeaderProperties> {
 	onSortRequest(event: MouseEvent): void {
 		const { id, sortDetails: { descending = false } = {} } = this.properties;
 		this.properties.onSortRequest && this.properties.onSortRequest(id, !descending);

@@ -92,7 +92,8 @@ class Button extends ProjectorMixin(WidgetBase)<any> {
 	}
 }
 
-const paginatedStoreGrid = new (ProjectorMixin(LeGrid))({
+const paginatedStoreGrid = new (ProjectorMixin(LeGrid));
+paginatedStoreGrid.setProperties({
 	dataProvider: storeDataProviderPaginated,
 	pagination: {
 		itemsPerPage: 10
@@ -100,12 +101,14 @@ const paginatedStoreGrid = new (ProjectorMixin(LeGrid))({
 	columns
 });
 
-const storeGrid = new (ProjectorMixin(LeGrid))({
+const storeGrid = new (ProjectorMixin(LeGrid));
+storeGrid.setProperties({
 	dataProvider: storeDataProvider,
 	columns
 });
 
-const storeButton = new Button({ dataProvider: storeDataProvider, grid: storeGrid });
+const storeButton = new Button();
+storeButton.setProperties({ dataProvider: storeDataProvider, grid: storeGrid });
 
 storeButton.append(root);
 storeGrid.append(root);
@@ -113,7 +116,8 @@ paginatedStoreGrid.append(root);
 
 const arrayGridRoot = document.getElementsByTagName('array-data-grid')[0];
 
-const paginatedArrayGrid = new (ProjectorMixin(LeGrid))({
+const paginatedArrayGrid = new (ProjectorMixin(LeGrid));
+paginatedArrayGrid.setProperties({
 	dataProvider: arrayDataProviderPaginated,
 	pagination: {
 		itemsPerPage: 10
@@ -121,12 +125,14 @@ const paginatedArrayGrid = new (ProjectorMixin(LeGrid))({
 	columns
 });
 
-const arrayGrid = new (ProjectorMixin(LeGrid))({
+const arrayGrid = new (ProjectorMixin(LeGrid));
+arrayGrid.setProperties({
 	dataProvider: arrayDataProvider,
 	columns
 });
 
-const arrayButton = new Button({ root: arrayGridRoot, dataProvider: arrayDataProvider, grid: arrayGrid });
+const arrayButton = new Button();
+arrayButton.setProperties({ root: arrayGridRoot, dataProvider: arrayDataProvider, grid: arrayGrid });
 
 arrayButton.append(arrayGridRoot);
 arrayGrid.append(arrayGridRoot);

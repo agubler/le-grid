@@ -20,7 +20,8 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = new GridHeaderCell(properties);
+			const headerCell = new GridHeaderCell();
+			headerCell.setProperties(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			assert.strictEqual(vnode.vnodeSelector, 'th');
@@ -42,7 +43,8 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = new GridHeaderCell(properties);
+			const headerCell = new GridHeaderCell();
+			headerCell.setProperties(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
@@ -71,7 +73,8 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = new GridHeaderCell(properties);
+			const headerCell = new GridHeaderCell();
+			headerCell.setProperties(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
@@ -103,7 +106,8 @@ registerSuite({
 				},
 				id: 'id'
 			};
-			const headerCell = new GridHeaderCell(properties);
+			const headerCell = new GridHeaderCell();
+			headerCell.setProperties(properties);
 
 			const vnode = <VNode> headerCell.__render__();
 			vnode.properties!.onclick!.call(headerCell);
