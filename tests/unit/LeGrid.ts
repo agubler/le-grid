@@ -150,7 +150,7 @@ registerSuite({
 
 		headerProperties = headerSetPropertiesSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
-		assert.deepEqual(headerProperties._sortDetails, { columnId: 'foo', descending: true });
+		assert.deepEqual(headerProperties.sortDetails, { columnId: 'foo', descending: true });
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
 
 		assert.isTrue(bodySpy.calledOnce);
@@ -166,7 +166,7 @@ registerSuite({
 
 		headerProperties = headerSetPropertiesSpy.getCall(0).args[0];
 		assert.strictEqual(headerProperties.registry, mockRegistry);
-		assert.deepEqual(headerProperties._sortDetails, { columnId: 'foo', descending: false });
+		assert.deepEqual(headerProperties.sortDetails, { columnId: 'foo', descending: false });
 		assert.deepEqual(headerProperties.columns, [ { id: 'foo', label: 'foo' } ]);
 
 		assert.isTrue(bodySpy.calledOnce);
@@ -200,7 +200,7 @@ registerSuite({
 		let footerProperties = footerSetPropertiesSpy.getCall(0).args[0];
 
 		assert.strictEqual(footerProperties.totalCount, 0);
-		assert.deepEqual(footerProperties._paginationDetails, { dataRangeStart: 0, dataRangeCount: 10 });
+		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 0, dataRangeCount: 10 });
 
 		createSpies();
 
@@ -214,7 +214,7 @@ registerSuite({
 		assert.isTrue(footerSpy.calledOnce);
 		footerProperties = footerSetPropertiesSpy.getCall(0).args[0];
 		assert.strictEqual(footerProperties.totalCount, 0);
-		assert.deepEqual(footerProperties._paginationDetails, { dataRangeStart: 10, dataRangeCount: 10 });
+		assert.deepEqual(footerProperties.paginationDetails, { dataRangeStart: 10, dataRangeCount: 10 });
 	},
 	'custom cell applied on property change'() {
 		const properties = {

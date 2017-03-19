@@ -111,12 +111,12 @@ export default class LeGrid extends LeGridBase<GridProperties> {
 	}
 
 	public render(): DNode {
-		const { _paginationDetails, _sortDetails, data: { items, totalCount }, properties: { dataProvider, columns }, registry } = this;
+		const { _paginationDetails: paginationDetails, _sortDetails: sortDetails, data: { items, totalCount }, properties: { dataProvider, columns }, registry } = this;
 
 		return v('div', { classes: this.classes(css.grid).get(), role: 'grid' }, [
-			w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), _sortDetails, columns } ),
+			w('grid-header', { registry, onSortRequest: this.onSortRequest.bind(this), sortDetails, columns } ),
 			w('grid-body', { registry, dataProvider, columns, items } ),
-			w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, _paginationDetails } )
+			w('grid-footer', { onPaginationRequest: this.onPaginationRequest.bind(this), totalCount, paginationDetails } )
 		]);
 	}
 }
