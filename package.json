@@ -1,6 +1,6 @@
 {
   "name": "le-grid",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Reactive grid in Dojo 2",
   "main": "createGrid.js",
   "scripts": {
@@ -29,7 +29,6 @@
   "devDependencies": {
     "@dojo/cli-build-webpack": "^2.0.0-alpha.10",
     "@dojo/interfaces": "2.0.0-alpha.11",
-    "@dojo/loader": "^2.0.0-beta.9",
     "@dojo/loader": "2.0.0-beta.9",
     "@types/chai": "~3.4.34",
     "@types/glob": "~5.0.0",
