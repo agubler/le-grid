@@ -9,7 +9,7 @@ import { Map as ImmutableMap } from 'immutable';
 import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import GridRow from '../../src/GridRow';
-import * as css from '../../src/styles/gridRow.css';
+import * as css from '../../src/styles/gridRow.m.css';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;

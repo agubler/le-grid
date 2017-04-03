@@ -4,7 +4,7 @@ import { VNode } from '@dojo/interfaces/vdom';
 import GridHeaderCell from '../../src/GridHeaderCell';
 import { assertAppliedClasses } from './../support/classHelper';
 
-import * as css from '../../src/styles/gridHeaderCell.css';
+import * as css from '../../src/styles/gridHeaderCell.m.css';
 
 registerSuite({
 	name: 'GridHeaderCell',

@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { VNode } from '@dojo/interfaces/vdom';
 import GridCell from '../../src/GridCell';
 import { assertAppliedClasses } from './../support/classHelper';
-import * as css from '../../src/styles/gridCell.css';
+import * as css from '../../src/styles/gridCell.m.css';
 
 registerSuite({
 	name: 'GridCell',

@@ -1,8 +1,8 @@
-import * as gridTheme from '../../src/styles/grid.css';
-import * as gridFooter from '../../src/styles/gridFooter.css';
-import * as gridCell from '../../src/styles/gridCell.css';
-import * as gridHeaderCell from '../../src/styles/gridHeaderCell.css';
-import * as gridRow from '../../src/styles/gridRow.css';
+import * as gridTheme from '../../src/styles/grid.m.css';
+import * as gridFooter from '../../src/styles/gridFooter.m.css';
+import * as gridCell from '../../src/styles/gridCell.m.css';
+import * as gridHeaderCell from '../../src/styles/gridHeaderCell.m.css';
+import * as gridRow from '../../src/styles/gridRow.m.css';
 import Promise from '@dojo/shim/Promise';
 
 export default class Page {

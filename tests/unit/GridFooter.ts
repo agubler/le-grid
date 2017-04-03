@@ -4,7 +4,7 @@ import { VNode } from '@dojo/interfaces/vdom';
 import GridFooter from '../../src/GridFooter';
 import { assertAppliedClasses } from './../support/classHelper';
 
-import * as css from '../../src/styles/gridFooter.css';
+import * as css from '../../src/styles/gridFooter.m.css';
 
 registerSuite({
 	name: 'GridFooter',

@@ -7,7 +7,7 @@ import WidgetBase from '@dojo/widget-core/WidgetBase';
 
 import { assertAppliedClasses } from './../support/classHelper';
 import GridHeader from '../../src/GridHeader';
-import * as css from '../../src/styles/gridHeader.css';
+import * as css from '../../src/styles/gridHeader.m.css';
 
 let widgetBaseSpy: SinonSpy;
 let getStub: SinonStub;

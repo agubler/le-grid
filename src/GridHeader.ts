@@ -6,7 +6,7 @@ import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mi
 import { DNode } from '@dojo/widget-core/interfaces';
 import { Column, SortDetails } from './LeGrid';
 
-import * as css from './styles/gridHeader.css';
+import * as css from './styles/gridHeader.m.css';
 
 export interface GridHeaderProperties extends WidgetProperties, ThemeableProperties, RegistryMixinProperties {
 	onSortRequest(columnId: string, descending: boolean): void;

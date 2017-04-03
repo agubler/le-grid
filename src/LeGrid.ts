@@ -14,7 +14,7 @@ import GridHeader from './GridHeader';
 import GridHeaderCell from './GridHeaderCell';
 import GridFooter from './GridFooter';
 
-import * as css from './styles/grid.css';
+import * as css from './styles/grid.m.css';
 
 function createRegistry(props: any) {
 	const { customCell } = props;
@@ -74,7 +74,7 @@ export default class LeGrid extends LeGridBase<GridProperties> {
 
 	private _paginationDetails: PaginationDetails = { dataRangeStart: 0, dataRangeCount: Infinity };
 
-	@onPropertiesChanged
+	@onPropertiesChanged()
 	protected onPropertiesChanged(evt: PropertiesChangeEvent<LeGrid, GridProperties>) {
 		const { dataProvider, pagination = { itemsPerPage: Infinity } } = evt.properties;
 

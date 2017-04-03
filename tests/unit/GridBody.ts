@@ -8,7 +8,7 @@ import WidgetBase from '@dojo/widget-core/WidgetBase';
 import { assertAppliedClasses } from './../support/classHelper';
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import GridBody from '../../src/GridBody';
-import * as css from '../../src/styles/gridBody.css';
+import * as css from '../../src/styles/gridBody.m.css';
 import { Map as ImmutableMap } from 'immutable';
 
 let widgetBaseSpy: SinonSpy;

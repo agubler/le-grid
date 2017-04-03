@@ -4,7 +4,7 @@ import { v } from '@dojo/widget-core/d';
 import { ThemeableMixin, ThemeableProperties, theme } from '@dojo/widget-core/mixins/Themeable';
 import { DNode } from '@dojo/widget-core/interfaces';
 
-import * as css from './styles/gridCell.css';
+import * as css from './styles/gridCell.m.css';
 
 export interface GridCellProperties extends WidgetProperties, ThemeableProperties {
 	data: any;

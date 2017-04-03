@@ -6,7 +6,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import { v, w } from '@dojo/widget-core/d';
 import { Column } from './LeGrid';
 
-import * as css from './styles/gridRow.css';
+import * as css from './styles/gridRow.m.css';
 
 export interface GridRowProperties extends WidgetProperties, RegistryMixinProperties, ThemeableProperties {
 	columns: Column[];

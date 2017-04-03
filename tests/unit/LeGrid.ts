@@ -8,7 +8,7 @@ import WidgetBase from '@dojo/widget-core/WidgetBase';
 
 import ArrayDataProvider from './../../src/providers/ArrayDataProvider';
 import LeGrid from '../../src/LeGrid';
-import * as css from '../../src/styles/grid.css';
+import * as css from '../../src/styles/grid.m.css';
 
 let headerSpy: SinonSpy;
 let headerSetPropertiesSpy: SinonSpy;

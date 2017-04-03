@@ -5,7 +5,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import { Column, SortDetails } from './LeGrid';
 
-import * as css from './styles/gridHeaderCell.css';
+import * as css from './styles/gridHeaderCell.m.css';
 
 export interface GridHeaderProperties extends ThemeableProperties, WidgetProperties {
 	onSortRequest(columnId: string, descending: boolean): void;

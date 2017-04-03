@@ -5,7 +5,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import { v } from '@dojo/widget-core/d';
 import { PaginationDetails }  from './LeGrid';
 
-import * as css from './styles/gridFooter.css';
+import * as css from './styles/gridFooter.m.css';
 
 export interface GridFooterProperties extends WidgetProperties, ThemeableProperties {
 	onPaginationRequest(pageNumber: string): void;
