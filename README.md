@@ -33,17 +33,31 @@ yarn add le-grid --save
 ### Usage
 
 ```ts
-createGrid.mixin(createProjectorMixin)({
-	properties: {
-		dataProvider: new ArrayDataProvider([{ id: '1', value: 'one' }, { id: '2', value: 'two' }]),
-		columns: [{
-            id: 'value',
-		    field: 'value',
-    		label: 'Value',
-    		sortable: true
-		}]
-	}
-}).append();
+import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
+import LeGrid from 'le-grid/LeGrid';
+import ArrayDataProvider from 'le-grid/providers/ArrayDataProvider';
+
+const dataProvider = new ArrayDataProvider([
+	{ id: '1', value: 'one' }, 
+	{ id: '2', value: 'two' }
+]);
+
+const columns = [{
+	id: 'value',
+	field: 'value',
+   label: 'Value',
+   sortable: true
+}];
+
+const Grid = ProjectorMixin(LeGrid);
+const grid = new Grid();
+
+grid.setProperties({
+	dataProvider,
+	columns
+});
+
+grid.append();
 ```
 
 More usage examples can be [found here](https://github.com/agubler/le-grid/blob/master/src/examples/main.ts)
