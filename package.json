@@ -16,20 +16,18 @@
   "license": "MIT",
   "author": "Anthony Gubler",
   "dependencies": {
-    "@dojo/core": "beta1",
-    "@dojo/compose": "beta1",
-    "@dojo/has": "beta1",
-    "@dojo/i18n": "beta1",
-    "@dojo/shim": "beta1",
-    "@dojo/stores": "^2.0.0-alpha.11",
-    "@dojo/widget-core": "beta1",
-    "immutable": "3.8.1",
-    "maquette": "2.4.3"
+    "@dojo/core": "next",
+    "@dojo/compose": "next",
+    "@dojo/has": "next",
+    "@dojo/i18n": "next",
+    "@dojo/shim": "next",
+    "@dojo/widget-core": "next",
+    "immutable": "3.8.1"
   },
   "devDependencies": {
-    "@dojo/cli-build-webpack": "beta1",
-    "@dojo/interfaces": "beta1",
-    "@dojo/loader": "beta1",
+    "@dojo/cli-build-webpack": "next",
+    "@dojo/interfaces": "next",
+    "@dojo/loader": "next",
     "@types/chai": "~3.4.34",
     "@types/glob": "~5.0.0",
     "@types/grunt": "~0.4.0",
@@ -38,9 +36,9 @@
     "@types/sinon": "~1.16.31",
     "chai": "~3.5.0",
     "grunt": "^1.0.1",
-    "grunt-dojo2": "beta1",
+    "grunt-dojo2": "latest",
     "intern": "^3.4.1",
     "sinon": "^1.17.7",
-    "typescript": "~2.2.2"
+    "typescript": "~2.4.2"
   }
 }
