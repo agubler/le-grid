@@ -5,8 +5,8 @@ import diffProperty from '@dojo/widget-core/decorators/diffProperty';
 import { reference } from '@dojo/widget-core/diff';
 import { Store } from '@dojo/stores/Store';
 
-import { Fetcher, ColumnConfig } from './../interfaces';
-import { fetcherProcess } from './../processes';
+import { Fetcher, ColumnConfig } from './interfaces';
+import { fetcherProcess } from './processes';
 
 import Header from './Header';
 import Body from './Body';
@@ -62,7 +62,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 			this._fetcher(1);
 		}
 
-		return v('div', { key: 'root', classes: css.grid }, [
+		return v('div', { key: 'root', classes: css.root }, [
 			w(Header, { columnConfig }),
 			w(Body, { data, meta, blockSize, rowHeight, columnConfig, fetcher: this._fetcher, block: this._block })
 		]);

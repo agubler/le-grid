@@ -2,7 +2,7 @@ import WidgetBase from '@dojo/widget-core/WidgetBase';
 import { v, w } from '@dojo/widget-core/d';
 
 import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
-import { ColumnConfig } from './../interfaces';
+import { ColumnConfig } from './interfaces';
 
 import Cell from './Cell';
 import * as css from './Row.m.css';
@@ -10,10 +10,9 @@ import { DNode } from '@dojo/widget-core/interfaces';
 
 export interface RowProperties {
 	item: { [index: string]: any } | false;
+	height: number;
 	columnConfig: ColumnConfig[];
 	updater?: Function;
-	error?: any;
-	height: number;
 }
 
 @theme(css)
@@ -23,7 +22,7 @@ export default class Row extends ThemedMixin(WidgetBase)<RowProperties> {
 	}
 
 	protected render(): DNode {
-		const { height, item, columnConfig, error } = this.properties;
+		const { height, item, columnConfig } = this.properties;
 		if (item === false) {
 			return v('div', { styles: { height: `${height}px` }, classes: [css.root] }, ['loading']);
 		}
@@ -36,9 +35,9 @@ export default class Row extends ThemedMixin(WidgetBase)<RowProperties> {
 				cols.push(w(Cell, { key: config.id, value, updater: this._updater }));
 				return cols;
 			},
-			[] as any[]
+			[] as DNode[]
 		);
 
-		return v('div', { styles: { height: `${height}px` }, classes: [css.root, error ? css.error : null] }, columns);
+		return v('div', { styles: { height: `${height}px` }, classes: css.root }, columns);
 	}
 }

@@ -1,1 +1,1 @@
-export * from './widgets/grid';
+export * from './Grid';

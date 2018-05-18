@@ -2,10 +2,10 @@ import WidgetBase from '@dojo/widget-core/WidgetBase';
 import { v, w } from '@dojo/widget-core/d';
 import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
 import Dimensions from '@dojo/widget-core/meta/Dimensions';
-import { ColumnConfig, FetcherMeta } from './../interfaces';
+import { ColumnConfig, FetcherMeta } from './interfaces';
 
 import Row from './Row';
-import * as css from './styles/Body.m.css';
+import * as css from './Body.m.css';
 import { DNode } from '@dojo/widget-core/interfaces';
 
 export interface BodyProperties<S> {

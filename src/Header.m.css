@@ -1,0 +1,15 @@
+.root {
+	overflow-y: scroll;
+	border-top: 1px solid #ddd;
+}
+
+.cell {
+	flex: 1 100%;
+	border: 1px solid #ddd;
+	border-top-style: none;
+	border-right-style: none;
+}
+
+.row {
+	display: flex;
+}
