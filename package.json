@@ -2,8 +2,9 @@
   "name": "le-grid",
   "version": "0.0.13-pre",
   "description": "Reactive grid in Dojo 2",
-  "main": "createGrid.js",
   "scripts": {
+    "precommit": "lint-staged",
+    "prettier": "prettier --write 'src/**/*.ts*' 'tests/**/*.ts*'",
     "test": "grunt test"
   },
   "repository": {
@@ -16,29 +17,47 @@
   "license": "MIT",
   "author": "Anthony Gubler",
   "dependencies": {
-    "@dojo/core": "next",
-    "@dojo/compose": "next",
-    "@dojo/has": "next",
-    "@dojo/i18n": "next",
-    "@dojo/shim": "next",
-    "@dojo/widget-core": "next",
-    "immutable": "3.8.1"
+    "@dojo/core": "^2.0.0",
+    "@dojo/has": "^2.0.0",
+    "@dojo/shim": "^2.0.0",
+    "@dojo/i18n": "^2.0.0",
+    "@dojo/widget-core": "^2.0.0",
+    "@dojo/routing": "^2.0.0",
+    "@dojo/stores": "^2.0.0",
+    "@dojo/widgets": "^2.0.0",
+    "tslib": "~1.8.1"
   },
   "devDependencies": {
-    "@dojo/cli-build-webpack": "next",
-    "@dojo/interfaces": "next",
-    "@dojo/loader": "next",
-    "@types/chai": "~3.4.34",
+    "@dojo/cli-build-app": "^2.0.0",
+    "@dojo/test-extras": "^2.0.0",
     "@types/glob": "~5.0.0",
     "@types/grunt": "~0.4.0",
-    "@types/immutable": "~3.8.7",
-    "@types/node": "~6.0.46",
-    "@types/sinon": "~1.16.31",
+    "@types/node": "^6.0.46",
+    "@types/sinon": "^1.16.35",
     "chai": "~3.5.0",
     "grunt": "^1.0.1",
     "grunt-dojo2": "latest",
-    "intern": "^3.4.1",
+    "grunt-tslint": "5.0.1",
     "sinon": "^1.17.7",
-    "typescript": "~2.4.2"
+    "intern": "~4.1.5",
+    "typescript": "~2.6.1",
+    "husky": "0.14.3",
+    "lint-staged": "6.0.0",
+    "tslint": "5.2.0",
+    "prettier": "1.9.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 4,
+    "useTabs": true,
+    "parser": "typescript",
+    "printWidth": 120,
+    "arrowParens": "always"
   }
 }

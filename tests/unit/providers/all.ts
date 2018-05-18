@@ -1,2 +1,0 @@
-import './ArrayDataProvider';
-import './StoreDataProvider';
