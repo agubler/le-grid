@@ -3,6 +3,7 @@
   "version": "0.0.13-pre",
   "description": "Reactive grid in Dojo 2",
   "scripts": {
+    "build-app": "dojo build",
     "precommit": "lint-staged",
     "prettier": "prettier --write 'src/**/*.ts*' 'tests/**/*.ts*'",
     "test": "grunt test"
@@ -28,6 +29,7 @@
     "tslib": "~1.8.1"
   },
   "devDependencies": {
+    "@dojo/cli": "^2.0.0",
     "@dojo/cli-build-app": "^2.0.0",
     "@dojo/test-extras": "^2.0.0",
     "@types/execa": "^0.9.0",

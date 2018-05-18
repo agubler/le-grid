@@ -63,7 +63,6 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 
 		let rows: any[] = [v('div', { key: 'prev', styles: { height: `${previousBlockHeight}px` } })];
 		if (isLoading) {
-			console.log('show loading', 'previous', previousBlockHeight, 'next', nextBlockHeight);
 			for (let i = 0; i < this._renderedRowCount; i++) {
 				rows.push(
 					w(Row, {
@@ -75,7 +74,6 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 				);
 			}
 		} else {
-			console.log('show real', 'previous', previousBlockHeight, 'next', nextBlockHeight);
 			for (let i = 0; i < data.length; i++) {
 				rows.push(
 					w(Row, {

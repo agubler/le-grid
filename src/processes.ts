@@ -12,7 +12,6 @@ const fetcherCommand = commandFactory<{ fetcher: Fetcher; block: number }>(
 	async ({ path, get, payload: { fetcher, block } }) => {
 		let result: FetcherResult;
 		try {
-			console.log('loading', block);
 			result = await fetcher(block, 150);
 		} catch (error) {
 			return [
@@ -21,11 +20,9 @@ const fetcherCommand = commandFactory<{ fetcher: Fetcher; block: number }>(
 			];
 		}
 		const loadingPage = get(path('_grid', 'meta', 'page'));
-		console.log('loadingPage', loadingPage, 'page requested', block);
-		if (block === get(path('_grid', 'meta', 'page'))) {
-			console.log('DOING IT', 'loadingPage', loadingPage, 'page requested', block);
+		if (block === loadingPage) {
 			return [
-				replace(path('_grid', 'data', 'items'), result.data),
+				replace(path('_grid', 'data'), result.data),
 				replace(path('_grid', 'meta', 'isLoading'), false),
 				replace(path('_grid', 'meta', 'total'), result.meta.total),
 				replace(path('_grid', 'meta', 'page'), block)
