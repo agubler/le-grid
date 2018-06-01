@@ -61,11 +61,11 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 		const bottomRow = topRow + this._rowsInView;
 		if (topRow <= this._start) {
 			this._start = Math.max(0, topRow - this._renderPageSize);
-			this._end = this._start + this._renderPageSize;
+			this._end = this._start + this._renderPageSize * 2;
 		}
 		if (bottomRow >= this._end) {
 			this._start = Math.min(topRow, totalRows - this._renderPageSize);
-			this._end = this._start + this._renderPageSize;
+			this._end = this._start + this._renderPageSize * 2;
 		}
 		this.invalidate();
 	}
