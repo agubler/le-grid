@@ -1,10 +1,10 @@
 import WidgetBase from '@dojo/widget-core/WidgetBase';
 import { v } from '@dojo/widget-core/d';
 import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
-import { ColumnConfig } from './interfaces';
+import { ColumnConfig } from './../interfaces';
 import { DNode } from '@dojo/widget-core/interfaces';
 
-import * as css from './Header.m.css';
+import * as css from './styles/Header.m.css';
 
 export interface HeaderProperties {
 	columnConfig: ColumnConfig[];

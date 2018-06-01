@@ -1,35 +1,34 @@
-import { createProcess, createCommandFactory } from '@dojo/stores/process';
-import { replace } from '@dojo/stores/state/operations';
-import { Fetcher, FetcherResult } from './interfaces';
+import { createProcess, createCommandFactory, Process } from '@dojo/stores/process';
+import { replace, remove } from '@dojo/stores/state/operations';
+import { FetcherResult, GridState, FetcherCommandPayload, PageChangeCommandPayload } from './interfaces';
 
-const commandFactory = createCommandFactory<any>();
+const commandFactory = createCommandFactory<GridState>();
 
-const startFetcherCommand = commandFactory(({ path, get, payload: { block } }) => {
-	return [replace(path('_grid', 'meta', 'isLoading'), true), replace(path('_grid', 'meta', 'page'), block)];
+const pageChangeCommand = commandFactory<PageChangeCommandPayload>(({ path, get, payload: { id, page } }) => {
+	const currentPage = get(path(id, 'meta', 'page'));
+	if (page !== currentPage) {
+		return [replace(path(id, 'meta', 'page'), page)];
+	}
+	return [];
 });
 
-const fetcherCommand = commandFactory<{ fetcher: Fetcher; block: number }>(
-	async ({ path, get, payload: { fetcher, block } }) => {
+const fetcherCommand = commandFactory<FetcherCommandPayload>(
+	async ({ at, path, get, payload: { id, fetcher, page, pageSize } }) => {
 		let result: FetcherResult;
 		try {
-			result = await fetcher(block, 150);
+			result = await fetcher(page, pageSize);
 		} catch (error) {
-			return [
-				replace(path('_grid', 'meta', 'hasError'), true),
-				replace(path('_grid', 'meta', 'message'), error.message)
-			];
+			return [remove(path(id, 'data', 'pages', `page-${page}`))];
 		}
-		const loadingPage = get(path('_grid', 'meta', 'page'));
-		if (block === loadingPage) {
-			return [
-				replace(path('_grid', 'data'), result.data),
-				replace(path('_grid', 'meta', 'isLoading'), false),
-				replace(path('_grid', 'meta', 'total'), result.meta.total),
-				replace(path('_grid', 'meta', 'page'), block)
-			];
-		}
-		return [];
+		return [
+			replace(path(id, 'data', 'pages', `page-${page}`), result.data),
+			replace(path(id, 'meta', 'total'), result.meta.total)
+		];
 	}
 );
 
-export const fetcherProcess = createProcess('grid-fetch', [startFetcherCommand, fetcherCommand]);
+export const fetcherProcess: Process<GridState, FetcherCommandPayload> = createProcess('grid-fetch', [fetcherCommand]);
+
+export const pageChangeProcess: Process<GridState, PageChangeCommandPayload> = createProcess('grid-page-change', [
+	pageChangeCommand
+]);

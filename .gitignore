@@ -2,12 +2,11 @@
 *.js.map
 !/*.js
 !/tasks/*.js
-/_build
-/bower_components
+/_build/
+output
 /dist
 /html-report
 node_modules/
-/typings
 .baseDir.ts
 .tscache
 .vscode

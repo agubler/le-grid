@@ -11,11 +11,43 @@ export interface FetcherResult<S = any> {
 }
 
 export interface Fetcher<S = any> {
-	(page: number, size: number): Promise<FetcherResult<S>>;
+	(offset: number, size: number): Promise<FetcherResult<S>>;
 }
 
 export interface ColumnConfig {
 	id: string;
 	title: string | (() => DNode);
 	renderer?: (props: any) => DNode;
+}
+
+export interface PageChangeCommandPayload {
+	page: number;
+	id: string;
+}
+
+export interface FetcherCommandPayload {
+	fetcher: Fetcher;
+	page: number;
+	pageSize: number;
+	id: string;
+}
+
+export interface GridPages {
+	[index: string]: any[];
+}
+
+export interface GridMeta {
+	page: number;
+	total: number;
+}
+
+export interface GridData {
+	pages: GridPages;
+}
+
+export interface GridState {
+	[index: string]: {
+		meta: GridMeta;
+		data: GridData;
+	};
 }

@@ -6,7 +6,12 @@
     "build-app": "dojo build",
     "precommit": "lint-staged",
     "prettier": "prettier --write 'src/**/*.ts*' 'tests/**/*.ts*'",
-    "test": "grunt test"
+	"test": "grunt test",
+	"examples": "npm run examples:package && npm run examples:install && npm run examples:build",
+	"examples:package": "shx rm -rf dist && grunt dist && grunt release-publish-flat --dry-run && shx mv dist/le-grid-* dist/le-grid.tgz",
+	"examples:install": "cd examples && shx rm -rf node_modules/le-grid && npm install && cd ..",
+	"examples:build": "cd examples && npm run build && cd ..",
+	"examples:watch": "cd examples && npm run watch"
   },
   "repository": {
     "type": "git",
@@ -47,6 +52,7 @@
     "lint-staged": "6.0.0",
     "load-grunt-tasks": "^4.0.0",
     "prettier": "1.9.2",
+    "shx": "^0.2.2",
     "sinon": "^1.17.7",
     "ts-node": "^6.0.3",
     "tslint": "5.2.0",
