@@ -15,9 +15,10 @@ export interface FooterProperties {
 export default class Footer extends ThemedMixin(WidgetBase)<FooterProperties> {
 	protected render(): DNode {
 		const { total, page, pageSize } = this.properties;
-		const footer = total
-			? `Page ${page} of ${Math.ceil(total / pageSize)}. Total rows ${total}`
-			: `Page ${page} of ?`;
+		const footer =
+			total !== undefined
+				? `Page ${page} of ${Math.ceil(total / pageSize)}. Total rows ${total}`
+				: `Page ${page} of ?`;
 		return v('div', { classes: css.root }, [footer]);
 	}
 }

@@ -6,8 +6,8 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import { reference } from '@dojo/widget-core/diff';
 import { Store } from '@dojo/stores/Store';
 
-import { Fetcher, ColumnConfig } from './../interfaces';
-import { fetcherProcess, pageChangeProcess } from './../processes';
+import { Fetcher, ColumnConfig, GridState } from './../interfaces';
+import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess } from './../processes';
 
 import Header from './Header';
 import Body from './Body';
@@ -24,7 +24,7 @@ export interface LeGridProperties<S> {
 
 @theme(css)
 export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>> {
-	private _store: Store = new Store<S>();
+	private _store = new Store<GridState<S>>();
 
 	constructor() {
 		super();
@@ -48,6 +48,16 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 		fetcherProcess(this._store)({ id, fetcher, page, pageSize });
 	}
 
+	private _sorter(columnId: string, direction: 'asc' | 'desc') {
+		const { id, fetcher } = this._getProperties();
+		sortProcess(this._store)({ id, fetcher, columnId, direction });
+	}
+
+	private _filterer(columnId: string, value: any) {
+		const { id, fetcher } = this._getProperties();
+		filterProcess(this._store)({ id, fetcher, columnId, value });
+	}
+
 	private _pageChange(page: number) {
 		const { id } = this._getProperties();
 		pageChangeProcess(this._store)({ id, page });
@@ -59,7 +69,13 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 		const { columnConfig, pageSize } = this._getProperties();
 
 		return v('div', { key: 'root', classes: css.root }, [
-			w(Header, { columnConfig }),
+			w(Header, {
+				columnConfig,
+				sorter: this._sorter,
+				sort: meta.sort,
+				filter: meta.filter,
+				filterer: this._filterer
+			}),
 			w(Body, {
 				pages,
 				totalRows: meta.total,

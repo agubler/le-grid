@@ -5,20 +5,22 @@ import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
 import { DNode } from '@dojo/widget-core/interfaces';
 
-import { GridPages } from './../interfaces';
+import { GridPages, ColumnConfig } from './../interfaces';
 import PlaceholderRow from './PlaceholderRow';
 import Row from './Row';
 
 import * as css from './styles/Body.m.css';
+import { diffProperty } from '@dojo/widget-core/decorators/diffProperty';
+import { auto } from '@dojo/widget-core/diff';
 
-export interface BodyProperties {
+export interface BodyProperties<S> {
 	placeholderRowRenderer?: (index: number) => DNode;
 	totalRows: number;
 	pageSize: number;
-	pages: GridPages;
+	pages: GridPages<S>;
 	fetcher: (page: number, pageSize: number) => void;
 	pageChange: (page: number) => void;
-	columnConfig: any;
+	columnConfig: ColumnConfig[];
 }
 
 const offscreen = (dnode: DNode) => {
@@ -46,13 +48,14 @@ const defaultPlaceholderRowRenderer = (index: number) => {
 };
 
 @theme(css)
-export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
+export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> {
 	private _rowHeight: number;
 	private _viewportHeight: number;
 	private _rowsInView: number;
 	private _renderPageSize: number;
 	private _start = 0;
 	private _end = 100;
+	private _resetScroll = false;
 
 	private _onScroll(event: UIEvent) {
 		const { totalRows } = this.properties;
@@ -61,13 +64,20 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 		const bottomRow = topRow + this._rowsInView;
 		if (topRow <= this._start) {
 			this._start = Math.max(0, topRow - this._renderPageSize);
-			this._end = this._start + this._renderPageSize * 2;
+			this._end = Math.min(totalRows, this._start + this._renderPageSize * 2);
 		}
 		if (bottomRow >= this._end) {
 			this._start = Math.min(topRow, totalRows - this._renderPageSize);
-			this._end = this._start + this._renderPageSize * 2;
+			this._end = Math.min(totalRows, this._start + this._renderPageSize * 2);
 		}
 		this.invalidate();
+	}
+
+	@diffProperty('totalRows', auto)
+	protected _onDiffTotalRows() {
+		this._start = 0;
+		this._end = 100;
+		this._resetScroll = true;
 	}
 
 	private _renderRows(start: number, end: number) {
@@ -77,7 +87,8 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 			pages,
 			columnConfig,
 			placeholderRowRenderer = defaultPlaceholderRowRenderer,
-			pageChange
+			pageChange,
+			totalRows
 		} = this.properties;
 
 		const startPage = Math.max(Math.ceil(start / pageSize), 1);
@@ -85,7 +96,7 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 
 		let data = pages[`page-${startPage}`] || [];
 
-		if (!data.length) {
+		if (!data.length && (totalRows === undefined || totalRows > 0)) {
 			fetcher(startPage, pageSize);
 		}
 
@@ -114,7 +125,9 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 					})
 				);
 			} else {
-				rows.push(placeholderRowRenderer(i));
+				if ((i > -1 && i < totalRows) || totalRows === undefined) {
+					rows.push(placeholderRowRenderer(i));
+				}
 			}
 		}
 
@@ -122,7 +135,7 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 	}
 
 	protected render(): DNode {
-		const { placeholderRowRenderer = defaultPlaceholderRowRenderer, totalRows } = this.properties;
+		const { placeholderRowRenderer = defaultPlaceholderRowRenderer, totalRows, pageSize } = this.properties;
 
 		if (!this._rowHeight) {
 			const firstRow = placeholderRowRenderer(0);
@@ -135,26 +148,32 @@ export default class Body extends ThemedMixin(WidgetBase)<BodyProperties> {
 
 		const rows = this._renderRows(this._start, this._end);
 		const topPaddingHeight = this._rowHeight * this._start;
-		const bottomPaddingHeight =
-			totalRows * this._rowHeight - topPaddingHeight - (this._end - this._start) * this._rowHeight;
+		let bottomPaddingHeight = 0;
+		if (totalRows >= pageSize) {
+			bottomPaddingHeight =
+				totalRows * this._rowHeight - topPaddingHeight - (this._end - this._start) * this._rowHeight;
+		}
 
-		return v(
-			'div',
-			{
-				classes: css.root,
-				styles: {
-					height: `${this._viewportHeight}px`
-				},
-				onscroll: this._onScroll
+		let containerProperties: any = {
+			classes: css.root,
+			styles: {
+				height: `${this._viewportHeight}px`
 			},
-			[
-				v('div', { key: 'top', styles: { height: `${topPaddingHeight}px` } }),
-				...rows,
-				v('div', {
-					key: 'bottom',
-					styles: { height: `${bottomPaddingHeight}px` }
-				})
-			]
-		);
+			onscroll: this._onScroll
+		};
+
+		if (this._resetScroll) {
+			this._resetScroll = false;
+			containerProperties = { ...containerProperties, scrollTop: 0 };
+		}
+
+		return v('div', containerProperties, [
+			v('div', { key: 'top', styles: { height: `${topPaddingHeight}px` } }),
+			...rows,
+			v('div', {
+				key: 'bottom',
+				styles: { height: `${bottomPaddingHeight}px` }
+			})
+		]);
 	}
 }

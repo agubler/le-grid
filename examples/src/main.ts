@@ -22,22 +22,48 @@ const columnConfig: ColumnConfig[] = [
 	},
 	{
 		id: 'firstName',
-		title: 'First Name'
+		title: 'First Name',
+		sortable: true,
+		filterable: true
 	},
 	{
 		id: 'lastName',
-		title: 'Last Name'
+		title: 'Last Name',
+		sortable: true,
+		filterable: true
 	}
 ];
 
 const store = new Store();
-const data = createData(2000);
+const data = createData(20000);
 
-async function fetcher(page: number, pageSize: number) {
-	const block = [...data].splice((page - 1) * pageSize, pageSize);
+async function fetcher(page: number, pageSize: number, options?: any) {
+	let copiedData = [...data];
+	const { sort, filter } = options;
+	if (Object.keys(filter).length > 0) {
+		copiedData = copiedData.filter((item) => {
+			return item[filter.columnId].indexOf(filter.value) > -1;
+		});
+	}
+
+	if (Object.keys(sort).length > 0) {
+		copiedData.sort((a, b) => {
+			const left = sort.direction === 'asc' ? a : b;
+			const right = sort.direction === 'asc' ? b : a;
+			if (left[sort.columnId] < right[sort.columnId]) {
+				return 1;
+			}
+			if (left[sort.columnId] > right[sort.columnId]) {
+				return -1;
+			}
+			return 0;
+		});
+	}
+
+	const block = [...copiedData].splice((page - 1) * pageSize, pageSize);
 	const promise = new Promise<FetcherResult>((resolve) => {
 		setTimeout(() => {
-			resolve({ data: block, meta: { total: data.length } } as any);
+			resolve({ data: block, meta: { total: copiedData.length } } as any);
 		}, 300);
 	});
 	return promise;
