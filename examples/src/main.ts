@@ -24,18 +24,20 @@ const columnConfig: ColumnConfig[] = [
 		id: 'firstName',
 		title: 'First Name',
 		sortable: true,
+		editable: true,
 		filterable: true
 	},
 	{
 		id: 'lastName',
 		title: 'Last Name',
 		sortable: true,
+		editable: true,
 		filterable: true
 	}
 ];
 
 const store = new Store();
-const data = createData(20000);
+let data = createData(20000);
 
 async function fetcher(page: number, pageSize: number, options?: any) {
 	let copiedData = [...data];
@@ -69,9 +71,28 @@ async function fetcher(page: number, pageSize: number, options?: any) {
 	return promise;
 }
 
+async function updater(updatedItem: any) {
+	const shouldFail = Math.random() > 0.5;
+	if (shouldFail) {
+		const promise = new Promise<any>((resolve, reject) => {
+			setTimeout(() => {
+				reject();
+			}, 300);
+		});
+		return promise;
+	}
+	data = data.map((item) => {
+		if (item.id === updatedItem.id) {
+			return updatedItem;
+		}
+		return item;
+	});
+}
+
 const Projector = ProjectorMixin(Grid);
 const projector = new Projector();
 projector.setProperties({
+	updater,
 	columnConfig,
 	fetcher,
 	store,

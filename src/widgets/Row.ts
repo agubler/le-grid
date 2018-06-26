@@ -11,6 +11,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 export interface RowProperties {
 	item: { [index: string]: any };
 	columnConfig: ColumnConfig[];
+	updater: Function;
 }
 
 @theme(css)
@@ -23,7 +24,15 @@ export default class Row extends ThemedMixin(WidgetBase)<RowProperties> {
 				if (config.renderer) {
 					value = config.renderer({ value });
 				}
-				return w(Cell, { key: config.id, value });
+				return w(Cell, {
+					key: config.id,
+					updater: (updatedValue: string) => {
+						this.properties.updater(this.properties.key, config.id, updatedValue);
+					},
+					value,
+					editable: config.editable,
+					rawValue: `${item[config.id]}`
+				});
 			},
 			[] as DNode[]
 		);

@@ -46,6 +46,7 @@ export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 						v('div', headerProperties, [title]),
 						column.filterable
 							? v('input', {
+									classes: css.filter,
 									oninput: (event: KeyboardEvent) => {
 										const target = event.target as HTMLInputElement;
 										filterer(column.id, target.value);

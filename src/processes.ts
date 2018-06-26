@@ -6,7 +6,8 @@ import {
 	FetcherCommandPayload,
 	PageChangeCommandPayload,
 	SortCommandPayload,
-	FilterCommandPayload
+	FilterCommandPayload,
+	UpdaterCommandPayload
 } from './interfaces';
 
 const commandFactory = createCommandFactory<GridState>();
@@ -42,49 +43,44 @@ const fetcherCommand = commandFactory<FetcherCommandPayload>(
 	}
 );
 
-const clearDataCommand = commandFactory<SortCommandPayload>(
-	({ at, path, get, payload: { id, columnId, direction } }) => {
-		return [
-			remove(path(id, 'data', 'pages')),
-			replace(path(id, 'meta', 'sort', 'columnId'), columnId),
-			replace(path(id, 'meta', 'sort', 'direction'), direction),
-			replace(path(id, 'meta', 'isSorting'), true)
-		];
-	}
-);
+const preSortCommand = commandFactory<SortCommandPayload>(({ at, path, get, payload: { id, columnId, direction } }) => {
+	return [
+		remove(path(id, 'data', 'pages')),
+		replace(path(id, 'meta', 'sort', 'columnId'), columnId),
+		replace(path(id, 'meta', 'sort', 'direction'), direction),
+		replace(path(id, 'meta', 'isSorting'), true)
+	];
+});
 
-const clearFilterDataCommand = commandFactory<FilterCommandPayload>(
-	({ at, path, get, payload: { id, columnId, value } }) => {
-		return [
-			remove(path(id, 'data', 'pages')),
-			replace(path(id, 'meta', 'filter', 'columnId'), columnId),
-			replace(path(id, 'meta', 'filter', 'value'), value),
-			replace(path(id, 'meta', 'page'), 1),
-			replace(path(id, 'meta', 'isSorting'), true)
-		];
-	}
-);
+const preFilterCommand = commandFactory<FilterCommandPayload>(({ at, path, get, payload: { id, columnId, value } }) => {
+	return [
+		remove(path(id, 'data', 'pages')),
+		replace(path(id, 'meta', 'filter', 'columnId'), columnId),
+		replace(path(id, 'meta', 'filter', 'value'), value),
+		replace(path(id, 'meta', 'page'), 1),
+		replace(path(id, 'meta', 'isSorting'), true)
+	];
+});
 
 const sortCommand = commandFactory<SortCommandPayload>(
 	async ({ at, path, get, payload: { id, fetcher, columnId, direction } }) => {
 		const page = get(path(id, 'meta', 'page'));
 		const pageSize = get(path(id, 'meta', 'pageSize'));
 		const filterOptions = get(path(id, 'meta', 'filter')) || {};
-		let result: FetcherResult[];
+		let result: FetcherResult;
 		try {
-			result = await Promise.all([
-				fetcher(page - 1, pageSize, { sort: { columnId, direction }, filter: filterOptions }),
-				fetcher(page, pageSize, { sort: { columnId, direction }, filter: filterOptions })
-			]);
+			result = await fetcher(page - 1, pageSize * 2, { sort: { columnId, direction }, filter: filterOptions });
 		} catch {
 			return [];
 		}
+		const previousPage = result.data.slice(0, pageSize);
+		const currentPage = result.data.slice(pageSize);
 		return [
-			replace(path(id, 'data', 'pages', `page-${page}`), result[1].data),
-			replace(path(id, 'data', 'pages', `page-${page - 1}`), result[0].data),
+			replace(path(id, 'data', 'pages', `page-${page - 1}`), previousPage),
+			replace(path(id, 'data', 'pages', `page-${page}`), currentPage),
 			replace(path(id, 'meta', 'sort', 'columnId'), columnId),
 			replace(path(id, 'meta', 'sort', 'direction'), direction),
-			replace(path(id, 'meta', 'total'), result[1].meta.total),
+			replace(path(id, 'meta', 'total'), result.meta.total),
 			replace(path(id, 'meta', 'page'), 1),
 			replace(path(id, 'meta', 'isSorting'), false)
 		];
@@ -116,13 +112,45 @@ const filterCommand = commandFactory<FilterCommandPayload>(
 	}
 );
 
+const preUpdateCommand = commandFactory<UpdaterCommandPayload>(
+	({ at, path, get, payload: { id, updater, columnId, value, page, rowNumber } }) => {
+		const item = get(at(path(id, 'data', 'pages', `page-${page}`), rowNumber));
+		const updatedItem = { ...item, [columnId]: value };
+
+		return [
+			replace(at(path(id, 'data', 'pages', `page-${page}`), rowNumber), updatedItem),
+			replace(path(id, 'meta', 'editedRow', 'page'), page),
+			replace(path(id, 'meta', 'editedRow', 'index'), rowNumber),
+			replace(path(id, 'meta', 'editedRow', 'item'), { ...item })
+		];
+	}
+);
+
+const updaterCommand = commandFactory<UpdaterCommandPayload>(
+	async ({ at, path, get, payload: { id, updater, columnId, value, page, rowNumber } }) => {
+		const item = get(at(path(id, 'data', 'pages', `page-${page}`), rowNumber));
+		try {
+			await updater(item);
+		} catch {
+			const previousItem = get(path(id, 'meta', 'editedRow', 'item'));
+			return [replace(at(path(id, 'data', 'pages', `page-${page}`), rowNumber), previousItem)];
+		}
+
+		return [replace(path(id, 'meta', 'editedRow'), undefined)];
+	}
+);
+
+export const updaterProcess: Process<GridState, UpdaterCommandPayload> = createProcess('grid-update', [
+	preUpdateCommand,
+	updaterCommand
+]);
 export const fetcherProcess: Process<GridState, FetcherCommandPayload> = createProcess('grid-fetch', [fetcherCommand]);
 export const filterProcess: Process<GridState, FilterCommandPayload> = createProcess('grid-filter', [
-	clearFilterDataCommand,
+	preFilterCommand,
 	filterCommand
 ]);
 export const sortProcess: Process<GridState, SortCommandPayload> = createProcess('grid-sort', [
-	clearDataCommand,
+	preSortCommand,
 	sortCommand
 ]);
 export const pageChangeProcess: Process<GridState, PageChangeCommandPayload> = createProcess('grid-page-change', [

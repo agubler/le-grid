@@ -11,7 +11,7 @@ import Row from './Row';
 
 import * as css from './styles/Body.m.css';
 import { diffProperty } from '@dojo/widget-core/decorators/diffProperty';
-import { auto } from '@dojo/widget-core/diff';
+import { auto, reference } from '@dojo/widget-core/diff';
 
 export interface BodyProperties<S> {
 	placeholderRowRenderer?: (index: number) => DNode;
@@ -19,6 +19,7 @@ export interface BodyProperties<S> {
 	pageSize: number;
 	pages: GridPages<S>;
 	fetcher: (page: number, pageSize: number) => void;
+	updater: Function;
 	pageChange: (page: number) => void;
 	columnConfig: ColumnConfig[];
 }
@@ -48,6 +49,7 @@ const defaultPlaceholderRowRenderer = (index: number) => {
 };
 
 @theme(css)
+@diffProperty('pages', reference)
 export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> {
 	private _rowHeight: number;
 	private _viewportHeight: number;
@@ -56,6 +58,12 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 	private _start = 0;
 	private _end = 100;
 	private _resetScroll = false;
+
+	private _updater(rowNumber: number, columnId: string, value: any) {
+		const page = Math.max(Math.ceil(rowNumber / this.properties.pageSize), 1);
+		const pageItemNumber = rowNumber - (page - 1) * this.properties.pageSize;
+		this.properties.updater(page, pageItemNumber, columnId, value);
+	}
 
 	private _onScroll(event: UIEvent) {
 		const { totalRows } = this.properties;
@@ -121,7 +129,8 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 					w(Row, {
 						key: i,
 						item,
-						columnConfig
+						columnConfig,
+						updater: this._updater
 					})
 				);
 			} else {

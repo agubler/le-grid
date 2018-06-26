@@ -34,6 +34,7 @@ export interface ColumnConfig {
 	title: string | (() => DNode);
 	filterable?: boolean;
 	sortable?: boolean;
+	editable?: boolean;
 	renderer?: (props: any) => DNode;
 }
 
@@ -63,17 +64,33 @@ export interface FilterCommandPayload {
 	value: any;
 }
 
+export interface UpdaterCommandPayload {
+	updater: any;
+	page: number;
+	id: string;
+	value: any;
+	columnId: string;
+	rowNumber: number;
+}
+
 export interface GridPages<S> {
 	[index: string]: S[];
 }
 
-export interface GridMeta {
+export interface GridEditedRow<S> {
+	page: number;
+	index: number;
+	item: S;
+}
+
+export interface GridMeta<S> {
 	page: number;
 	total: number;
 	pageSize: number;
 	sort: SortOptions;
 	filter: FilterOptions;
 	isSorting: boolean;
+	editedRow: GridEditedRow<S>;
 }
 
 export interface GridData<S> {

@@ -7,7 +7,7 @@ import { reference } from '@dojo/widget-core/diff';
 import { Store } from '@dojo/stores/Store';
 
 import { Fetcher, ColumnConfig, GridState } from './../interfaces';
-import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess } from './../processes';
+import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess, updaterProcess } from './../processes';
 
 import Header from './Header';
 import Body from './Body';
@@ -17,6 +17,7 @@ import * as css from './styles/Grid.m.css';
 export interface LeGridProperties<S> {
 	columnConfig: ColumnConfig[];
 	fetcher: Fetcher<S>;
+	updater: Function;
 	store?: Store<S>;
 	id?: string;
 	pageSize?: number;
@@ -25,22 +26,25 @@ export interface LeGridProperties<S> {
 @theme(css)
 export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>> {
 	private _store = new Store<GridState<S>>();
+	private _handle: any;
 
 	constructor() {
 		super();
-		this._store.onChange(this._store.path('_grid'), this.invalidate.bind(this));
+		this._handle = this._store.onChange(this._store.path('_grid'), this.invalidate.bind(this));
 	}
 
 	@diffProperty('store', reference)
 	protected onStoreProperty(previous: any, current: any) {
-		this._store.destroy();
+		this._handle.remove();
 		this._store = current.store;
-		this._store.onChange(this._store.path('_grid'), this.invalidate.bind(this));
+		this._handle = this._store.onChange(this._store.path('_grid'), () => {
+			this.invalidate();
+		});
 	}
 
 	private _getProperties() {
-		const { columnConfig, id = '_grid', pageSize = 100, fetcher } = this.properties;
-		return { columnConfig, id, fetcher, pageSize };
+		const { id = '_grid', pageSize = 100 } = this.properties;
+		return { ...this.properties, id, pageSize };
 	}
 
 	private _fetcher(page: number, pageSize: number) {
@@ -56,6 +60,11 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 	private _filterer(columnId: string, value: any) {
 		const { id, fetcher } = this._getProperties();
 		filterProcess(this._store)({ id, fetcher, columnId, value });
+	}
+
+	private _updater(page: number, rowNumber: number, columnId: string, value: string) {
+		const { id, updater } = this._getProperties();
+		updaterProcess(this._store)({ id, page, columnId, rowNumber, value, updater });
 	}
 
 	private _pageChange(page: number) {
@@ -82,7 +91,8 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 				pageSize,
 				columnConfig,
 				fetcher: this._fetcher,
-				pageChange: this._pageChange
+				pageChange: this._pageChange,
+				updater: this._updater
 			}),
 			w(Footer, {
 				total: meta.total,
