@@ -8,15 +8,15 @@
 	padding: var(--cell-padding);
 	align-items: center;
 	min-width: 100px;
-  }
+}
 
-  .input {
-	  outline: none;
-	  background: var(--header-background-color);
-	  font-family: var(--font-family);
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		font-weight: 200;
-	  font-size: var(--font-size);
-	  color: var(--header-color);
-  }
+.input {
+	outline: none;
+	background: var(--header-background-color);
+	font-family: var(--font-family);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-weight: 200;
+	font-size: var(--font-size);
+	color: var(--header-color);
+}

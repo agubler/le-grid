@@ -5,7 +5,7 @@
   "scripts": {
     "build-app": "dojo build",
     "precommit": "lint-staged",
-    "prettier": "prettier --write 'src/**/*.ts*' 'tests/**/*.ts*' 'examples/**/*.ts*'",
+    "prettier": "prettier --write 'src/**/*.ts*' 'src/**/*.css*' 'tests/**/*.ts*' 'examples/**/*.ts*'",
     "test": "grunt test",
     "examples": "npm run examples:package && npm run examples:install && npm run examples:watch",
     "examples:package": "shx rm -rf dist && grunt dist && grunt release-publish-flat --dry-run && shx mv dist/le-grid-* dist/le-grid.tgz",
@@ -68,7 +68,6 @@
     "singleQuote": true,
     "tabWidth": 4,
     "useTabs": true,
-    "parser": "typescript",
     "printWidth": 120,
     "arrowParens": "always"
   }

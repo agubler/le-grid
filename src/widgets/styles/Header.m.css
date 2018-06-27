@@ -6,9 +6,9 @@
 	border-bottom: 1px solid var(--border-color);
 	background: var(--header-background-color);
 	color: var(--header-color);
-  }
+}
 
-  .cell {
+.cell {
 	flex: 1 100%;
 	border: 1px solid var(--border-color);
 	border-top-style: none;
@@ -22,31 +22,31 @@
 	justify-content: space-between;
 	user-select: none;
 	min-width: 100px;
-  }
+}
 
-  .sortable {
+.sortable {
 	cursor: pointer;
-  }
+}
 
-  .row {
+.row {
 	display: flex;
-  }
+}
 
-  .sorted {
+.sorted {
 	color: var(--sort-color);
-  }
+}
 
-  .sorted.desc:after {
-	content: "▼";
+.sorted.desc:after {
+	content: '▼';
 	margin-left: 4px;
-  }
+}
 
-  .sorted.asc:after {
-	content: "▲";
+.sorted.asc:after {
+	content: '▲';
 	margin-left: 4px;
-  }
+}
 
-  .filter {
+.filter {
 	margin-top: 4px;
 	width: 100%;
 	box-sizing: border-box;
@@ -58,4 +58,4 @@
 	font-size: var(--font-size);
 	color: var(--header-color);
 	padding: 2px 4px;
-  }
+}
