@@ -12,13 +12,14 @@ export interface HeaderProperties {
 	filterer: (columnId: string, value: any) => void;
 	filter?: FilterOptions;
 	sort?: SortOptions;
+	scrollLeft: number;
 }
 
 @theme(css)
 export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 	protected render(): DNode {
-		const { columnConfig, sorter, sort, filterer } = this.properties;
-		return v('div', { classes: css.root }, [
+		const { columnConfig, sorter, sort, filterer, scrollLeft, filter } = this.properties;
+		return v('div', { scrollLeft, classes: css.root }, [
 			v(
 				'div',
 				{ classes: css.row },
@@ -32,7 +33,12 @@ export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 					let headerProperties = {};
 					if (column.sortable) {
 						headerProperties = {
-							classes: [sort && sort.columnId === column.id ? css.sorted : null],
+							classes: [
+								column.sortable ? css.sortable : null,
+								sort && sort.columnId === column.id ? css.sorted : null,
+								sort && sort.columnId === column.id && sort.direction === 'desc' ? css.desc : null,
+								sort && sort.columnId === column.id && sort.direction === 'asc' ? css.asc : null
+							],
 							onclick: () => {
 								const direction = sort
 									? sort.columnId !== column.id ? 'desc' : sort.direction === 'desc' ? 'asc' : 'desc'
@@ -47,6 +53,7 @@ export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 						column.filterable
 							? v('input', {
 									classes: css.filter,
+									value: filter && filter.columnId === column.id ? filter.value : '',
 									oninput: (event: KeyboardEvent) => {
 										const target = event.target as HTMLInputElement;
 										filterer(column.id, target.value);

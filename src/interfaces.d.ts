@@ -99,7 +99,7 @@ export interface GridData<S> {
 
 export interface GridState<S = any> {
 	[index: string]: {
-		meta: GridMeta;
+		meta: GridMeta<S>;
 		data: GridData<S>;
 	};
 }

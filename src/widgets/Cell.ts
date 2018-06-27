@@ -52,7 +52,7 @@ export default class Cell extends ThemedMixin(WidgetBase)<CellProperties> {
 		let { value } = this.properties;
 		if (this._editing) {
 			return v('input', {
-				classes: css.root,
+				classes: [css.root, css.input],
 				focus: true,
 				value: this._editingValue,
 				oninput: this._onInput,

@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .root {
 	height: 30px;
 	line-height: 30px;
@@ -12,9 +14,9 @@
 	margin: 6px;
 	width: 12px;
 	height: 12px;
-	border: 3px solid rgba(0, 0, 0, 0.2);
+	border: 3px solid var(--header-background-color);
 	border-radius: 50%;
-	border-top-color: black;
+	border-top-color: var(--header-color);
 	animation: spin 1s ease-in-out infinite;
 	will-change: auto;
 }

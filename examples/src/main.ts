@@ -1,6 +1,5 @@
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
 import { Store } from '@dojo/stores/Store';
-import { v } from '@dojo/widget-core/d';
 import { ColumnConfig, FetcherResult } from 'le-grid/interfaces';
 import Grid from 'le-grid';
 import { createData } from './data';
@@ -8,17 +7,11 @@ import { createData } from './data';
 const columnConfig: ColumnConfig[] = [
 	{
 		id: 'id',
-		title: 'Id',
-		renderer: (data) => {
-			return v('div', { styles: { color: 'red' } }, [`${data.value}`]);
-		}
+		title: 'Id'
 	},
 	{
 		id: 'title',
-		title: 'Title',
-		renderer: (data) => {
-			return v('span', [v('input', { type: 'checkbox' }), data.value]);
-		}
+		title: 'Title'
 	},
 	{
 		id: 'firstName',
@@ -42,13 +35,13 @@ let data = createData(20000);
 async function fetcher(page: number, pageSize: number, options?: any) {
 	let copiedData = [...data];
 	const { sort, filter } = options;
-	if (Object.keys(filter).length > 0) {
+	if (filter) {
 		copiedData = copiedData.filter((item) => {
 			return item[filter.columnId].indexOf(filter.value) > -1;
 		});
 	}
 
-	if (Object.keys(sort).length > 0) {
+	if (sort) {
 		copiedData.sort((a, b) => {
 			const left = sort.direction === 'asc' ? a : b;
 			const right = sort.direction === 'asc' ? b : a;

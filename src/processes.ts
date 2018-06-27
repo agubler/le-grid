@@ -25,8 +25,8 @@ const fetcherCommand = commandFactory<FetcherCommandPayload>(
 		let result: FetcherResult;
 		const isSorting = get(path(id, 'meta', 'isSorting')) || false;
 		if (!isSorting) {
-			const sortOptions = get(path(id, 'meta', 'sort')) || {};
-			const filterOptions = get(path(id, 'meta', 'filter')) || {};
+			const sortOptions = get(path(id, 'meta', 'sort'));
+			const filterOptions = get(path(id, 'meta', 'filter'));
 			try {
 				result = await fetcher(page, pageSize, { sort: sortOptions, filter: filterOptions });
 			} catch (error) {
@@ -66,11 +66,11 @@ const sortCommand = commandFactory<SortCommandPayload>(
 	async ({ at, path, get, payload: { id, fetcher, columnId, direction } }) => {
 		const page = get(path(id, 'meta', 'page'));
 		const pageSize = get(path(id, 'meta', 'pageSize'));
-		const filterOptions = get(path(id, 'meta', 'filter')) || {};
+		const filterOptions = get(path(id, 'meta', 'filter'));
 		let result: FetcherResult;
 		try {
 			result = await fetcher(page - 1, pageSize * 2, { sort: { columnId, direction }, filter: filterOptions });
-		} catch {
+		} catch (err) {
 			return [];
 		}
 		const previousPage = result.data.slice(0, pageSize);
@@ -90,14 +90,14 @@ const sortCommand = commandFactory<SortCommandPayload>(
 const filterCommand = commandFactory<FilterCommandPayload>(
 	async ({ at, path, get, payload: { id, fetcher, columnId, value } }) => {
 		const pageSize = get(path(id, 'meta', 'pageSize'));
-		const sortOptions = get(path(id, 'meta', 'sort')) || {};
+		const sortOptions = get(path(id, 'meta', 'sort'));
 		let result: FetcherResult;
 		try {
 			result = await fetcher(1, pageSize, { sort: sortOptions, filter: { columnId, value } });
-		} catch {
+		} catch (err) {
 			return [];
 		}
-		const filterOptions = get(path(id, 'meta', 'filter')) || {};
+		const filterOptions = get(path(id, 'meta', 'filter'));
 		if (filterOptions.columnId !== columnId || filterOptions.value !== value) {
 			throw new Error();
 		}
@@ -131,7 +131,7 @@ const updaterCommand = commandFactory<UpdaterCommandPayload>(
 		const item = get(at(path(id, 'data', 'pages', `page-${page}`), rowNumber));
 		try {
 			await updater(item);
-		} catch {
+		} catch (err) {
 			const previousItem = get(path(id, 'meta', 'editedRow', 'item'));
 			return [replace(at(path(id, 'data', 'pages', `page-${page}`), rowNumber), previousItem)];
 		}

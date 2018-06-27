@@ -1,5 +1,12 @@
+@import './variables.css';
+
 .root {
-	overflow-y: 'scroll';
-	border-top: '1px solid #ccc';
-	border-bottom: '1px solid #ccc';
-}
+	border-top: 1px solid var(--border-color);
+	border-bottom: 1px solid var(--border-color);
+	background: var(--background-color);
+	font-family: var(--font-family);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-weight: 200;
+	font-size: var(--font-size);
+  }

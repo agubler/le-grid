@@ -14,6 +14,16 @@ import Body from './Body';
 import Footer from './Footer';
 import * as css from './styles/Grid.m.css';
 
+const defaultGridMeta = {
+	page: 1,
+	total: undefined,
+	pageSize: undefined,
+	sort: undefined,
+	filter: undefined,
+	isSorting: false,
+	editedRow: undefined
+};
+
 export interface LeGridProperties<S> {
 	columnConfig: ColumnConfig[];
 	fetcher: Fetcher<S>;
@@ -27,6 +37,7 @@ export interface LeGridProperties<S> {
 export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>> {
 	private _store = new Store<GridState<S>>();
 	private _handle: any;
+	private _scrollLeft = 0;
 
 	constructor() {
 		super();
@@ -72,8 +83,13 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 		pageChangeProcess(this._store)({ id, page });
 	}
 
+	private _onScroll(value: number) {
+		this._scrollLeft = value;
+		this.invalidate();
+	}
+
 	protected render(): DNode {
-		const meta = this._store.get(this._store.path('_grid', 'meta')) || {};
+		const meta = this._store.get(this._store.path('_grid', 'meta')) || defaultGridMeta;
 		const pages = this._store.get(this._store.path('_grid', 'data', 'pages')) || {};
 		const { columnConfig, pageSize } = this._getProperties();
 
@@ -83,7 +99,8 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 				sorter: this._sorter,
 				sort: meta.sort,
 				filter: meta.filter,
-				filterer: this._filterer
+				filterer: this._filterer,
+				scrollLeft: this._scrollLeft
 			}),
 			w(Body, {
 				pages,
@@ -92,7 +109,8 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 				columnConfig,
 				fetcher: this._fetcher,
 				pageChange: this._pageChange,
-				updater: this._updater
+				updater: this._updater,
+				onScroll: this._onScroll
 			}),
 			w(Footer, {
 				total: meta.total,

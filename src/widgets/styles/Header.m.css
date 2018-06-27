@@ -1,24 +1,61 @@
+@import './variables.css';
+
 .root {
 	overflow-y: scroll;
-	border-top: 1px solid #ddd;
-}
+	overflow-x: hidden;
+	border-bottom: 1px solid var(--border-color);
+	background: var(--header-background-color);
+	color: var(--header-color);
+  }
 
-.cell {
+  .cell {
 	flex: 1 100%;
-	border: 1px solid #ddd;
+	border: 1px solid var(--border-color);
 	border-top-style: none;
 	border-right-style: none;
 	border-bottom-style: none;
-}
-
-.row {
+	font-weight: 600;
+	padding: var(--header-padding);
 	display: flex;
-}
+	align-items: center;
+	flex-direction: column;
+	justify-content: space-between;
+	user-select: none;
+	min-width: 100px;
+  }
 
-.sorted {
-	color: red;
-}
+  .sortable {
+	cursor: pointer;
+  }
 
-.filter {
-	width: 98%;
-}
+  .row {
+	display: flex;
+  }
+
+  .sorted {
+	color: var(--sort-color);
+  }
+
+  .sorted.desc:after {
+	content: "▼";
+	margin-left: 4px;
+  }
+
+  .sorted.asc:after {
+	content: "▲";
+	margin-left: 4px;
+  }
+
+  .filter {
+	margin-top: 4px;
+	width: 100%;
+	box-sizing: border-box;
+	outline: none;
+	font-family: var(--font-family);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-weight: 200;
+	font-size: var(--font-size);
+	color: var(--header-color);
+	padding: 2px 4px;
+  }
