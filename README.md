@@ -6,61 +6,72 @@
 
 <img src="https://cdn.rawgit.com/agubler/le-grid/master/docs/Logo-01.svg" width=20%>
 
-A reactive lightweight, customisable grid implementation built using [@dojo/widget-core](https://github/dojo/widget-core) and [@dojo/stores](https://github/dojo/stores).
-
-- [Features](#features)
-- [Usage](#usage)
-    - [Installation](#installation)
-    - [Testing](#testing)
-
-## Features
-
-Supports cell customisation, configurable columns and pagination.
+A reactive lightweight, customizable grid widget built with Dojo 2.
 
 A running example can be seen [here](https://agubler.github.io/le-grid/).
 
-<img src="https://cdn.rawgit.com/agubler/le-grid/master/docs/le-grid.gif">
-
 ### Installation
 
-To use `le-grid`, install using `yarn` or `npm`
+To use `le-grid`, install it from npm.
 
 ```shell
 npm install le-grid --save
-yarn add le-grid --save
 ```
+
+You can then import le-grid in your application as follows:
+
+```ts
+import LeGrid from 'le-grid';
+```
+
+### Features
+
+ * On-demand virtual rendering with supports for large datasets
+ * Backed by [`@dojo/stores`](https://github.com/dojo/stores)
+ * Editable cells
+ * Filtering and Sorting by column
+ * Custom cell renderers
+
+ An example of le-grid can be [found here](https://github.com/agubler/le-grid/blob/master/src/examples/main.ts)
 
 ### Usage
 
 ```ts
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
-import LeGrid from 'le-grid/LeGrid';
-import ArrayDataProvider from 'le-grid/providers/ArrayDataProvider';
+import { createFetcher } from 'le-grid/util';
+import LeGrid from 'le-grid';
 
-const dataProvider = new ArrayDataProvider([
-	{ id: '1', value: 'one' }, 
-	{ id: '2', value: 'two' }
-]);
+const columnConfig = [
+	{
+		id: 'one',
+		title: 'Column One',
+		sortable: true,
+		filterable: true
+	},
+	{
+		id: 'two',
+		title: 'Column Two'
+	}
+];
 
-const columns = [{
-	id: 'value',
-	field: 'value',
-   label: 'Value',
-   sortable: true
-}];
+const gridData: any[] = [
+	{ one: '0', two: '0' },
+	{ one: '1', two: '1' },
+	{ one: '2', two: '2' },
+	{ one: '3', two: '3' },
+	{ one: '4', two: '4' },
+	{ one: '5', two: '5' },
+	{ one: '6', two: '6' }
+];
 
-const Grid = ProjectorMixin(LeGrid);
-const grid = new Grid();
-
-grid.setProperties({
-	dataProvider,
-	columns
+const Projector = ProjectorMixin(LeGrid);
+const projector = new Projector();
+projector.setProperties({
+	columnConfig,
+	fetcher: createFetcher(gridData)
 });
-
-grid.append();
+projector.append();
 ```
-
-More usage examples can be [found here](https://github.com/agubler/le-grid/blob/master/src/examples/main.ts)
 
 ### Testing
 

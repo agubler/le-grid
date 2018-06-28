@@ -68,8 +68,12 @@ const sortCommand = commandFactory<SortCommandPayload>(
 		const pageSize = get(path(id, 'meta', 'pageSize'));
 		const filterOptions = get(path(id, 'meta', 'filter'));
 		let result: FetcherResult;
+		const fetchSize = page === 1 ? pageSize : pageSize * 2;
 		try {
-			result = await fetcher(page - 1, pageSize * 2, { sort: { columnId, direction }, filter: filterOptions });
+			result = await fetcher(Math.max(page - 1, 1), fetchSize, {
+				sort: { columnId, direction },
+				filter: filterOptions
+			});
 		} catch (err) {
 			return [];
 		}

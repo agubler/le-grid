@@ -19,7 +19,7 @@ export interface BodyProperties<S> {
 	pageSize: number;
 	pages: GridPages<S>;
 	fetcher: (page: number, pageSize: number) => void;
-	updater: Function;
+	updater: (page: number, rowNumber: number, columnId: string, value: string) => void;
 	pageChange: (page: number) => void;
 	columnConfig: ColumnConfig[];
 	onScroll: (value: number) => void;
@@ -130,6 +130,7 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 			if (item) {
 				rows.push(
 					w(Row, {
+						id: i,
 						key: i,
 						item,
 						columnConfig,

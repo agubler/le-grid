@@ -6,7 +6,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import { reference } from '@dojo/widget-core/diff';
 import { Store } from '@dojo/stores/Store';
 
-import { Fetcher, ColumnConfig, GridState } from './../interfaces';
+import { Fetcher, ColumnConfig, GridState, Updater, SyncFetcher } from './../interfaces';
 import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess, updaterProcess } from './../processes';
 
 import Header from './Header';
@@ -26,11 +26,10 @@ const defaultGridMeta = {
 
 export interface LeGridProperties<S> {
 	columnConfig: ColumnConfig[];
-	fetcher: Fetcher<S>;
-	updater: Function;
+	fetcher: Fetcher<S> | SyncFetcher<S>;
+	updater?: Updater<S>;
 	store?: Store<S>;
 	id?: string;
-	pageSize?: number;
 }
 
 @theme(css)
@@ -38,6 +37,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 	private _store = new Store<GridState<S>>();
 	private _handle: any;
 	private _scrollLeft = 0;
+	private _pageSize = 100;
 
 	constructor() {
 		super();
@@ -54,8 +54,8 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 	}
 
 	private _getProperties() {
-		const { id = '_grid', pageSize = 100 } = this.properties;
-		return { ...this.properties, id, pageSize };
+		const { id = '_grid' } = this.properties;
+		return { ...this.properties, id };
 	}
 
 	private _fetcher(page: number, pageSize: number) {
@@ -91,7 +91,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 	protected render(): DNode {
 		const meta = this._store.get(this._store.path('_grid', 'meta')) || defaultGridMeta;
 		const pages = this._store.get(this._store.path('_grid', 'data', 'pages')) || {};
-		const { columnConfig, pageSize } = this._getProperties();
+		const { columnConfig } = this._getProperties();
 
 		return v('div', { key: 'root', classes: css.root }, [
 			w(Header, {
@@ -105,7 +105,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 			w(Body, {
 				pages,
 				totalRows: meta.total,
-				pageSize,
+				pageSize: this._pageSize,
 				columnConfig,
 				fetcher: this._fetcher,
 				pageChange: this._pageChange,
@@ -115,7 +115,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 			w(Footer, {
 				total: meta.total,
 				page: meta.page,
-				pageSize
+				pageSize: this._pageSize
 			})
 		]);
 	}

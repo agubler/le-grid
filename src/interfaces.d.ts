@@ -2,7 +2,6 @@ import { DNode } from '@dojo/widget-core/interfaces';
 
 export interface FetcherMeta {
 	total: number;
-	isLoading: boolean;
 }
 
 export interface FetcherResult<S = any> {
@@ -29,6 +28,14 @@ export interface Fetcher<S = any> {
 	(offset: number, size: number, options?: FetcherOptions): Promise<FetcherResult<S>>;
 }
 
+export interface SyncFetcher<S = any> {
+	(offset: number, size: number, options?: FetcherOptions): FetcherResult<S>;
+}
+
+export interface Updater<S = any> {
+	(item: S): void;
+}
+
 export interface ColumnConfig {
 	id: string;
 	title: string | (() => DNode);
@@ -44,7 +51,7 @@ export interface PageChangeCommandPayload {
 }
 
 export interface FetcherCommandPayload {
-	fetcher: Fetcher;
+	fetcher: Fetcher | SyncFetcher;
 	page: number;
 	pageSize: number;
 	id: string;
@@ -52,14 +59,14 @@ export interface FetcherCommandPayload {
 
 export interface SortCommandPayload {
 	id: string;
-	fetcher: Fetcher;
+	fetcher: Fetcher | SyncFetcher;
 	columnId: string;
 	direction: 'asc' | 'desc';
 }
 
 export interface FilterCommandPayload {
 	id: string;
-	fetcher: Fetcher;
+	fetcher: Fetcher | SyncFetcher;
 	columnId: string;
 	value: any;
 }

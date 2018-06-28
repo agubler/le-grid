@@ -1,10 +1,10 @@
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
-import { Store } from '@dojo/stores/Store';
-import { ColumnConfig, FetcherResult } from 'le-grid/interfaces';
 import Grid from 'le-grid';
+import { createFetcher, createUpdater } from 'le-grid/utils';
+
 import { createData } from './data';
 
-const columnConfig: ColumnConfig[] = [
+const columnConfig = [
 	{
 		id: 'id',
 		title: 'Id'
@@ -29,66 +29,15 @@ const columnConfig: ColumnConfig[] = [
 	}
 ];
 
-const store = new Store();
-let data = createData(20000);
-
-async function fetcher(page: number, pageSize: number, options?: any) {
-	let copiedData = [...data];
-	const { sort, filter } = options;
-	if (filter) {
-		copiedData = copiedData.filter((item) => {
-			return item[filter.columnId].indexOf(filter.value) > -1;
-		});
-	}
-
-	if (sort) {
-		copiedData.sort((a, b) => {
-			const left = sort.direction === 'asc' ? a : b;
-			const right = sort.direction === 'asc' ? b : a;
-			if (left[sort.columnId] < right[sort.columnId]) {
-				return 1;
-			}
-			if (left[sort.columnId] > right[sort.columnId]) {
-				return -1;
-			}
-			return 0;
-		});
-	}
-
-	const block = [...copiedData].splice((page - 1) * pageSize, pageSize);
-	const promise = new Promise<FetcherResult>((resolve) => {
-		setTimeout(() => {
-			resolve({ data: block, meta: { total: copiedData.length } } as any);
-		}, 300);
-	});
-	return promise;
-}
-
-async function updater(updatedItem: any) {
-	const shouldFail = Math.random() > 0.5;
-	if (shouldFail) {
-		const promise = new Promise<any>((resolve, reject) => {
-			setTimeout(() => {
-				reject();
-			}, 300);
-		});
-		return promise;
-	}
-	data = data.map((item) => {
-		if (item.id === updatedItem.id) {
-			return updatedItem;
-		}
-		return item;
-	});
-}
+const data = createData(200000);
+const fetcher = createFetcher(data);
+const updater = createUpdater(data);
 
 const Projector = ProjectorMixin(Grid);
 const projector = new Projector();
 projector.setProperties({
-	updater,
 	columnConfig,
 	fetcher,
-	store,
-	pageSize: 100
+	updater
 });
 projector.append();

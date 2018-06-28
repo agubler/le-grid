@@ -9,7 +9,7 @@ export interface CellProperties {
 	value: string | DNode;
 	editable?: boolean;
 	rawValue: string;
-	updater: Function;
+	updater: (value: any) => void;
 }
 
 @theme(css)
