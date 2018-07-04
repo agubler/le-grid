@@ -20,14 +20,14 @@ const columnConfig = [
 		title: 'First Name',
 		sortable: true,
 		editable: true,
-		filterable: false
+		filterable: true
 	},
 	{
 		id: 'lastName',
 		title: 'Last Name',
 		sortable: true,
 		editable: true,
-		filterable: false
+		filterable: true
 	}
 ];
 

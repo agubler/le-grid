@@ -17,7 +17,6 @@ import * as css from './styles/Grid.m.css';
 const defaultGridMeta = {
 	page: 1,
 	total: undefined,
-	pageSize: undefined,
 	sort: undefined,
 	filter: undefined,
 	isSorting: false,
