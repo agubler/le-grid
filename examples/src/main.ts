@@ -67,13 +67,13 @@ const restfulUpdater = async (item: any) => {
 class App extends WidgetBase {
 	render() {
 		return v('div', { styles: { display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' } }, [
-			v('div', [
+			v('div', { key: 'local' }, [
 				v('h1', ['Local Data']),
 				v('div', { key: 'local', styles: { height: '400px', width: '100%' } }, [
 					w(Grid, { columnConfig, fetcher, updater })
 				])
 			]),
-			v('div', [
+			v('div', { key: 'rest' }, [
 				v('h1', ['RESTFUL API Data']),
 				v('div', { key: 'rest', styles: { height: '400px', width: '100%' } }, [
 					w(Grid, { columnConfig, fetcher: restfulFetcher, updater: restfulUpdater })

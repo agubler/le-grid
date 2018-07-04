@@ -6,12 +6,12 @@
 	border-bottom: 1px solid var(--border-color);
 	background: var(--header-background-color);
 	color: var(--header-color);
-	height: 30px;
+	height: 32px;
 	box-sizing: border-box;
 }
 
 .filterGroup {
-	height: 62px;
+	height: 64px;
 }
 
 .cell {

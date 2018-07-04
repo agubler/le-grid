@@ -4,7 +4,6 @@ import { v, w } from '@dojo/widget-core/d';
 import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
 import { DNode, VNodeProperties } from '@dojo/widget-core/interfaces';
-import Dimensions from '@dojo/widget-core/meta/Dimensions';
 
 import { GridPages, ColumnConfig } from './../interfaces';
 import PlaceholderRow from './PlaceholderRow';
@@ -18,6 +17,7 @@ export interface BodyProperties<S> {
 	totalRows: number;
 	pageSize: number;
 	pages: GridPages<S>;
+	height: number;
 	columnConfig: ColumnConfig[];
 	placeholderRowRenderer?: (index: number) => DNode;
 	fetcher: (page: number, pageSize: number) => void;
@@ -153,23 +153,13 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 			placeholderRowRenderer = defaultPlaceholderRowRenderer,
 			totalRows,
 			pageSize,
-			columnConfig
+			columnConfig,
+			height
 		} = this.properties;
-		const containerDimensions = this.meta(Dimensions).get('root');
-		let containerProperties: VNodeProperties = {
-			key: 'root',
-			classes: css.root,
-			role: 'rowgroup',
-			onscroll: this._onScroll
-		};
-
-		if (containerDimensions.size.height === 0) {
-			return v('div', containerProperties);
-		}
 
 		if (!this._rowHeight) {
 			const hasFilters = columnConfig.some((config) => !!config.filterable);
-			this._containerHeight = containerDimensions.size.height - (hasFilters ? 62 : 20) - 20;
+			this._containerHeight = height - (hasFilters ? 64 : 34) - 20;
 			const firstRow = placeholderRowRenderer(0);
 			const dimensions = offscreen(firstRow);
 			this._rowHeight = dimensions.height;
@@ -185,12 +175,19 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 				totalRows * this._rowHeight - topPaddingHeight - (this._end - this._start) * this._rowHeight;
 		}
 
+		let containerProperties: VNodeProperties = {
+			key: 'root',
+			classes: css.root,
+			role: 'rowgroup',
+			onscroll: this._onScroll,
+			styles: { height: `${this._containerHeight}px` }
+		};
+
 		if (this._resetScroll) {
 			this._resetScroll = false;
 			containerProperties = {
 				...containerProperties,
-				scrollTop: 0,
-				styles: { height: `${this._containerHeight}px` }
+				scrollTop: 0
 			};
 		}
 

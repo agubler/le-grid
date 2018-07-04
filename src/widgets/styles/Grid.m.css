@@ -10,4 +10,5 @@
 	font-weight: 200;
 	font-size: var(--font-size);
 	height: 100%;
+	box-sizing: border-box;
 }

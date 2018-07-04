@@ -5,6 +5,7 @@ import diffProperty from '@dojo/widget-core/decorators/diffProperty';
 import { DNode } from '@dojo/widget-core/interfaces';
 import { reference } from '@dojo/widget-core/diff';
 import { Store } from '@dojo/stores/Store';
+import Dimensions from '@dojo/widget-core/meta/Dimensions';
 
 import { Fetcher, ColumnConfig, GridState, Updater } from './../interfaces';
 import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess, updaterProcess } from './../processes';
@@ -91,6 +92,11 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 		const { columnConfig, id } = this._getProperties();
 		const meta = this._store.get(this._store.path(id, 'meta')) || defaultGridMeta;
 		const pages = this._store.get(this._store.path(id, 'data', 'pages')) || {};
+		const containerDimensions = this.meta(Dimensions).get('root');
+
+		if (containerDimensions.size.height === 0) {
+			return v('div', { key: 'root', classes: css.root, role: 'table' });
+		}
 
 		return v('div', { key: 'root', classes: css.root, role: 'table' }, [
 			w(Header, {
@@ -109,7 +115,8 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 				fetcher: this._fetcher,
 				pageChange: this._pageChange,
 				updater: this._updater,
-				onScroll: this._onScroll
+				onScroll: this._onScroll,
+				height: containerDimensions.size.height
 			}),
 			w(Footer, {
 				total: meta.total,
