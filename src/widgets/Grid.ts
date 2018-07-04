@@ -6,7 +6,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import { reference } from '@dojo/widget-core/diff';
 import { Store } from '@dojo/stores/Store';
 
-import { Fetcher, ColumnConfig, GridState, Updater, SyncFetcher } from './../interfaces';
+import { Fetcher, ColumnConfig, GridState, Updater } from './../interfaces';
 import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess, updaterProcess } from './../processes';
 
 import Header from './Header';
@@ -26,7 +26,7 @@ const defaultGridMeta = {
 
 export interface LeGridProperties<S> {
 	columnConfig: ColumnConfig[];
-	fetcher: Fetcher<S> | SyncFetcher<S>;
+	fetcher: Fetcher<S>;
 	updater?: Updater<S>;
 	store?: Store<S>;
 	id?: string;
@@ -93,7 +93,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 		const pages = this._store.get(this._store.path('_grid', 'data', 'pages')) || {};
 		const { columnConfig } = this._getProperties();
 
-		return v('div', { key: 'root', classes: css.root }, [
+		return v('div', { key: 'root', classes: css.root, role: 'table' }, [
 			w(Header, {
 				columnConfig,
 				sorter: this._sorter,

@@ -28,10 +28,6 @@ export interface Fetcher<S = any> {
 	(offset: number, size: number, options?: FetcherOptions): Promise<FetcherResult<S>>;
 }
 
-export interface SyncFetcher<S = any> {
-	(offset: number, size: number, options?: FetcherOptions): FetcherResult<S>;
-}
-
 export interface Updater<S = any> {
 	(item: S): void;
 }
@@ -51,7 +47,7 @@ export interface PageChangeCommandPayload {
 }
 
 export interface FetcherCommandPayload {
-	fetcher: Fetcher | SyncFetcher;
+	fetcher: Fetcher;
 	page: number;
 	pageSize: number;
 	id: string;
@@ -59,14 +55,14 @@ export interface FetcherCommandPayload {
 
 export interface SortCommandPayload {
 	id: string;
-	fetcher: Fetcher | SyncFetcher;
+	fetcher: Fetcher;
 	columnId: string;
 	direction: 'asc' | 'desc';
 }
 
 export interface FilterCommandPayload {
 	id: string;
-	fetcher: Fetcher | SyncFetcher;
+	fetcher: Fetcher;
 	columnId: string;
 	value: any;
 }

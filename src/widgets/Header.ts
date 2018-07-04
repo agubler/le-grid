@@ -19,10 +19,10 @@ export interface HeaderProperties {
 export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 	protected render(): DNode {
 		const { columnConfig, sorter, sort, filterer, scrollLeft, filter } = this.properties;
-		return v('div', { scrollLeft, classes: css.root }, [
+		return v('div', { scrollLeft, classes: css.root, row: 'rowgroup' }, [
 			v(
 				'div',
-				{ classes: css.row },
+				{ classes: css.row, role: 'role' },
 				columnConfig.map((column) => {
 					let title: string | DNode;
 					if (typeof column.title === 'function') {
@@ -48,7 +48,7 @@ export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 						};
 					}
 
-					return v('div', { classes: css.cell }, [
+					return v('div', { classes: css.cell, role: 'columnheader' }, [
 						v('div', headerProperties, [title]),
 						column.filterable
 							? v('input', {

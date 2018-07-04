@@ -37,6 +37,6 @@ export default class Row extends ThemedMixin(WidgetBase)<RowProperties> {
 			[] as DNode[]
 		);
 
-		return v('div', { classes: css.root }, columns);
+		return v('div', { classes: css.root, role: 'row' }, columns);
 	}
 }

@@ -61,6 +61,6 @@ export default class Cell extends ThemedMixin(WidgetBase)<CellProperties> {
 			});
 		}
 
-		return v('div', { classes: css.root, ondblclick: this._onEdit }, [value]);
+		return v('div', { classes: css.root, role: 'cell', ondblclick: this._onEdit }, [value]);
 	}
 }

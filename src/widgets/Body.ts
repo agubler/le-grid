@@ -169,6 +169,7 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 
 		let containerProperties: any = {
 			classes: css.root,
+			role: 'rowgroup',
 			styles: {
 				height: `${this._viewportHeight}px`
 			},

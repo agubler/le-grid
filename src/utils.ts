@@ -28,7 +28,7 @@ export function filterer(data: any[], { filter }: FetcherOptions): any[] {
 	return [...data];
 }
 
-export function createFetcherResult(data: any[], page: number, pageSize: number): FetcherResult {
+export async function createFetcherResult(data: any[], page: number, pageSize: number): Promise<FetcherResult> {
 	const temp = [...data];
 	const block = [...temp].splice((page - 1) * pageSize, pageSize);
 	return { data: block, meta: { total: temp.length } };
@@ -44,7 +44,7 @@ export function createUpdater<S extends any>(data: S[], idColumn: string = 'id')
 }
 
 export function createFetcher(data: any[]) {
-	return (page: number, pageSize: number, options: FetcherOptions = {}): FetcherResult => {
+	return async (page: number, pageSize: number, options: FetcherOptions = {}): Promise<FetcherResult> => {
 		return createFetcherResult(sorter(filterer(data, options), options), page, pageSize);
 	};
 }
