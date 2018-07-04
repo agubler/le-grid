@@ -12,6 +12,7 @@ node_modules/
 .vscode
 .tsconfig*.json
 coverage-unmapped.json
+*.lcov
 npm-debug.log
 .idea
 yarn.lock

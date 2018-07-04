@@ -12,7 +12,7 @@ export const copy = {
 	'staticDefinitionFiles-dev': {
 		cwd: 'src',
 		src: ['<%= staticDefinitionFiles %>'],
-		dest: '<%= devDirectory %>'
+		dest: '<%= devDirectory %>/src'
 	},
 	staticTestFiles: {
 		expand: true,
@@ -52,14 +52,13 @@ export const postcss = {
 			{
 				expand: true,
 				src: ['**/*.m.css'],
-				dest: '<%= devDirectory %>',
+				dest: join('<%= devDirectory %>', 'src'),
 				cwd: 'src'
 			}
 		],
 		options: {
 			processors: createProcessors({
 				dest: '_build/',
-				cwd: 'src',
 				packageJson: require(join(packagePath, 'package.json'))
 			})
 		}
