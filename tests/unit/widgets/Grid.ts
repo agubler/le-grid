@@ -72,7 +72,7 @@ describe('Grid', () => {
 				w(Body, {
 					key: 'body',
 					pages: {},
-					totalRows: 0,
+					totalRows: undefined,
 					pageSize: 100,
 					columnConfig,
 					pageChange: noop,
@@ -181,7 +181,7 @@ describe('Grid', () => {
 				w(Body, {
 					key: 'body',
 					pages: {},
-					totalRows: 0,
+					totalRows: undefined,
 					pageSize: 100,
 					columnConfig,
 					pageChange: noop,
@@ -223,7 +223,7 @@ describe('Grid', () => {
 				w(Body, {
 					key: 'body',
 					pages: {},
-					totalRows: 0,
+					totalRows: undefined,
 					pageSize: 100,
 					columnConfig,
 					pageChange: noop,
@@ -257,7 +257,7 @@ describe('Grid', () => {
 				w(Body, {
 					key: 'body',
 					pages: {},
-					totalRows: 0,
+					totalRows: undefined,
 					pageSize: 100,
 					columnConfig,
 					pageChange: noop,
