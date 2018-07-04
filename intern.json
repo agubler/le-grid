@@ -13,10 +13,6 @@
 		"./_build/tests/unit/all.js"
 	],
 
-	"functionalSuites": [
-		"./_build/tests/functional/all.js"
-	],
-
 	"browser": {
 		"loader": {
 			"script": "./node_modules/grunt-dojo2/lib/intern/internLoader.js",
