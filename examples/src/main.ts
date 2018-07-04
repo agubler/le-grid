@@ -1,4 +1,6 @@
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
+import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { v, w } from '@dojo/widget-core/d';
 import Grid from 'le-grid';
 import { createFetcher, createUpdater } from 'le-grid/utils';
 
@@ -18,14 +20,14 @@ const columnConfig = [
 		title: 'First Name',
 		sortable: true,
 		editable: true,
-		filterable: true
+		filterable: false
 	},
 	{
 		id: 'lastName',
 		title: 'Last Name',
 		sortable: true,
 		editable: true,
-		filterable: true
+		filterable: false
 	}
 ];
 
@@ -33,11 +35,12 @@ const data = createData(200000);
 const fetcher = createFetcher(data);
 const updater = createUpdater(data);
 
-const Projector = ProjectorMixin(Grid);
+class App extends WidgetBase {
+	render() {
+		return v('div', { styles: { height: '400px' } }, [w(Grid, { columnConfig, fetcher, updater })]);
+	}
+}
+
+const Projector = ProjectorMixin(App);
 const projector = new Projector();
-projector.setProperties({
-	columnConfig,
-	fetcher,
-	updater
-});
 projector.append();

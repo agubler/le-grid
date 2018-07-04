@@ -3,7 +3,8 @@ import WidgetBase from '@dojo/widget-core/WidgetBase';
 import { v, w } from '@dojo/widget-core/d';
 import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
-import { DNode } from '@dojo/widget-core/interfaces';
+import { DNode, VNodeProperties } from '@dojo/widget-core/interfaces';
+import Dimensions from '@dojo/widget-core/meta/Dimensions';
 
 import { GridPages, ColumnConfig } from './../interfaces';
 import PlaceholderRow from './PlaceholderRow';
@@ -14,14 +15,14 @@ import { diffProperty } from '@dojo/widget-core/decorators/diffProperty';
 import { auto, reference } from '@dojo/widget-core/diff';
 
 export interface BodyProperties<S> {
-	placeholderRowRenderer?: (index: number) => DNode;
 	totalRows: number;
 	pageSize: number;
 	pages: GridPages<S>;
+	columnConfig: ColumnConfig[];
+	placeholderRowRenderer?: (index: number) => DNode;
 	fetcher: (page: number, pageSize: number) => void;
 	updater: (page: number, rowNumber: number, columnId: string, value: string) => void;
 	pageChange: (page: number) => void;
-	columnConfig: ColumnConfig[];
 	onScroll: (value: number) => void;
 }
 
@@ -53,7 +54,6 @@ const defaultPlaceholderRowRenderer = (index: number) => {
 @diffProperty('pages', reference)
 export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> {
 	private _rowHeight: number;
-	private _viewportHeight: number;
 	private _rowsInView: number;
 	private _renderPageSize: number;
 	private _start = 0;
@@ -149,32 +149,33 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 
 	protected render(): DNode {
 		const { placeholderRowRenderer = defaultPlaceholderRowRenderer, totalRows, pageSize } = this.properties;
+		const containerDimensions = this.meta(Dimensions).get('root');
+		let containerProperties: VNodeProperties = {
+			key: 'root',
+			classes: css.root,
+			role: 'rowgroup',
+			onscroll: this._onScroll
+		};
+
+		if (containerDimensions.size.height === 0) {
+			return v('div', containerProperties);
+		}
 
 		if (!this._rowHeight) {
 			const firstRow = placeholderRowRenderer(0);
 			const dimensions = offscreen(firstRow);
 			this._rowHeight = dimensions.height;
-			this._viewportHeight = this._rowHeight * 15;
-			this._rowsInView = this._viewportHeight / this._rowHeight;
+			this._rowsInView = Math.ceil(containerDimensions.size.height / this._rowHeight);
 			this._renderPageSize = this._rowsInView * 2;
 		}
 
-		const rows = this._renderRows(this._start, this._end);
+		const rows: DNode[] = this._renderRows(this._start, this._end);
 		const topPaddingHeight = this._rowHeight * this._start;
 		let bottomPaddingHeight = 0;
 		if (totalRows >= pageSize) {
 			bottomPaddingHeight =
 				totalRows * this._rowHeight - topPaddingHeight - (this._end - this._start) * this._rowHeight;
 		}
-
-		let containerProperties: any = {
-			classes: css.root,
-			role: 'rowgroup',
-			styles: {
-				height: `${this._viewportHeight}px`
-			},
-			onscroll: this._onScroll
-		};
 
 		if (this._resetScroll) {
 			this._resetScroll = false;

@@ -1,4 +1,5 @@
 export const root: string;
+export const filterGroup: string;
 export const cell: string;
 export const sortable: string;
 export const row: string;

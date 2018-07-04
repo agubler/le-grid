@@ -19,7 +19,8 @@ export interface HeaderProperties {
 export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 	protected render(): DNode {
 		const { columnConfig, sorter, sort, filterer, scrollLeft, filter } = this.properties;
-		return v('div', { scrollLeft, classes: css.root, row: 'rowgroup' }, [
+		const hasFilters = columnConfig.some((config) => !!config.filterable);
+		return v('div', { scrollLeft, classes: [css.root, hasFilters ? css.filterGroup : null], row: 'rowgroup' }, [
 			v(
 				'div',
 				{ classes: css.row, role: 'role' },

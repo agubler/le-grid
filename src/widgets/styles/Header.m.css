@@ -6,6 +6,11 @@
 	border-bottom: 1px solid var(--border-color);
 	background: var(--header-background-color);
 	color: var(--header-color);
+	height: 30px;
+}
+
+.filterGroup {
+	height: 60px;
 }
 
 .cell {
@@ -19,7 +24,6 @@
 	display: flex;
 	align-items: center;
 	flex-direction: column;
-	justify-content: space-between;
 	user-select: none;
 	min-width: 100px;
 }
