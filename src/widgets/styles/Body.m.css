@@ -9,4 +9,5 @@
 	overflow-y: scroll;
 	background: var(--background-color);
 	color: var(--body-color);
+	box-sizing: border-box;
 }

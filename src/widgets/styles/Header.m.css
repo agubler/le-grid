@@ -7,10 +7,11 @@
 	background: var(--header-background-color);
 	color: var(--header-color);
 	height: 30px;
+	box-sizing: border-box;
 }
 
 .filterGroup {
-	height: 60px;
+	height: 62px;
 }
 
 .cell {

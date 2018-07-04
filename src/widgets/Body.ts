@@ -59,6 +59,7 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 	private _start = 0;
 	private _end = 100;
 	private _resetScroll = false;
+	private _containerHeight: number;
 
 	private _updater(rowNumber: number, columnId: string, value: any) {
 		const page = Math.max(Math.ceil(rowNumber / this.properties.pageSize), 1);
@@ -148,7 +149,12 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 	}
 
 	protected render(): DNode {
-		const { placeholderRowRenderer = defaultPlaceholderRowRenderer, totalRows, pageSize } = this.properties;
+		const {
+			placeholderRowRenderer = defaultPlaceholderRowRenderer,
+			totalRows,
+			pageSize,
+			columnConfig
+		} = this.properties;
 		const containerDimensions = this.meta(Dimensions).get('root');
 		let containerProperties: VNodeProperties = {
 			key: 'root',
@@ -162,10 +168,12 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 		}
 
 		if (!this._rowHeight) {
+			const hasFilters = columnConfig.some((config) => !!config.filterable);
+			this._containerHeight = containerDimensions.size.height - (hasFilters ? 62 : 20) - 20;
 			const firstRow = placeholderRowRenderer(0);
 			const dimensions = offscreen(firstRow);
 			this._rowHeight = dimensions.height;
-			this._rowsInView = Math.ceil(containerDimensions.size.height / this._rowHeight);
+			this._rowsInView = Math.ceil(this._containerHeight / this._rowHeight);
 			this._renderPageSize = this._rowsInView * 2;
 		}
 
@@ -179,7 +187,11 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 
 		if (this._resetScroll) {
 			this._resetScroll = false;
-			containerProperties = { ...containerProperties, scrollTop: 0 };
+			containerProperties = {
+				...containerProperties,
+				scrollTop: 0,
+				styles: { height: `${this._containerHeight}px` }
+			};
 		}
 
 		return v('div', containerProperties, [
