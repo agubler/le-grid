@@ -6,7 +6,7 @@ import { DNode } from '@dojo/widget-core/interfaces';
 import * as css from './styles/Footer.m.css';
 
 export interface FooterProperties {
-	total: number;
+	total?: number;
 	page: number;
 	pageSize: number;
 }

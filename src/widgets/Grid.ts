@@ -100,6 +100,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 
 		return v('div', { key: 'root', classes: css.root, role: 'table' }, [
 			w(Header, {
+				key: 'header',
 				columnConfig,
 				sorter: this._sorter,
 				sort: meta.sort,
@@ -108,8 +109,9 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 				scrollLeft: this._scrollLeft
 			}),
 			w(Body, {
+				key: 'body',
 				pages,
-				totalRows: meta.total,
+				totalRows: meta.total || 0,
 				pageSize: this._pageSize,
 				columnConfig,
 				fetcher: this._fetcher,
@@ -119,6 +121,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 				height: containerDimensions.size.height
 			}),
 			w(Footer, {
+				key: 'footer',
 				total: meta.total,
 				page: meta.page,
 				pageSize: this._pageSize
