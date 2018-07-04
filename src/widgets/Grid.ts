@@ -88,9 +88,9 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 	}
 
 	protected render(): DNode {
-		const meta = this._store.get(this._store.path('_grid', 'meta')) || defaultGridMeta;
-		const pages = this._store.get(this._store.path('_grid', 'data', 'pages')) || {};
-		const { columnConfig } = this._getProperties();
+		const { columnConfig, id } = this._getProperties();
+		const meta = this._store.get(this._store.path(id, 'meta')) || defaultGridMeta;
+		const pages = this._store.get(this._store.path(id, 'data', 'pages')) || {};
 
 		return v('div', { key: 'root', classes: css.root, role: 'table' }, [
 			w(Header, {

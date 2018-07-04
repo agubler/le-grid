@@ -52,6 +52,7 @@ export default class Cell extends ThemedMixin(WidgetBase)<CellProperties> {
 		let { value } = this.properties;
 		if (this._editing) {
 			return v('input', {
+				key: 'editing',
 				classes: [css.root, css.input],
 				focus: true,
 				value: this._editingValue,
@@ -61,6 +62,6 @@ export default class Cell extends ThemedMixin(WidgetBase)<CellProperties> {
 			});
 		}
 
-		return v('div', { classes: css.root, role: 'cell', ondblclick: this._onEdit }, [value]);
+		return v('div', { key: 'cell', classes: css.root, role: 'cell', ondblclick: this._onEdit }, [value]);
 	}
 }
