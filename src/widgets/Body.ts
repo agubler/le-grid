@@ -14,7 +14,7 @@ import { diffProperty } from '@dojo/widget-core/decorators/diffProperty';
 import { auto, reference } from '@dojo/widget-core/diff';
 
 export interface BodyProperties<S> {
-	totalRows: number;
+	totalRows?: number;
 	pageSize: number;
 	pages: GridPages<S>;
 	height: number;
@@ -68,7 +68,7 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 	}
 
 	private _onScroll(event: UIEvent) {
-		const { totalRows } = this.properties;
+		const { totalRows = 0 } = this.properties;
 		const scrollTop = (event.target as HTMLElement).scrollTop;
 		const scrollLeft = (event.target as HTMLElement).scrollLeft;
 		const topRow = Math.round(scrollTop / this._rowHeight);
@@ -139,7 +139,7 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 					})
 				);
 			} else {
-				if ((i > -1 && i < totalRows) || totalRows === undefined) {
+				if (totalRows === undefined || (i > -1 && i < totalRows)) {
 					rows.push(placeholderRowRenderer(i));
 				}
 			}
@@ -151,7 +151,7 @@ export default class Body<S> extends ThemedMixin(WidgetBase)<BodyProperties<S>> 
 	protected render(): DNode {
 		const {
 			placeholderRowRenderer = defaultPlaceholderRowRenderer,
-			totalRows,
+			totalRows = 0,
 			pageSize,
 			columnConfig,
 			height

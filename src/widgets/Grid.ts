@@ -111,7 +111,7 @@ export default class Grid<S> extends ThemedMixin(WidgetBase)<LeGridProperties<S>
 			w(Body, {
 				key: 'body',
 				pages,
-				totalRows: meta.total || 0,
+				totalRows: meta.total,
 				pageSize: this._pageSize,
 				columnConfig,
 				fetcher: this._fetcher,
