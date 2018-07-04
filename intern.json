@@ -42,7 +42,11 @@
 
 	"node": {
 		"plugins": [
-			"_build/tests/support/node-css-plugin.js"
+			"_build/tests/support/node-css-plugin.js",
+			{
+				"script": "./_build/tests/support/loadJsdom.js",
+				"useLoader": true
+			}
 		]
 	},
 
