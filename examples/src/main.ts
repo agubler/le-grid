@@ -32,7 +32,7 @@ const columnConfig = [
 	}
 ];
 
-const data = createData(200000);
+const data = createData(20000);
 const fetcher = createFetcher(data);
 const updater = createUpdater(data);
 

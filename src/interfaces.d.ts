@@ -94,6 +94,7 @@ export interface GridMeta<S> {
 	filter: FilterOptions;
 	isSorting: boolean;
 	editedRow: GridEditedRow<S>;
+	fetchedPages: number[];
 }
 
 export interface GridData<S> {

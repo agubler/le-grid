@@ -20,6 +20,14 @@ const pageChangeCommand = commandFactory<PageChangeCommandPayload>(({ path, get,
 	return [];
 });
 
+const preFetcherCommand = commandFactory<PageChangeCommandPayload>(({ path, get, payload: { id, page } }) => {
+	const fetchedPages = get(path(id, 'meta', 'fetchedPages')) || [];
+	if (fetchedPages.indexOf(page) === -1) {
+		return [replace(path(id, 'meta', 'fetchedPages'), [...fetchedPages, page])];
+	}
+	throw Error('The page has already been requested');
+});
+
 const fetcherCommand = commandFactory<FetcherCommandPayload>(
 	async ({ at, path, get, payload: { id, fetcher, page, pageSize } }) => {
 		let result: FetcherResult;
@@ -38,14 +46,16 @@ const fetcherCommand = commandFactory<FetcherCommandPayload>(
 				replace(path(id, 'meta', 'pageSize'), pageSize)
 			];
 		} else {
-			return [];
+			throw Error('The grid is being sorted or filtered');
 		}
 	}
 );
 
 const preSortCommand = commandFactory<SortCommandPayload>(({ at, path, get, payload: { id, columnId, direction } }) => {
+	const page = get(path(id, 'meta', 'page'));
 	return [
 		remove(path(id, 'data', 'pages')),
+		replace(path(id, 'meta', 'fetchedPages'), page === 1 ? [1] : [page, page - 1]),
 		replace(path(id, 'meta', 'sort', 'columnId'), columnId),
 		replace(path(id, 'meta', 'sort', 'direction'), direction),
 		replace(path(id, 'meta', 'isSorting'), true)
@@ -55,6 +65,7 @@ const preSortCommand = commandFactory<SortCommandPayload>(({ at, path, get, payl
 const preFilterCommand = commandFactory<FilterCommandPayload>(({ at, path, get, payload: { id, columnId, value } }) => {
 	return [
 		remove(path(id, 'data', 'pages')),
+		replace(path(id, 'meta', 'fetchedPages'), [1]),
 		replace(path(id, 'meta', 'filter', 'columnId'), columnId),
 		replace(path(id, 'meta', 'filter', 'value'), value),
 		replace(path(id, 'meta', 'page'), 1),
@@ -62,26 +73,53 @@ const preFilterCommand = commandFactory<FilterCommandPayload>(({ at, path, get, 
 	];
 });
 
-const sortCommand = commandFactory<SortCommandPayload>(
+const sortCommand = commandFactory<SortCommandPayload>(async ({ at, path, get, payload }) => {
+	const { id, fetcher, columnId, direction } = payload;
+	const page = get(path(id, 'meta', 'page'));
+	if (page === 1) {
+		return sortForFirstPage({ at, get, path, payload });
+	}
+	const pageSize = get(path(id, 'meta', 'pageSize'));
+	const filterOptions = get(path(id, 'meta', 'filter'));
+	let result: FetcherResult[];
+	try {
+		const options = {
+			sort: { columnId, direction },
+			filter: filterOptions
+		};
+		const previousPage = fetcher(page - 1, pageSize, options);
+		const currentPage = fetcher(page, pageSize, options);
+		result = await Promise.all([previousPage, currentPage]);
+	} catch (err) {
+		return [];
+	}
+
+	return [
+		replace(path(id, 'data', 'pages', `page-${page - 1}`), result[0].data),
+		replace(path(id, 'data', 'pages', `page-${page}`), result[1].data),
+		replace(path(id, 'meta', 'sort', 'columnId'), columnId),
+		replace(path(id, 'meta', 'sort', 'direction'), direction),
+		replace(path(id, 'meta', 'total'), result[1].meta.total),
+		replace(path(id, 'meta', 'page'), 1),
+		replace(path(id, 'meta', 'isSorting'), false)
+	];
+});
+
+const sortForFirstPage = commandFactory<SortCommandPayload>(
 	async ({ at, path, get, payload: { id, fetcher, columnId, direction } }) => {
-		const page = get(path(id, 'meta', 'page'));
 		const pageSize = get(path(id, 'meta', 'pageSize'));
 		const filterOptions = get(path(id, 'meta', 'filter'));
 		let result: FetcherResult;
-		const fetchSize = page === 1 ? pageSize : pageSize * 2;
 		try {
-			result = await fetcher(Math.max(page - 1, 1), fetchSize, {
+			result = await fetcher(1, pageSize, {
 				sort: { columnId, direction },
 				filter: filterOptions
 			});
 		} catch (err) {
 			return [];
 		}
-		const previousPage = result.data.slice(0, pageSize);
-		const currentPage = result.data.slice(pageSize);
 		return [
-			replace(path(id, 'data', 'pages', `page-${page - 1}`), previousPage),
-			replace(path(id, 'data', 'pages', `page-${page}`), currentPage),
+			replace(path(id, 'data', 'pages', 'page-1'), result.data),
 			replace(path(id, 'meta', 'sort', 'columnId'), columnId),
 			replace(path(id, 'meta', 'sort', 'direction'), direction),
 			replace(path(id, 'meta', 'total'), result.meta.total),
@@ -148,7 +186,10 @@ export const updaterProcess: Process<GridState, UpdaterCommandPayload> = createP
 	preUpdateCommand,
 	updaterCommand
 ]);
-export const fetcherProcess: Process<GridState, FetcherCommandPayload> = createProcess('grid-fetch', [fetcherCommand]);
+export const fetcherProcess: Process<GridState, FetcherCommandPayload> = createProcess('grid-fetch', [
+	preFetcherCommand,
+	fetcherCommand
+]);
 export const filterProcess: Process<GridState, FilterCommandPayload> = createProcess('grid-filter', [
 	preFilterCommand,
 	filterCommand
