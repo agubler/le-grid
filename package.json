@@ -7,7 +7,7 @@
     "precommit": "lint-staged",
     "prettier": "prettier --write 'src/**/*.ts*' 'src/**/*.css*' 'tests/**/*.ts*' 'examples/**/*.ts*'",
     "test": "grunt test",
-    "examples": "npm run examples:package && npm run examples:install && npm run examples:watch",
+    "examples": "npm run examples:package && npm run examples:install && npm run examples",
     "examples:package": "shx rm -rf dist && grunt dist && grunt release-publish-flat --dry-run && shx mv dist/le-grid-* dist/le-grid.tgz",
     "examples:install": "cd examples && shx rm -rf node_modules/le-grid && npm install && cd ..",
     "examples:build": "cd examples && npm run build && cd ..",
