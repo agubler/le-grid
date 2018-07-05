@@ -35,7 +35,7 @@ export default class Header extends ThemedMixin(WidgetBase)<HeaderProperties> {
 					if (column.sortable) {
 						headerProperties = {
 							classes: [
-								column.sortable ? css.sortable : null,
+								css.sortable,
 								sort && sort.columnId === column.id ? css.sorted : null,
 								sort && sort.columnId === column.id && sort.direction === 'desc' ? css.desc : null,
 								sort && sort.columnId === column.id && sort.direction === 'asc' ? css.asc : null
