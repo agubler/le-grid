@@ -100,7 +100,7 @@ const sortCommand = commandFactory<SortCommandPayload>(async ({ at, path, get, p
 		replace(path(id, 'meta', 'sort', 'columnId'), columnId),
 		replace(path(id, 'meta', 'sort', 'direction'), direction),
 		replace(path(id, 'meta', 'total'), result[1].meta.total),
-		replace(path(id, 'meta', 'page'), 1),
+		replace(path(id, 'meta', 'page'), page),
 		replace(path(id, 'meta', 'isSorting'), false)
 	];
 });

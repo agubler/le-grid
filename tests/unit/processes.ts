@@ -1,7 +1,7 @@
 const { describe, it, beforeEach } = intern.getInterface('bdd');
 const { assert } = intern.getPlugin('chai');
 
-import { pageChangeProcess, fetcherProcess } from './../../src/processes';
+import { pageChangeProcess, fetcherProcess, sortProcess, filterProcess, updaterProcess } from './../../src/processes';
 import { Store } from '@dojo/stores/Store';
 import { stub } from 'sinon';
 import { OperationType } from '@dojo/stores/state/Patch';
@@ -77,6 +77,125 @@ describe('Grid Processes', () => {
 					assert.strictEqual((result as any).error.error.message, 'The grid is being sorted or filtered');
 				}
 			);
+		});
+	});
+
+	describe('Filterer Process', () => {
+		it('should filter', async () => {
+			const fetcherStub = stub();
+			fetcherStub.returns({
+				data: [{ id: '1' }],
+				meta: {
+					total: 10000
+				}
+			});
+			store.apply([{ op: OperationType.REPLACE, path: new Pointer(['grid', 'meta', 'page']), value: 10 }]);
+			await filterProcess(store)({ columnId: 'id', value: '', id: 'grid', fetcher: fetcherStub });
+			const pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-1': [{ id: '1' }] } });
+			const meta = store.get(store.path('grid', 'meta'));
+			assert.deepEqual(meta, {
+				page: 1,
+				filter: { columnId: 'id', value: '' },
+				fetchedPages: [1],
+				isSorting: false,
+				total: 10000
+			});
+		});
+	});
+
+	describe('Sort Process', () => {
+		it('should sort for first page', async () => {
+			const fetcherStub = stub();
+			fetcherStub.returns({
+				data: [{ id: '1' }],
+				meta: {
+					total: 10000
+				}
+			});
+			store.apply([{ op: OperationType.REPLACE, path: new Pointer(['grid', 'meta', 'page']), value: 1 }]);
+			await sortProcess(store)({ columnId: 'id', direction: 'asc', id: 'grid', fetcher: fetcherStub });
+			const pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-1': [{ id: '1' }] } });
+			const meta = store.get(store.path('grid', 'meta'));
+			assert.deepEqual(meta, {
+				page: 1,
+				sort: { columnId: 'id', direction: 'asc' },
+				fetchedPages: [1],
+				isSorting: false,
+				total: 10000
+			});
+		});
+
+		it('should sort', async () => {
+			const fetcherStub = stub();
+			fetcherStub.returns({
+				data: [{ id: '1' }],
+				meta: {
+					total: 10000
+				}
+			});
+			store.apply([{ op: OperationType.REPLACE, path: new Pointer(['grid', 'meta', 'page']), value: 10 }]);
+			await sortProcess(store)({ columnId: 'id', direction: 'asc', id: 'grid', fetcher: fetcherStub });
+			const pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-9': [{ id: '1' }], 'page-10': [{ id: '1' }] } });
+			const meta = store.get(store.path('grid', 'meta'));
+			assert.deepEqual(meta, {
+				page: 10,
+				sort: { columnId: 'id', direction: 'asc' },
+				fetchedPages: [10, 9],
+				isSorting: false,
+				total: 10000
+			});
+		});
+	});
+
+	describe('Updater Process', () => {
+		it('Should update item', async () => {
+			const updaterStub = stub();
+			store.apply([
+				{
+					op: OperationType.REPLACE,
+					path: new Pointer(['grid', 'data', 'pages', 'page-1']),
+					value: [{ id: 'A', name: 'bill' }]
+				}
+			]);
+			let pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-1': [{ id: 'A', name: 'bill' }] } });
+			await updaterProcess(store)({
+				updater: updaterStub,
+				columnId: 'name',
+				id: 'grid',
+				value: 'foo',
+				page: 1,
+				rowNumber: 0
+			});
+			pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-1': [{ id: 'A', name: 'foo' }] } });
+		});
+
+		it('Should revert item on error', async () => {
+			const updaterStub = stub();
+			updaterStub.throws();
+			store.apply([
+				{
+					op: OperationType.REPLACE,
+					path: new Pointer(['grid', 'data', 'pages', 'page-1']),
+					value: [{ id: 'A', name: 'bill' }]
+				}
+			]);
+			let pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-1': [{ id: 'A', name: 'bill' }] } });
+			await updaterProcess(store)({
+				updater: updaterStub,
+				columnId: 'name',
+				id: 'grid',
+				value: 'foo',
+				page: 1,
+				rowNumber: 0
+			});
+			pages = store.get(store.path('grid', 'data'));
+			assert.deepEqual(pages, { pages: { 'page-1': [{ id: 'A', name: 'bill' }] } });
 		});
 	});
 });
