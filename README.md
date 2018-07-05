@@ -10,7 +10,7 @@ A reactive lightweight, customizable grid widget built with Dojo 2.
 
 A running example can be seen [here](https://agubler.github.io/le-grid/).
 
-### Installation
+## Installation
 
 To use `le-grid`, install it from npm.
 
@@ -24,7 +24,7 @@ You can then import le-grid in your application as follows:
 import LeGrid from 'le-grid';
 ```
 
-### Features
+## Features
 
  * On-demand virtual rendering with supports for large datasets
  * Backed by [`@dojo/stores`](https://github.com/dojo/stores)
@@ -34,7 +34,7 @@ import LeGrid from 'le-grid';
 
  An example of le-grid can be [found here](https://github.com/agubler/le-grid/blob/master/src/examples/main.ts)
 
-### Usage
+## Example Usage
 
 ```ts
 import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
@@ -73,9 +73,80 @@ projector.setProperties({
 projector.append();
 ```
 
-### Testing
+## Properties
 
-Tests are written using Intern.
+### columnConfig
+
+The column configuration defines how the grid will be built and what capabilities will be enabled per column.
+
+```ts
+export interface ColumnConfig {
+	id: string;
+	title: string | (() => DNode);
+	filterable?: boolean;
+	sortable?: boolean;
+	editable?: boolean;
+	renderer?: (props: any) => DNode;
+}
+```
+
+ * `id` - The `id` of the column
+ * `title` - The display title of the column, this can be a string or a custom renderer function that returns a `DNode`
+ * `filterable` - Optional property that indicates if the column is filterable, defaults to `false`
+ * `sortable` - Optional property that indicates if the column is sortable, defaults to `false`
+ * `editable` - Optional property that indicates if the column is editable, defaults to `false`
+ * `renderer` - Optional custom renderer function for the column cell, defaults to `undefined`
+
+### fetcher
+
+The fetcher is a function responsible for returning data to the grid for the requested offset and size.
+
+```ts
+(offset: number, size: number, options?: FetcherOptions): Promise<FetcherResult<S>>;
+```
+
+Additionally the fetcher will receive any additional options (`FetcherOptions`) as a third optional parameter.
+
+```ts
+export interface FetcherOptions {
+	sort?: SortOptions;
+	filter?: FilterOptions;
+}
+```
+
+#### Sort Options
+
+ * `columnId` - `id` from `columnConfig` of the column that sort has been requested for
+ * `direction` - direction of the sort requested, either `asc` or `desc`
+
+#### Filter Options
+
+* `columnId` - `id` from `columnConfig` of the column that sort has been requested for
+* `direction` - value to filter on
+
+### updater
+
+The `updater` is an optional function responsible for performing updates made by `editable` columns.
+
+```ts
+(item: S): void;
+```
+
+The updated `item` is passed to the function, if an error occurs during the updater the changes will be reverted in the grid.
+
+### store
+
+le-grid is backed by `@dojo/stores` and by default, dynamically creates a private store as required. However it is also possible to pass an existing store used by other areas of the application.
+
+This option will often be used in combination with `id` that determines the root path location that all grid data will be stored.
+
+### id
+
+Optional `id` that specifies the root path that of the store that the grid data will be stored.
+
+## Testing
+
+Tests are written using Intern with the `bdd` interface.
 
 To test locally in node run:
 
@@ -83,18 +154,14 @@ To test locally in node run:
 grunt test
 ```
 
-To test against browsers with a  selenium server run:
+To test against browsers with a selenium server run:
 
-```ts
+```shell
 grunt test:local
 ```
 
-To test against browserstack or saucelabs run:
+To test against browserstack run:
 
-```
+```shell
 grunt test:browserstack
-```
-
-```
-grunt test:saucelabs
 ```
