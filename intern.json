@@ -1,0 +1,81 @@
+{
+	"capabilities+": {
+		"project": "le-grid",
+		"name": "le-grid",
+		"browserstack.debug": false
+	},
+
+	"environments": [
+		{ "browserName": "node" }
+	],
+
+	"suites": [
+		"./_build/tests/unit/all.js"
+	],
+
+	"browser": {
+		"loader": {
+			"script": "./node_modules/grunt-dojo2/lib/intern/internLoader.js",
+			"options": {
+				"packages": [
+					{ "name": "src", "location": "_build" },
+					{ "name": "cldrjs", "location": "node_modules/cldrjs" },
+					{ "name": "globalize", "location": "node_modules/globalize", "main": "dist/globalize" },
+					{ "name": "css-select-umd", "location": "node_modules/css-select-umd", "main": "dist/index.js" },
+					{ "name": "diff", "location": "node_modules/diff", "main": "dist/diff.js" }
+				],
+				"map": {
+					"globalize": {
+						"cldr": "cldrjs/dist/cldr",
+						"cldr/event": "cldrjs/dist/cldr/event",
+						"cldr/supplemental": "cldrjs/dist/cldr/supplemental",
+						"cldr/unresolved": "cldrjs/dist/cldr/unresolved"
+					}
+				}
+			}
+		}
+	},
+
+	"node": {
+		"plugins": [
+			"_build/tests/support/node-css-plugin.js",
+			{
+				"script": "./_build/tests/support/loadJsdom.js",
+				"useLoader": true
+			}
+		]
+	},
+
+	"coverage": [
+		"./_build/**/*.js",
+		"!./_build/**/tests/**/*",
+		"!./_build/**/styles/**/*",
+		"!./_build/**/theme/**/*",
+		"!./_build/**/themes/**/*",
+		"!./_build/**/example/**/*",
+		"!./_build/**/*Element.js"
+	],
+
+	"configs": {
+		"local": {
+			"tunnel": "selenium",
+			"environments+": [
+				{ "browserName": "chrome" }
+			]
+		},
+		"browserstack": {
+			"tunnel": "browserstack",
+			"capabilities+": {
+				"browserstack.debug": false
+			},
+			"environments+": [
+				{ "browserName": "edge" },
+				{ "browserName": "internet explorer", "version": "11" },
+				{ "browserName": "chrome", "platform": "WINDOWS" },
+				{ "browserName": "firefox", "os": "Windows", "os_version": "10", "browser_version": "58.0" },
+				{ "browserName": "safari", "version": "10", "platform": "MAC" }
+			],
+			"maxConcurrency": 5
+		}
+	}
+}

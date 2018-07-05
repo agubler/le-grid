@@ -2,9 +2,16 @@
   "name": "le-grid",
   "version": "0.0.13-pre",
   "description": "Reactive grid in Dojo 2",
-  "main": "createGrid.js",
   "scripts": {
-    "test": "grunt test"
+    "build-app": "dojo build",
+    "precommit": "lint-staged",
+    "prettier": "prettier --write 'src/**/*.ts*' 'src/**/*.css*' 'tests/**/*.ts*' 'examples/**/*.ts*'",
+    "test": "grunt test",
+    "examples": "npm run examples:package && npm run examples:install && npm run examples:build",
+    "examples:package": "shx rm -rf dist && grunt dist && grunt release-publish-flat --dry-run && shx mv dist/le-grid-* dist/le-grid.tgz",
+    "examples:install": "cd examples && shx rm -rf node_modules/le-grid && npm install && cd ..",
+    "examples:build": "cd examples && npm run build && cd ..",
+    "examples:watch": "cd examples && npm run watch"
   },
   "repository": {
     "type": "git",
@@ -16,31 +23,51 @@
   "license": "MIT",
   "author": "Anthony Gubler",
   "dependencies": {
-    "@dojo/core": "beta1",
-    "@dojo/compose": "beta1",
-    "@dojo/has": "beta1",
-    "@dojo/i18n": "beta1",
-    "@dojo/shim": "beta1",
-    "@dojo/stores": "^2.0.0-alpha.11",
-    "@dojo/widget-core": "beta1",
-    "immutable": "3.8.1",
-    "maquette": "2.4.3"
+    "@dojo/core": "^2.0.0",
+    "@dojo/has": "^2.0.0",
+    "@dojo/i18n": "^2.0.0",
+    "@dojo/shim": "^2.0.0",
+    "@dojo/stores": "^2.0.0",
+    "@dojo/widget-core": "^2.0.0",
+    "tslib": "~1.8.1"
   },
   "devDependencies": {
-    "@dojo/cli-build-webpack": "beta1",
-    "@dojo/interfaces": "beta1",
-    "@dojo/loader": "beta1",
-    "@types/chai": "~3.4.34",
+    "@dojo/loader": "^2.0.0",
+    "@dojo/test-extras": "^2.0.0",
+    "@types/execa": "^0.9.0",
     "@types/glob": "~5.0.0",
     "@types/grunt": "~0.4.0",
-    "@types/immutable": "~3.8.7",
-    "@types/node": "~6.0.46",
-    "@types/sinon": "~1.16.31",
+    "@types/jsdom": "2.0.*",
+    "@types/node": "^6.0.46",
+    "@types/sinon": "^1.16.35",
     "chai": "~3.5.0",
+    "execa": "^0.10.0",
     "grunt": "^1.0.1",
-    "grunt-dojo2": "beta1",
-    "intern": "^3.4.1",
+    "grunt-dojo2": "^0.1.3",
+    "grunt-tslint": "5.0.1",
+    "husky": "0.14.3",
+    "jsdom": "^9.5.0",
+    "intern": "~4.1.5",
+    "lint-staged": "6.0.0",
+    "load-grunt-tasks": "^4.0.0",
+    "prettier": "1.9.2",
+    "shx": "^0.2.2",
     "sinon": "^1.17.7",
-    "typescript": "~2.2.2"
+    "ts-node": "^6.0.3",
+    "tslint": "5.2.0",
+    "typescript": "~2.6.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 4,
+    "useTabs": true,
+    "printWidth": 120,
+    "arrowParens": "always"
   }
 }

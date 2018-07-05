@@ -13,13 +13,14 @@ install:
 - travis_retry npm install
 script:
 - grunt
-- grunt intern:node --combined
-- grunt intern:browserstack --combined
-- grunt remapIstanbul:ci
+- grunt intern:browserstack --test-reporter
 - grunt uploadCoverage
+- grunt dev
+- grunt dist
 deploy:
   skip_cleanup: true
   provider: script
   script: scripts/deploy.sh
   on:
     branch: master
+    branch: next
