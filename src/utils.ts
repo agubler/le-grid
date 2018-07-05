@@ -5,8 +5,8 @@ export function sorter(data: any[], { sort }: FetcherOptions): any[] {
 	const temp = [...data];
 	if (sort) {
 		temp.sort((a, b) => {
-			const left = sort.direction === 'asc' ? a : b;
-			const right = sort.direction === 'asc' ? b : a;
+			const left = sort.direction === 'asc' ? b : a;
+			const right = sort.direction === 'asc' ? a : b;
 			if (left[sort.columnId] < right[sort.columnId]) {
 				return 1;
 			}
