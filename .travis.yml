@@ -23,4 +23,3 @@ deploy:
   script: scripts/deploy.sh
   on:
     branch: master
-    branch: next
