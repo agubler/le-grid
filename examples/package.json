@@ -3,8 +3,8 @@
 	"version": "0.0.1",
 	"description": "Example of le-grid the reactive dojo 2 grid",
 	"scripts": {
-		"build": "dojo build",
-		"watch": "dojo build -m dev -s -w"
+		"build": "dojo build -l false",
+		"watch": "dojo build -m dev -s -w -l false"
 	},
 	"dependencies": {
 		"@dojo/core": "^2.0.0",
@@ -14,7 +14,6 @@
 		"@dojo/shim": "^2.0.0",
 		"@dojo/stores": "^2.0.0",
 		"@dojo/widget-core": "^2.0.0",
-		"faker": "^4.1.0",
 		"le-grid": "./../dist/le-grid.tgz",
 		"tslib": "~1.8.1"
 	},
@@ -23,7 +22,6 @@
 		"@dojo/cli-build-app": "^2.0.0",
 		"@dojo/cli-test-intern": "^2.0.0",
 		"@dojo/test-extras": "^2.0.0",
-		"@types/faker": "^4.1.2",
 		"@types/glob": "~5.0.0",
 		"@types/grunt": "~0.4.0",
 		"@types/node": "^6.0.46",
