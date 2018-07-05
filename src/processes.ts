@@ -31,7 +31,7 @@ const preFetcherCommand = commandFactory<PageChangeCommandPayload>(({ path, get,
 const fetcherCommand = commandFactory<FetcherCommandPayload>(
 	async ({ at, path, get, payload: { id, fetcher, page, pageSize } }) => {
 		let result: FetcherResult;
-		const isSorting = get(path(id, 'meta', 'isSorting')) || false;
+		const isSorting = get(path(id, 'meta', 'isSorting'));
 		if (!isSorting) {
 			const sortOptions = get(path(id, 'meta', 'sort'));
 			const filterOptions = get(path(id, 'meta', 'filter'));
