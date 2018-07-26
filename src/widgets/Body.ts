@@ -1,17 +1,17 @@
-import global from '@dojo/shim/global';
-import WidgetBase from '@dojo/widget-core/WidgetBase';
-import { v, w } from '@dojo/widget-core/d';
-import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
-import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
-import { DNode, VNodeProperties } from '@dojo/widget-core/interfaces';
+import global from '@dojo/framework/shim/global';
+import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
+import { v, w } from '@dojo/framework/widget-core/d';
+import ThemedMixin, { theme } from '@dojo/framework/widget-core/mixins/Themed';
+import { ProjectorMixin } from '@dojo/framework/widget-core/mixins/Projector';
+import { DNode, VNodeProperties } from '@dojo/framework/widget-core/interfaces';
 
 import { GridPages, ColumnConfig } from './../interfaces';
 import PlaceholderRow from './PlaceholderRow';
 import Row from './Row';
 
 import * as css from './styles/Body.m.css';
-import { diffProperty } from '@dojo/widget-core/decorators/diffProperty';
-import { auto, reference } from '@dojo/widget-core/diff';
+import { diffProperty } from '@dojo/framework/widget-core/decorators/diffProperty';
+import { auto, reference } from '@dojo/framework/widget-core/diff';
 
 export interface BodyProperties<S> {
 	totalRows?: number;

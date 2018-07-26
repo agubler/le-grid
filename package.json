@@ -23,17 +23,11 @@
   "license": "MIT",
   "author": "Anthony Gubler",
   "dependencies": {
-    "@dojo/core": "^2.0.0",
-    "@dojo/has": "^2.0.0",
-    "@dojo/i18n": "^2.0.0",
-    "@dojo/shim": "^2.0.0",
-    "@dojo/stores": "^2.0.0",
-    "@dojo/widget-core": "^2.0.0",
+    "@dojo/framework": "^3.0.0",
     "tslib": "~1.8.1"
   },
   "devDependencies": {
     "@dojo/loader": "^2.0.0",
-    "@dojo/test-extras": "^2.0.0",
     "@types/execa": "^0.9.0",
     "@types/glob": "~5.0.0",
     "@types/grunt": "~0.4.0",

@@ -1,6 +1,6 @@
-import { ProjectorMixin } from '@dojo/widget-core/mixins/Projector';
-import { WidgetBase } from '@dojo/widget-core/WidgetBase';
-import { v, w } from '@dojo/widget-core/d';
+import { ProjectorMixin } from '@dojo/framework/widget-core/mixins/Projector';
+import { WidgetBase } from '@dojo/framework/widget-core/WidgetBase';
+import { v, w } from '@dojo/framework/widget-core/d';
 import Grid from 'le-grid';
 import { createFetcher, createUpdater } from 'le-grid/utils';
 
