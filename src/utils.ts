@@ -1,5 +1,5 @@
 import { FetcherOptions, FetcherResult } from './interfaces';
-import { findIndex } from '@dojo/shim/array';
+import { findIndex } from '@dojo/framework/shim/array';
 
 export function sorter(data: any[], { sort }: FetcherOptions): any[] {
 	const temp = [...data];

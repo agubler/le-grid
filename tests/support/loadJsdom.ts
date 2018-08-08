@@ -1,5 +1,5 @@
 import * as jsdom from 'jsdom';
-import global from '@dojo/shim/global';
+import global from '@dojo/framework/shim/global';
 
 /* In order to have the tests work under Node.js, we need to load JSDom and polyfill
  * requestAnimationFrame and create a fake document.activeElement getter */

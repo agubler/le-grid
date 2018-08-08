@@ -1,6 +1,6 @@
-import { Constructor, WidgetMetaBase, WidgetMetaConstructor } from '@dojo/widget-core/interfaces';
+import { Constructor, WidgetMetaBase, WidgetMetaConstructor } from '@dojo/framework/widget-core/interfaces';
 import { SinonStub } from 'sinon';
-import { WidgetBase } from '@dojo/widget-core/WidgetBase';
+import { WidgetBase } from '@dojo/framework/widget-core/WidgetBase';
 
 export function MockMetaMixin<T extends Constructor<WidgetBase<any>>>(Base: T, mockStub: SinonStub): T {
 	return class extends Base {

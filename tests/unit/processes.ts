@@ -2,10 +2,10 @@ const { describe, it, beforeEach } = intern.getInterface('bdd');
 const { assert } = intern.getPlugin('chai');
 
 import { pageChangeProcess, fetcherProcess, sortProcess, filterProcess, updaterProcess } from './../../src/processes';
-import { Store } from '@dojo/stores/Store';
+import { Store } from '@dojo/framework/stores/Store';
 import { stub } from 'sinon';
-import { OperationType } from '@dojo/stores/state/Patch';
-import { Pointer } from '@dojo/stores/state/Pointer';
+import { OperationType } from '@dojo/framework/stores/state/Patch';
+import { Pointer } from '@dojo/framework/stores/state/Pointer';
 
 let store: Store;
 

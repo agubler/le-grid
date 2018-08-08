@@ -1,11 +1,11 @@
-import WidgetBase from '@dojo/widget-core/WidgetBase';
-import { v, w } from '@dojo/widget-core/d';
-import ThemedMixin, { theme } from '@dojo/widget-core/mixins/Themed';
-import diffProperty from '@dojo/widget-core/decorators/diffProperty';
-import { DNode } from '@dojo/widget-core/interfaces';
-import { reference } from '@dojo/widget-core/diff';
-import { Store } from '@dojo/stores/Store';
-import Dimensions from '@dojo/widget-core/meta/Dimensions';
+import WidgetBase from '@dojo/framework/widget-core/WidgetBase';
+import { v, w } from '@dojo/framework/widget-core/d';
+import ThemedMixin, { theme } from '@dojo/framework/widget-core/mixins/Themed';
+import diffProperty from '@dojo/framework/widget-core/decorators/diffProperty';
+import { DNode } from '@dojo/framework/widget-core/interfaces';
+import { reference } from '@dojo/framework/widget-core/diff';
+import { Store } from '@dojo/framework/stores/Store';
+import Dimensions from '@dojo/framework/widget-core/meta/Dimensions';
 
 import { Fetcher, ColumnConfig, GridState, Updater } from './../interfaces';
 import { fetcherProcess, pageChangeProcess, sortProcess, filterProcess, updaterProcess } from './../processes';

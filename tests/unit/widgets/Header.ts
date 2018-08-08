@@ -1,8 +1,8 @@
 const { describe, it } = intern.getInterface('bdd');
 
 import { stub } from 'sinon';
-import harness from '@dojo/test-extras/harness';
-import { v, w } from '@dojo/widget-core/d';
+import harness from '@dojo/framework/testing/harness';
+import { v, w } from '@dojo/framework/widget-core/d';
 
 import * as css from './../../../src/widgets/styles/Header.m.css';
 import Header from '../../../src/widgets/Header';

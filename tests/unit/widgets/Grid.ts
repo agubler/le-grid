@@ -1,20 +1,20 @@
 const { describe, it } = intern.getInterface('bdd');
 
-import harness from '@dojo/test-extras/harness';
-import { v, w } from '@dojo/widget-core/d';
+import harness from '@dojo/framework/testing/harness';
+import { v, w } from '@dojo/framework/widget-core/d';
 
 import Grid from '../../../src/widgets/Grid';
 import * as css from './../../../src/widgets/styles/Grid.m.css';
 import { ColumnConfig } from '../../../src/interfaces';
 import { stub } from 'sinon';
-import Dimensions from '@dojo/widget-core/meta/Dimensions';
+import Dimensions from '@dojo/framework/widget-core/meta/Dimensions';
 import { MockMetaMixin } from '../../support/helpers';
 import Header from '../../../src/widgets/Header';
 import Body from '../../../src/widgets/Body';
 import Footer from '../../../src/widgets/Footer';
-import { Store } from '@dojo/stores/Store';
-import { OperationType } from '@dojo/stores/state/Patch';
-import { Pointer } from '@dojo/stores/state/Pointer';
+import { Store } from '@dojo/framework/stores/Store';
+import { OperationType } from '@dojo/framework/stores/state/Patch';
+import { Pointer } from '@dojo/framework/stores/state/Pointer';
 
 const noop: any = () => {};
 

@@ -1,5 +1,5 @@
-import { createProcess, createCommandFactory, Process } from '@dojo/stores/process';
-import { replace, remove } from '@dojo/stores/state/operations';
+import { createProcess, createCommandFactory, Process } from '@dojo/framework/stores/process';
+import { replace, remove } from '@dojo/framework/stores/state/operations';
 import {
 	FetcherResult,
 	GridState,
