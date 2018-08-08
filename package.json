@@ -24,7 +24,6 @@
   "author": "Anthony Gubler",
   "dependencies": {
     "@dojo/framework": "^3.0.0",
-    "intern": "^4.2.2",
     "tslib": "~1.8.1"
   },
   "devDependencies": {
@@ -41,6 +40,7 @@
     "grunt-dojo2": "~3.0.0",
     "grunt-tslint": "^5.0.1",
     "husky": "0.14.3",
+    "intern": "4.2.2",
     "jsdom": "^9.5.0",
     "lint-staged": "6.0.0",
     "load-grunt-tasks": "^4.0.0",
