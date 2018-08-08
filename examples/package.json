@@ -1,10 +1,10 @@
 {
 	"name": "le-grid-example",
 	"version": "0.0.1",
-	"description": "Example of le-grid the reactive dojo 2 grid",
+	"description": "Example of le-grid the reactive dojo grid",
 	"scripts": {
-		"build": "dojo build -l false",
-		"watch": "dojo build -m dev -s -w -l false"
+		"build": "dojo build",
+		"watch": "dojo build -m dev -s -w"
 	},
 	"dependencies": {
 		"@dojo/framework": "^3.0.0",
@@ -14,10 +14,7 @@
 		"@dojo/cli": "^3.0.0",
 		"@dojo/cli-build-app": "^3.0.0",
 		"@dojo/cli-test-intern": "^3.0.0",
-		"@types/glob": "~5.0.0",
-		"@types/grunt": "~0.4.0",
-		"@types/node": "^6.0.46",
-		"@types/sinon": "^1.16.35",
+		"@types/node": "~9.6.5",
 		"typescript": "~2.6.1"
 	}
 }
