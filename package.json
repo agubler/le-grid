@@ -1,6 +1,6 @@
 {
   "name": "le-grid",
-  "version": "1.0.1-pre",
+  "version": "2.0.0",
   "description": "Reactive grid in Dojo 2",
   "scripts": {
     "build-app": "dojo build",
