@@ -27,7 +27,7 @@ import LeGrid from 'le-grid';
 ## Features
 
  * On-demand virtual rendering with supports for large datasets
- * Backed by [`@dojo/stores`](https://github.com/dojo/stores)
+ * Backed by [`@dojo/framework/stores`](https://github.com/dojo/framework/tree/master/src/stores)
  * Editable cells
  * Filtering and Sorting by column
  * Custom cell renderers
@@ -136,32 +136,10 @@ The updated `item` is passed to the function, if an error occurs during the upda
 
 ### store
 
-le-grid is backed by `@dojo/stores` and by default, dynamically creates a private store as required. However it is also possible to pass an existing store used by other areas of the application.
+le-grid is backed by stores from `@dojo/framework/stores` and by default, dynamically creates a private store as required. However it is also possible to pass an existing store used by other areas of the application.
 
 This option will often be used in combination with `id` that determines the root path location that all grid data will be stored.
 
 ### id
 
 Optional `id` that specifies the root path that of the store that the grid data will be stored.
-
-## Testing
-
-Tests are written using Intern with the `bdd` interface.
-
-To test locally in node run:
-
-```shell
-grunt test
-```
-
-To test against browsers with a selenium server run:
-
-```shell
-grunt test:local
-```
-
-To test against browserstack run:
-
-```shell
-grunt test:browserstack
-```
